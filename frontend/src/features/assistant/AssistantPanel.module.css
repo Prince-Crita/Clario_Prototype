@@ -1,0 +1,409 @@
+/*
+ * The assistant panel (plan §26, §27): a calm side panel, not a chat app. No bubbles, avatars or
+ * sparkles: questions sit on a sunken strip, answers read like notes with a source line.
+ * Docked beside the dashboard on wide screens, a sheet over it on narrower ones, full screen on
+ * phones. The dashboard (CommandCentre.module.css) decides where the panel sits.
+ */
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.heading {
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-lg);
+}
+
+.subtitle {
+  overflow: hidden;
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.usage {
+  margin-top: 2px;
+  font-size: var(--text-xs);
+}
+
+.tools {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+
+.iconButton {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease);
+}
+
+.iconButton:hover,
+.iconButton[aria-pressed="true"] {
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.iconButton:focus-visible,
+.listRow:focus-visible,
+.suggestion:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.body {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+}
+
+.panel[data-mode="full"] .body[data-list] {
+  grid-template-columns: 260px minmax(0, 1fr);
+}
+
+.listColumn {
+  min-height: 0;
+  padding: var(--space-2);
+  overflow-y: auto;
+}
+
+.panel[data-mode="full"] .listColumn {
+  border-right: 1px solid var(--line);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-4);
+}
+
+.panel[data-mode="full"] .chat {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ---------------------------------------------------------------- empty conversation */
+.intro {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: var(--space-4);
+  overflow-y: auto;
+  color: var(--ink-2);
+}
+
+.suggestions {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.suggestion {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-1);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--forest);
+  font-weight: var(--weight-medium);
+  text-align: left;
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  background: var(--paper);
+  color: var(--forest-hover);
+}
+
+.loading {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: var(--space-2);
+}
+
+/* ---------------------------------------------------------------- transcript */
+.transcript {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.question {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.answer {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.prose {
+  color: var(--ink);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.prose > * + * {
+  margin-top: var(--space-2);
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: 2px;
+}
+
+.prose strong {
+  font-weight: var(--weight-semibold);
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.source {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}
+
+.failed {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--warning);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--olive);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------- composer */
+.composer {
+  display: grid;
+  flex: none;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  transition: border-color var(--duration) var(--ease);
+}
+
+.composer:focus-within {
+  border-color: var(--forest);
+  box-shadow: var(--focus-halo);
+}
+
+.input {
+  min-height: 24px;
+  max-height: 160px;
+  padding: 2px var(--space-1);
+  border: 0;
+  outline: none;
+  background: transparent;
+  line-height: 1.5;
+  resize: none;
+}
+
+/* The whole box shows focus (border + halo), not the text area inside it. */
+.input:focus-visible {
+  box-shadow: none;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.composerFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.hint,
+.count {
+  padding-left: var(--space-1);
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}
+
+/* ---------------------------------------------------------------- conversation list */
+.list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.list ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.listRow {
+  position: relative;
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.listRow:hover {
+  background: var(--paper);
+}
+
+.listRow[aria-current="true"] {
+  background: var(--surface-sunken);
+}
+
+.listRow[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  bottom: 7px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--lime);
+}
+
+.listTitle {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listDate {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}
+
+.confirm {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  font-size: var(--text-sm);
+}
+
+.listEmpty {
+  padding: var(--space-3);
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+.listLoading {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Phones: the panel is the whole screen, so "full width" adds nothing. */
+@media (max-width: 640px) {
+  .expand {
+    display: none;
+  }
+
+  .panel[data-mode="full"] .body[data-list] {
+    grid-template-columns: 1fr;
+  }
+}

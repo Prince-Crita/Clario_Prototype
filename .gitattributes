@@ -1,0 +1,10 @@
+# Normalise line endings: the team works on Windows and Linux; CI and servers are Linux.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.pdf binary
+*.ai binary
+*.woff2 binary

@@ -1,0 +1,73 @@
+.scroller {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--text-sm);
+}
+
+.caption {
+  padding: var(--space-3) var(--space-4) 0;
+  text-align: left;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-md);
+}
+
+.table th,
+.table td {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table [data-align="end"] {
+  text-align: right;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface);
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.table tbody th {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.table tbody tr:hover > * {
+  background: var(--paper);
+}
+
+.table tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.table tfoot > tr > * {
+  border-top: 1px solid var(--line-strong);
+  border-bottom: none;
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 720px) {
+  .table tbody th,
+  .table thead th:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+  }
+}

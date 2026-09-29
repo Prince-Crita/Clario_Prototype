@@ -1,0 +1,442 @@
+# Secrets and local tokens
+.env
+.env.local
+.data/
+.zoho_tokens.json
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+logs/
+
+
+
+pheonix@srv896080:/opt/clario/.venv/bin$ cd ..
+pheonix@srv896080:/opt/clario/.venv$ cd ..
+pheonix@srv896080:/opt/clario$ curl -fsS http://127.0.0.1:8000/health
+{"status":"ok","multi_tenant":true,"database":"postgresql+asyncpg","zoho_oauth_app_configured":false,"llm_provider":"groq","llm_configured":false,"model":"groq/openai/gpt-oss-20b"}pheonix@srv896080:/opt/clario$ sudo journalctl -u clario -n 80 --no-pager                  sudo journalctl -u clario -n 80 --no-pager
+Sep 23 10:23:00 srv896080 systemd[1]: Started clario.service - Clario multi-tenant Zoho Books intelligence API.
+Sep 23 10:23:02 srv896080 python[2438544]: INFO:     Started server process [2438544]
+Sep 23 10:23:02 srv896080 python[2438544]: INFO:     Waiting for application startup.
+Sep 23 10:23:03 srv896080 python[2438544]: 2026-09-23 10:23:03,075 INFO [clario.api] Clario API starting multi_tenant=True db=postgresql+asyncpg llm=groq model=groq/openai/gpt-oss-20b
+Sep 23 10:23:03 srv896080 python[2438544]: INFO:     Application startup complete.
+Sep 23 10:23:03 srv896080 python[2438544]: INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Sep 23 10:24:15 srv896080 python[2438544]: INFO:     127.0.0.1:45088 - "GET /health HTTP/1.1" 200 OK
+pheonix@srv896080:/opt/clario$ cd /etc/nginx/
+pheonix@srv896080:/etc/nginx$ ls
+conf.d        fastcgi_params  koi-win     modules-available  nginx.conf    scgi_params      sites-enabled  uwsgi_params
+fastcgi.conf  koi-utf         mime.types  modules-enabled    proxy_params  sites-available  snippets       win-utf
+pheonix@srv896080:/etc/nginx$ cd sites-enabled
+pheonix@srv896080:/etc/nginx/sites-enabled$ ls
+default  plane.crita.in  server.crita.in
+pheonix@srv896080:/etc/nginx/sites-enabled$ cat server.crita.in 
+server {
+    server_name server.crita.in;
+
+    client_max_body_size 50M;
+
+    root /opt/www/server.crita.in/html;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # ========== pgAdmin ==========
+    location /pgadmin/ {
+            rewrite ^/pgadmin(/.*)$ $1 break;
+        proxy_pass http://127.0.0.1:5050/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+        proxy_set_header X-Script-Name /pgadmin;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_redirect off;
+    }
+
+    # ========== ERP Frontend Demo ==========
+    location /tbc/test/ {
+        alias /opt/www/tbc-fe-demo/;
+        index index.html;
+        try_files $uri $uri/ /tbc/test/index.html;
+    }
+
+    # ========== ERP Frontend Prod ==========
+    location /tbc/ {
+        alias /opt/www/tbc-fe/;
+        index index.html;
+        try_files $uri $uri/ /tbc/index.html;
+    }
+
+
+    # ========== ERP Backend ==========
+    location /erp-be/api {
+            rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3009/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== ERP Uploads ==========
+    location /erp-be/uploads/ {
+        alias /opt/erp/uploads/;
+        expires 1y;
+        add_header Cache-Control "public";
+
+        # Security: block executable scripts
+        location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
+            deny all;
+        }
+    }
+
+     # ========== ERP Backend Prod==========
+    location /erp-be-prod/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3010/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== ERP Uploads ==========
+    location /erp-be-prod/uploads/ {
+        alias /opt/erp-prod/uploads/;
+        expires 1y;
+        add_header Cache-Control "public";
+
+        # Security: block executable scripts
+        location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
+            deny all;
+        }
+    }
+
+    # ========== Crita Files==========
+        location /crita-files/ {
+        alias /opt/crita-files/;
+        expires 1y;
+        add_header Cache-Control "public";
+
+            # Security: block executable scripts
+            location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
+                deny all;
+            }
+        }
+
+
+    # ========== Support Ticket Frontend ==========
+    location /support-ticket/dev {
+        alias /opt/www/support-ticket-dev/;
+        index index.html;
+        try_files $uri $uri/ /support-ticket/dev/index.html;
+    }
+
+    # ========== Bidding Frontend ==========
+    location /bidding/dev {
+        alias /opt/www/bidding-dev/;
+        index index.html;
+        try_files $uri $uri/ /bidding/dev/index.html;
+    }
+
+    location /bidding {
+        alias /opt/www/bidding-prod/;
+        index index.html;
+        try_files $uri $uri/ /bidding/index.html;
+    }
+
+    # ========== Bidding Backend Dev==========
+    location /bidding-be-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3040/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Bidding WebSocket Dev ==========
+    location /bidding-be-dev/socket.io/ {
+        rewrite ^/bidding-be-dev/socket.io/(.*) /socket.io/$1 break;
+        proxy_pass http://localhost:3040;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Bidding Backend Prod==========
+    location /bidding-be-prod/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3041/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Bidding WebSocket Prod ==========
+    location /bidding-be-prod/socket.io/ {
+        rewrite ^/bidding-be-prod/socket.io/(.*) /socket.io/$1 break;
+        proxy_pass http://localhost:3041;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Bidding Uploads ==========
+    location /bidding-be-dev/uploads/ {
+        alias /opt/bidding-be-dev/uploads/;
+        expires 1y;
+        add_header Cache-Control "public";
+
+        # Security: block executable scripts
+        location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
+            deny all;
+        }
+    }
+
+    # ========== Veloce Backend Dev==========
+    location /veloce-exchange-be-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3557/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Veloce Backend Test==========
+    location /veloce-exchange-be-test/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3559/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Veloce Backend Prod==========
+
+    location /veloce-exchange-be-prod/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3558/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+ # ========== Veloce Exchange Frontend prod==========
+    location /veloce-exchange/ {
+        alias /opt/www/veloce-exchange/;
+        index index.html;
+        try_files $uri $uri/ /veloce-exchange/index.html;
+    }
+
+    # ========== Veloce Exchange Frontend Dev==========
+    location /veloce-exchange/dev {
+        alias /opt/www/veloce-exchange-dev/;
+        index index.html;
+        try_files $uri $uri/ /veloce-exchange/dev/index.html;
+    }
+
+    # ========== Veloce Exchange Frontend Test ==========
+    location /veloce-exchange/test {
+        alias /opt/www/veloce-exchange-test/;
+        index index.html;
+        try_files $uri $uri/ /veloce-exchange/test/index.html;
+    }
+   
+
+    # ========== Bidding Uploads ==========
+    location /bidding-be-prod/uploads/ {
+    alias /opt/bidding-be-prod/uploads/;
+    expires 1y;
+    add_header Cache-Control "public";
+
+    # Security: block executable scripts
+    location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
+        deny all;
+    }
+}
+
+
+
+
+
+    # ========== Notification Orchestration Backend ==========
+    location /notification-orchestration-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3301/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Support Ticket Dev Backend ==========
+    location /support-ticket-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3302/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Attachment Orchestration System Dev Backend ==========
+    location /attachments-orchestration-system-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3303/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Relationship Orchestration System Dev Backend ==========
+    location /relationship-mgmt-microservice-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3304/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== Task Management Microservice Dev Backend ==========
+    location /task-mgmt-microservice-dev/api {
+        rewrite /api/(.*) /$1  break;
+        proxy_pass http://localhost:3305/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== SMC Task Management DEV==========
+   location /client-trial/smc-task-management/ {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+        # ========== SSL Configuration ==========
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/server.crita.in/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/server.crita.in/privkey.pem; # managed by Certbot
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    }
+
+# Redirect HTTP to HTTPS
+server {
+    if ($host = server.crita.in) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    # Handle reverse proxying for Let's Encrypt validation
+    listen 80;
+    server_name server.crita.in;
+    return 404; # managed by Certbot
+}
+pheonix@srv896080:/etc/nginx/sites-enabled$ cd ..
+pheonix@srv896080:/etc/nginx$ cd sites-available/
+pheonix@srv896080:/etc/nginx/sites-available$ sudo nano server.crita.in
+
+  GNU nano 7.2                                         server.crita.in *                                                
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # ========== SMC Task Management DEV==========
+   location /client-trial/smc-task-management/ {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+     # ========= Clario ======= #
+location /clario/ {
+    proxy_pass http://127.0.0.1:8000/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Prefix /clario;
+    proxy_read_timeout 300s;
+    proxy_send_timeout 300s;
+}
+
+^G Help        ^O Write Out   ^W Where Is    ^K Cut         ^T Execute     ^C Location    M-U Undo       M-A Set Mark
+^X Exit        ^R Read File   ^\ Replace     ^U Paste       ^J Justify     ^/ Go To Line  M-E Redo       M-6 Copy

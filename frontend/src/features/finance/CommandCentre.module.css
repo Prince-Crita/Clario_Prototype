@@ -1,0 +1,114 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.loading {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+}
+
+.link {
+  color: var(--forest);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+/*
+ * The assistant panel's placement (plan §26): docked beside the dashboard when there is room,
+ * a sheet over it (with a scrim) when there isn't, the whole screen on phones. "Full" gives the
+ * panel the dashboard's space.
+ */
+.body {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.dashboard {
+  min-width: 0;
+}
+
+.scrim {
+  display: none;
+}
+
+.body[data-assistant] > aside,
+.panelLoading {
+  height: calc(100dvh - 2 * var(--space-4));
+}
+
+.panelLoading {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.body[data-assistant="full"] > aside {
+  height: calc(100dvh - 12rem);
+  min-height: 32rem;
+}
+
+@media (min-width: 1360px) {
+  .body[data-assistant="open"] {
+    grid-template-columns: minmax(0, 1fr) 440px;
+    align-items: start;
+  }
+
+  /* It starts below the page header, so it is shorter than the viewport: the question box is
+     on screen without scrolling, and stays there (sticky) as the dashboard scrolls. */
+  .body[data-assistant="open"] > aside,
+  .body[data-assistant="open"] > .panelLoading {
+    position: sticky;
+    top: var(--space-4);
+    height: calc(100dvh - 9.5rem);
+    min-height: 28rem;
+  }
+}
+
+@media (max-width: 1359.98px) {
+  .body[data-assistant="open"] > aside,
+  .body[data-assistant="open"] > .panelLoading {
+    position: fixed;
+    z-index: 40;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(440px, 100vw);
+    height: auto;
+    border-width: 0 0 0 1px;
+    border-radius: 0;
+    box-shadow: var(--shadow-pop);
+  }
+
+  .body[data-assistant="open"] > .scrim {
+    display: block;
+    position: fixed;
+    z-index: 35;
+    inset: 0;
+    border: 0;
+    background: rgb(24 33 27 / 0.24);
+    cursor: default;
+  }
+}
+
+@media (max-width: 640px) {
+  .body[data-assistant] > aside,
+  .body[data-assistant] > .panelLoading {
+    position: fixed;
+    z-index: 40;
+    inset: 0;
+    width: 100vw;
+    height: auto;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+  }
+}

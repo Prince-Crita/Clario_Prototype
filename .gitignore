@@ -1,0 +1,46 @@
+# --- Secrets & local config (only .env.example is committed) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Sensitive reference material (real client financial data / brand source files) ---
+reference/director-pdfs/
+# Brand: only the logo SVG is versioned; other design files stay local.
+reference/brand/*
+!reference/brand/logo/
+reference/brand/logo/*
+!reference/brand/logo/LOGO.svg
+
+# --- Phase 0 spike output (raw Zoho responses contain real business data) ---
+.spike/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.data/
+
+# --- Node / frontend ---
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# --- Editors / OS ---
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,614 @@
+{
+ "code": 0,
+ "message": "success",
+ "chartofaccounts": [
+  {
+   "account_id": "4235431000000034012",
+   "account_name": "TDS Receivable",
+   "account_code": "",
+   "account_type": "other_current_asset",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000468",
+   "account_name": "Advance Tax",
+   "account_code": "",
+   "account_type": "other_current_asset",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034009",
+   "account_name": "Prepaid Expenses",
+   "account_code": "",
+   "account_type": "other_current_asset",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000570",
+   "account_name": "Employee Advance",
+   "account_code": "",
+   "account_type": "other_current_asset",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000459",
+   "account_name": "Petty Cash",
+   "account_code": "",
+   "account_type": "cash",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000456",
+   "account_name": "Undeposited Funds",
+   "account_code": "",
+   "account_type": "cash",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000042002",
+   "account_name": "TEST Bank Current",
+   "account_code": "",
+   "account_type": "bank",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T18:19:06+0530"
+  },
+  {
+   "account_id": "4235431000000000462",
+   "account_name": "Accounts Receivable",
+   "account_code": "",
+   "account_type": "accounts_receivable",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000465",
+   "account_name": "Furniture and Equipment",
+   "account_code": "",
+   "account_type": "fixed_asset",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034014",
+   "account_name": "TDS Payable",
+   "account_code": "",
+   "account_type": "other_current_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000474",
+   "account_name": "Tax Payable",
+   "account_code": "",
+   "account_type": "other_current_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000573",
+   "account_name": "Employee Reimbursements",
+   "account_code": "",
+   "account_type": "other_current_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000615",
+   "account_name": "Opening Balance Adjustments",
+   "account_code": "",
+   "account_type": "other_current_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000617",
+   "account_name": "Unearned Revenue",
+   "account_code": "",
+   "account_type": "other_current_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000471",
+   "account_name": "Accounts Payable",
+   "account_code": "",
+   "account_type": "accounts_payable",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034047",
+   "account_name": "Mortgages",
+   "account_code": "",
+   "account_type": "long_term_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034048",
+   "account_name": "Construction Loans",
+   "account_code": "",
+   "account_type": "long_term_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000579",
+   "account_name": "Dimension Adjustments",
+   "account_code": "",
+   "account_type": "other_liability",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000480",
+   "account_name": "Owner's Equity",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034049",
+   "account_name": "Investments",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034050",
+   "account_name": "Distributions",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034055",
+   "account_name": "Capital Stock",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034056",
+   "account_name": "Dividends Paid",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000561",
+   "account_name": "Drawings",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000477",
+   "account_name": "Retained Earnings",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000483",
+   "account_name": "Opening Balance Offset",
+   "account_code": "",
+   "account_type": "equity",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000622",
+   "account_name": "Shipping Charge",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000486",
+   "account_name": "Sales",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000489",
+   "account_name": "General Income",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000492",
+   "account_name": "Interest Income",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000495",
+   "account_name": "Late Fee Income",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000504",
+   "account_name": "Discount",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000619",
+   "account_name": "Other Charges",
+   "account_code": "",
+   "account_type": "income",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000501",
+   "account_name": "Advertising And Marketing",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000531",
+   "account_name": "Janitorial Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034061",
+   "account_name": "Contract Assets",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034060",
+   "account_name": "Depreciation And Amortisation",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034059",
+   "account_name": "Transportation Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034058",
+   "account_name": "Merchandise",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034057",
+   "account_name": "Raw Materials And Consumables",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000534",
+   "account_name": "Postage",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000537",
+   "account_name": "Bad Debt",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000540",
+   "account_name": "Printing and Stationery",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000543",
+   "account_name": "Salaries and Employee Wages",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000546",
+   "account_name": "Meals and Entertainment",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000498",
+   "account_name": "Office Supplies",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000555",
+   "account_name": "Repairs and Maintenance",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000549",
+   "account_name": "Depreciation Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000011001",
+   "account_name": "Purchase Discounts",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000558",
+   "account_name": "Other Expenses",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000525",
+   "account_name": "IT and Internet Expenses",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000564",
+   "account_name": "Lodging",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000522",
+   "account_name": "Automobile Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000519",
+   "account_name": "Telephone Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000576",
+   "account_name": "Uncategorized",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000516",
+   "account_name": "Travel Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000510",
+   "account_name": "Credit Card Charges",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000552",
+   "account_name": "Consultant Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000528",
+   "account_name": "Rent Expense",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000507",
+   "account_name": "Bank Fees and Charges",
+   "account_code": "",
+   "account_type": "expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034052",
+   "account_name": "Materials",
+   "account_code": "",
+   "account_type": "cost_of_goods_sold",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034053",
+   "account_name": "Subcontractor",
+   "account_code": "",
+   "account_type": "cost_of_goods_sold",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034054",
+   "account_name": "Job Costing",
+   "account_code": "",
+   "account_type": "cost_of_goods_sold",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000034051",
+   "account_name": "Labor",
+   "account_code": "",
+   "account_type": "cost_of_goods_sold",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000567",
+   "account_name": "Cost of Goods Sold",
+   "account_code": "",
+   "account_type": "cost_of_goods_sold",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000513",
+   "account_name": "Exchange Gain or Loss",
+   "account_code": "",
+   "account_type": "other_expense",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  },
+  {
+   "account_id": "4235431000000000626",
+   "account_name": "Inventory Asset",
+   "account_code": "",
+   "account_type": "stock",
+   "is_active": true,
+   "parent_account_id": "",
+   "last_modified_time": "2026-09-26T17:51:46+0530"
+  }
+ ],
+ "page_context": {
+  "page": 1,
+  "per_page": 200,
+  "has_more_page": false
+ }
+}

@@ -1,0 +1,1418 @@
+{
+  "_note": "Real API responses for the golden dataset as of 25 Sep 2026 (captured from the backend; clients anonymised).",
+
+  "overview": {
+    "meta": {
+      "organisation": "Crita Creative LLP",
+      "currency": "INR",
+      "fiscal_year": "FY 2026-27",
+      "fiscal_year_start_month": 4,
+      "today": "2026-09-25",
+      "freshness": {
+        "as_of": "2026-09-25T10:26:00Z",
+        "data_version": "01a0e291-1d44-727f-b5eb-1a85e039c705",
+        "sync_state": "idle"
+      }
+    },
+    "kpis": [
+      {
+        "key": "revenue",
+        "label": "Revenue",
+        "value": "728540.0000",
+        "basis": "accrual",
+        "window": {
+          "start": "2026-04-01",
+          "end": "2026-09-25",
+          "label": "FY 2026-27 to date"
+        },
+        "note": "Income from the ledger, excluding GST",
+        "change": null,
+        "related": null,
+        "ratio": null,
+        "count": null
+      },
+      {
+        "key": "cash_collected",
+        "label": "Cash collected",
+        "value": "837581.0000",
+        "basis": "cash",
+        "window": {
+          "start": "2026-03-01",
+          "end": "2026-09-25",
+          "label": "1 Mar 2026 – 25 Sep 2026"
+        },
+        "note": null,
+        "change": null,
+        "related": {
+          "name": "billed",
+          "amount": "895675.0000"
+        },
+        "ratio": "93.51394199905099505959192788",
+        "count": null
+      },
+      {
+        "key": "total_costs",
+        "label": "Total costs",
+        "value": "1376568.0000",
+        "basis": "accrual",
+        "window": {
+          "start": "2026-04-01",
+          "end": "2026-09-25",
+          "label": "FY 2026-27 to date"
+        },
+        "note": "Cost of goods sold + operating expenses",
+        "change": {
+          "percent": "-6.635100400054113599907233829",
+          "compared_to": "Cash expenses, this month vs last month"
+        },
+        "related": null,
+        "ratio": null,
+        "count": null
+      },
+      {
+        "key": "net_pnl",
+        "label": "Net P&L",
+        "value": "-648028.0000",
+        "basis": "accrual",
+        "window": {
+          "start": "2026-04-01",
+          "end": "2026-09-25",
+          "label": "FY 2026-27 to date"
+        },
+        "note": "Revenue − cost of goods sold − operating expenses",
+        "change": null,
+        "related": null,
+        "ratio": "-88.94885661734427759628846735",
+        "count": null
+      },
+      {
+        "key": "cash_on_hand",
+        "label": "Cash on hand",
+        "value": "72739.0000",
+        "basis": "balance",
+        "window": {
+          "start": "2026-09-25",
+          "end": "2026-09-25",
+          "label": "As of 25 Sep 2026"
+        },
+        "note": "Bank + cash",
+        "change": null,
+        "related": null,
+        "ratio": null,
+        "count": null
+      },
+      {
+        "key": "receivables",
+        "label": "Receivables",
+        "value": "58094.0000",
+        "basis": "balance",
+        "window": {
+          "start": "2026-09-25",
+          "end": "2026-09-25",
+          "label": "As of 25 Sep 2026"
+        },
+        "note": "overdue",
+        "change": null,
+        "related": null,
+        "ratio": null,
+        "count": 9
+      }
+    ],
+    "pnl": {
+      "basis": "accrual",
+      "window": {
+        "start": "2026-04-01",
+        "end": "2026-09-25",
+        "label": "FY 2026-27 to date"
+      },
+      "revenue": "728540.0000",
+      "cogs": "336078.0000",
+      "operating_expenses": "1040490.0000",
+      "total_costs": "1376568.0000",
+      "gross_profit": "392462.0000",
+      "gross_margin": "53.86965712246410629478134351",
+      "net_pnl": "-648028.0000",
+      "net_margin": "-88.94885661734427759628846735",
+      "other_income": "0",
+      "other_expenses": "0",
+      "largest_cost": {
+        "name": "Salaries and Employee Wages",
+        "amount": "758800.0000"
+      },
+      "latest_month_spend": "241549.0000"
+    },
+    "months": [
+      {
+        "month": "2026-03-01",
+        "billed": "36000.0000",
+        "collected": "0",
+        "expenses": "26900.0000",
+        "net_cash": "-26900.0000"
+      },
+      {
+        "month": "2026-04-01",
+        "billed": "0",
+        "collected": "0",
+        "expenses": "9656.0000",
+        "net_cash": "-9656.0000"
+      },
+      {
+        "month": "2026-05-01",
+        "billed": "238675.0000",
+        "collected": "120675.0000",
+        "expenses": "155020.0000",
+        "net_cash": "-34345.0000"
+      },
+      {
+        "month": "2026-06-01",
+        "billed": "134520.0000",
+        "collected": "140520.0000",
+        "expenses": "201721.0000",
+        "net_cash": "-61201.0000"
+      },
+      {
+        "month": "2026-07-01",
+        "billed": "138650.0000",
+        "collected": "248501.0000",
+        "expenses": "227126.0000",
+        "net_cash": "21375.0000"
+      },
+      {
+        "month": "2026-08-01",
+        "billed": "193520.0000",
+        "collected": "177885.0000",
+        "expenses": "258715.0000",
+        "net_cash": "-80830.0000"
+      },
+      {
+        "month": "2026-09-01",
+        "billed": "154310.0000",
+        "collected": "150000.0000",
+        "expenses": "241549.0000",
+        "net_cash": "-91549.0000"
+      }
+    ],
+    "actions": [
+      {
+        "kind": "overdue_invoice",
+        "severity": "high",
+        "title": "INV-000002 · Client D: ₹13,000 overdue 185 days",
+        "detail": "Due 24 Mar 2026.",
+        "amount": "13000.0000",
+        "reference": "INV-000002",
+        "days_overdue": 185,
+        "due_date": "2026-03-24"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "high",
+        "title": "INV-000001 · Client C Coffee Pvt Ltd: ₹17,000 overdue 185 days",
+        "detail": "Due 24 Mar 2026.",
+        "amount": "17000.0000",
+        "reference": "INV-000001",
+        "days_overdue": 185,
+        "due_date": "2026-03-24"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "medium",
+        "title": "INV-00010 · Client A Enviro Pvt Ltd: ₹4,019 overdue 77 days",
+        "detail": "Due 10 Jul 2026.",
+        "amount": "4019.0000",
+        "reference": "INV-00010",
+        "days_overdue": 77,
+        "due_date": "2026-07-10"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "medium",
+        "title": "INV-00012 · Client C Coffee Pvt Ltd: ₹2,065 overdue 59 days",
+        "detail": "Due 28 Jul 2026.",
+        "amount": "2065.0000",
+        "reference": "INV-00012",
+        "days_overdue": 59,
+        "due_date": "2026-07-28"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "medium",
+        "title": "INV-00016 · Client A Enviro Pvt Ltd: ₹7,412 overdue 38 days",
+        "detail": "Due 18 Aug 2026.",
+        "amount": "7412.0000",
+        "reference": "INV-00016",
+        "days_overdue": 38,
+        "due_date": "2026-08-18"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "low",
+        "title": "INV-00022 · Client C Coffee Pvt Ltd: ₹2,064 overdue 16 days",
+        "detail": "Due 9 Sep 2026.",
+        "amount": "2064.0000",
+        "reference": "INV-00022",
+        "days_overdue": 16,
+        "due_date": "2026-09-09"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "low",
+        "title": "INV-00023 · Client A Enviro Pvt Ltd: ₹2,064 overdue 14 days",
+        "detail": "Due 11 Sep 2026.",
+        "amount": "2064.0000",
+        "reference": "INV-00023",
+        "days_overdue": 14,
+        "due_date": "2026-09-11"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "low",
+        "title": "INV-00021 · Client A Enviro Pvt Ltd: ₹1,770 overdue 11 days",
+        "detail": "Due 14 Sep 2026.",
+        "amount": "1770.0000",
+        "reference": "INV-00021",
+        "days_overdue": 11,
+        "due_date": "2026-09-14"
+      },
+      {
+        "kind": "overdue_invoice",
+        "severity": "low",
+        "title": "INV-00024 · Client A Enviro Pvt Ltd: ₹8,700 overdue 9 days",
+        "detail": "Due 16 Sep 2026.",
+        "amount": "8700.0000",
+        "reference": "INV-00024",
+        "days_overdue": 9,
+        "due_date": "2026-09-16"
+      },
+      {
+        "kind": "gst_payable",
+        "severity": "medium",
+        "title": "GST payable ₹5,665",
+        "detail": "Output GST ₹1,31,137 − input credit ₹1,25,472, as of 25 Sep 2026.",
+        "amount": "5665.0000",
+        "reference": null,
+        "days_overdue": null,
+        "due_date": null
+      },
+      {
+        "kind": "accrual_loss",
+        "severity": "high",
+        "title": "Accrual loss of ₹6,48,028 this fiscal year",
+        "detail": "Revenue ₹7,28,540 against total costs ₹13,76,568. Largest cost: Salaries and Employee Wages, ₹7,58,800.",
+        "amount": "-648028.0000",
+        "reference": null,
+        "days_overdue": null,
+        "due_date": null
+      }
+    ],
+    "revenue_by_client": [
+      {
+        "party_name": "Client A Enviro Pvt Ltd",
+        "billed": "696246.0000",
+        "outstanding": "23965.0000",
+        "overdue": "23965.0000",
+        "has_overdue": true
+      },
+      {
+        "party_name": "Client B Threads",
+        "billed": "159300.0000",
+        "outstanding": "0.0000",
+        "overdue": "0",
+        "has_overdue": false
+      },
+      {
+        "party_name": "Client C Coffee Pvt Ltd",
+        "billed": "27129.0000",
+        "outstanding": "21129.0000",
+        "overdue": "21129.0000",
+        "has_overdue": true
+      },
+      {
+        "party_name": "Client D",
+        "billed": "13000.0000",
+        "outstanding": "13000.0000",
+        "overdue": "13000.0000",
+        "has_overdue": true
+      }
+    ],
+    "expense_mix": [
+      {
+        "name": "Salaries and Employee Wages",
+        "amount": "758800.0000",
+        "share": "72.92717854087977779699949062"
+      },
+      {
+        "name": "Director Remuneration",
+        "amount": "120000.0000",
+        "share": "11.53302770809906870801257100"
+      },
+      {
+        "name": "Software subscription A/C",
+        "amount": "72000.0000",
+        "share": "6.919816624859441224807542600"
+      },
+      {
+        "name": "Proffessional expense",
+        "amount": "45000.0000",
+        "share": "4.324885390537150765504714125"
+      },
+      {
+        "name": "Staff Welfare",
+        "amount": "21000.0000",
+        "share": "2.018279848917337023902199925"
+      },
+      {
+        "name": "Consultant Expense",
+        "amount": "15000.0000",
+        "share": "1.441628463512383588501571375"
+      },
+      {
+        "name": "Office Supplies",
+        "amount": "8690.0000",
+        "share": "0.8351834231948408922719103499"
+      }
+    ],
+    "expense_mix_window": {
+      "start": "2026-04-01",
+      "end": "2026-09-25",
+      "label": "FY 2026-27 to date"
+    },
+    "register_totals": {
+      "count": 16,
+      "billed": "895675.0000",
+      "balance": "58094.0000"
+    }
+  },
+  "trends": {
+    "meta": {
+      "organisation": "Crita Creative LLP",
+      "currency": "INR",
+      "fiscal_year": "FY 2026-27",
+      "fiscal_year_start_month": 4,
+      "today": "2026-09-25",
+      "freshness": {
+        "as_of": "2026-09-25T10:26:00Z",
+        "data_version": "01a0e291-1d44-727f-b5eb-1a85e039c705",
+        "sync_state": "idle"
+      }
+    },
+    "window": {
+      "start": "2026-03-01",
+      "end": "2026-09-25",
+      "label": "1 Mar 2026 – 25 Sep 2026"
+    },
+    "months": [
+      {
+        "month": "2026-03-01",
+        "billed": "36000.0000",
+        "collected": "0",
+        "expenses": "26900.0000",
+        "net_cash": "-26900.0000"
+      },
+      {
+        "month": "2026-04-01",
+        "billed": "0",
+        "collected": "0",
+        "expenses": "9656.0000",
+        "net_cash": "-9656.0000"
+      },
+      {
+        "month": "2026-05-01",
+        "billed": "238675.0000",
+        "collected": "120675.0000",
+        "expenses": "155020.0000",
+        "net_cash": "-34345.0000"
+      },
+      {
+        "month": "2026-06-01",
+        "billed": "134520.0000",
+        "collected": "140520.0000",
+        "expenses": "201721.0000",
+        "net_cash": "-61201.0000"
+      },
+      {
+        "month": "2026-07-01",
+        "billed": "138650.0000",
+        "collected": "248501.0000",
+        "expenses": "227126.0000",
+        "net_cash": "21375.0000"
+      },
+      {
+        "month": "2026-08-01",
+        "billed": "193520.0000",
+        "collected": "177885.0000",
+        "expenses": "258715.0000",
+        "net_cash": "-80830.0000"
+      },
+      {
+        "month": "2026-09-01",
+        "billed": "154310.0000",
+        "collected": "150000.0000",
+        "expenses": "241549.0000",
+        "net_cash": "-91549.0000"
+      }
+    ],
+    "totals": {
+      "month": "2026-03-01",
+      "billed": "895675.0000",
+      "collected": "837581.0000",
+      "expenses": "1120687.0000",
+      "net_cash": "-283106.0000"
+    },
+    "top_categories": [
+      "Salaries and Employee Wages",
+      "Director Remuneration",
+      "Software subscription A/C",
+      "Proffessional expense",
+      "Construction expense"
+    ],
+    "expense_trend": [
+      {
+        "month": "2026-03-01",
+        "amounts": {
+          "Salaries and Employee Wages": "0",
+          "Director Remuneration": "0",
+          "Software subscription A/C": "4900.0000",
+          "Proffessional expense": "22000.0000",
+          "Construction expense": "0"
+        },
+        "other": "0"
+      },
+      {
+        "month": "2026-04-01",
+        "amounts": {
+          "Salaries and Employee Wages": "0",
+          "Director Remuneration": "0",
+          "Software subscription A/C": "4956.0000",
+          "Proffessional expense": "0",
+          "Construction expense": "0"
+        },
+        "other": "4700.0000"
+      },
+      {
+        "month": "2026-05-01",
+        "amounts": {
+          "Salaries and Employee Wages": "138000.0000",
+          "Director Remuneration": "0",
+          "Software subscription A/C": "7020.0000",
+          "Proffessional expense": "0",
+          "Construction expense": "0"
+        },
+        "other": "10000.0000"
+      },
+      {
+        "month": "2026-06-01",
+        "amounts": {
+          "Salaries and Employee Wages": "152000.0000",
+          "Director Remuneration": "0",
+          "Software subscription A/C": "5721.0000",
+          "Proffessional expense": "36000.0000",
+          "Construction expense": "0"
+        },
+        "other": "8000.0000"
+      },
+      {
+        "month": "2026-07-01",
+        "amounts": {
+          "Salaries and Employee Wages": "168000.0000",
+          "Director Remuneration": "50000.0000",
+          "Software subscription A/C": "4126.0000",
+          "Proffessional expense": "0",
+          "Construction expense": "0"
+        },
+        "other": "5000.0000"
+      },
+      {
+        "month": "2026-08-01",
+        "amounts": {
+          "Salaries and Employee Wages": "155000.0000",
+          "Director Remuneration": "50000.0000",
+          "Software subscription A/C": "30000.0000",
+          "Proffessional expense": "13715.0000",
+          "Construction expense": "10000.0000"
+        },
+        "other": "0"
+      },
+      {
+        "month": "2026-09-01",
+        "amounts": {
+          "Salaries and Employee Wages": "145800.0000",
+          "Director Remuneration": "20000.0000",
+          "Software subscription A/C": "35749.0000",
+          "Proffessional expense": "0",
+          "Construction expense": "22000.0000"
+        },
+        "other": "18000.0000"
+      }
+    ],
+    "weekly": [
+      {
+        "start": "2026-07-20",
+        "cash_in": "0",
+        "cash_out": "5000.0000",
+        "net": "-5000.0000"
+      },
+      {
+        "start": "2026-07-27",
+        "cash_in": "0",
+        "cash_out": "218000.0000",
+        "net": "-218000.0000"
+      },
+      {
+        "start": "2026-08-03",
+        "cash_in": "134520.0000",
+        "cash_out": "0",
+        "net": "134520.0000"
+      },
+      {
+        "start": "2026-08-10",
+        "cash_in": "41300.0000",
+        "cash_out": "248715.0000",
+        "net": "-207415.0000"
+      },
+      {
+        "start": "2026-08-17",
+        "cash_in": "0",
+        "cash_out": "10000.0000",
+        "net": "-10000.0000"
+      },
+      {
+        "start": "2026-08-24",
+        "cash_in": "2065.0000",
+        "cash_out": "0",
+        "net": "2065.0000"
+      },
+      {
+        "start": "2026-08-31",
+        "cash_in": "0",
+        "cash_out": "18000.0000",
+        "net": "-18000.0000"
+      },
+      {
+        "start": "2026-09-07",
+        "cash_in": "150000.0000",
+        "cash_out": "223549.0000",
+        "net": "-73549.0000"
+      },
+      {
+        "start": "2026-09-14",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-21",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      }
+    ],
+    "daily": [
+      {
+        "start": "2026-08-27",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-08-28",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-08-29",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-08-30",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-08-31",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-01",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-02",
+        "cash_in": "0",
+        "cash_out": "18000.0000",
+        "net": "-18000.0000"
+      },
+      {
+        "start": "2026-09-03",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-04",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-05",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-06",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-07",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-08",
+        "cash_in": "150000.0000",
+        "cash_out": "0",
+        "net": "150000.0000"
+      },
+      {
+        "start": "2026-09-09",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-10",
+        "cash_in": "0",
+        "cash_out": "223549.0000",
+        "net": "-223549.0000"
+      },
+      {
+        "start": "2026-09-11",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-12",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-13",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-14",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-15",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-16",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-17",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-18",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-19",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-20",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-21",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-22",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-23",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-24",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      },
+      {
+        "start": "2026-09-25",
+        "cash_in": "0",
+        "cash_out": "0",
+        "net": "0"
+      }
+    ]
+  },
+  "receivables": {
+    "meta": {
+      "organisation": "Crita Creative LLP",
+      "currency": "INR",
+      "fiscal_year": "FY 2026-27",
+      "fiscal_year_start_month": 4,
+      "today": "2026-09-25",
+      "freshness": {
+        "as_of": "2026-09-25T10:26:00Z",
+        "data_version": "01a0e291-1d44-727f-b5eb-1a85e039c705",
+        "sync_state": "idle"
+      }
+    },
+    "basis": "balance",
+    "outstanding": "58094.0000",
+    "overdue": "58094.0000",
+    "overdue_count": 9,
+    "open_count": 9,
+    "ageing": [
+      {
+        "key": "not_due",
+        "label": "Not yet due",
+        "amount": "0",
+        "count": 0
+      },
+      {
+        "key": "1_30",
+        "label": "1-30 days overdue",
+        "amount": "14598.0000",
+        "count": 4
+      },
+      {
+        "key": "31_60",
+        "label": "31-60 days overdue",
+        "amount": "9477.0000",
+        "count": 2
+      },
+      {
+        "key": "61_90",
+        "label": "61-90 days overdue",
+        "amount": "4019.0000",
+        "count": 1
+      },
+      {
+        "key": "over_90",
+        "label": "Over 90 days overdue",
+        "amount": "30000.0000",
+        "count": 2
+      }
+    ],
+    "by_client": [
+      {
+        "party_name": "Client A Enviro Pvt Ltd",
+        "billed": "696246.0000",
+        "outstanding": "23965.0000",
+        "overdue": "23965.0000",
+        "has_overdue": true
+      },
+      {
+        "party_name": "Client C Coffee Pvt Ltd",
+        "billed": "27129.0000",
+        "outstanding": "21129.0000",
+        "overdue": "21129.0000",
+        "has_overdue": true
+      },
+      {
+        "party_name": "Client D",
+        "billed": "13000.0000",
+        "outstanding": "13000.0000",
+        "overdue": "13000.0000",
+        "has_overdue": true
+      }
+    ],
+    "invoices": [
+      {
+        "id": "00000000-0000-7000-8000-000000000015",
+        "invoice_number": "INV-000001",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-03-24",
+        "due_date": "2026-03-24",
+        "total": "23000.0000",
+        "balance": "17000.0000",
+        "currency": "INR",
+        "total_document": "23000.0000",
+        "status": "overdue",
+        "days_overdue": 185
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000014",
+        "invoice_number": "INV-000002",
+        "party_name": "Client D",
+        "invoice_date": "2026-03-24",
+        "due_date": "2026-03-24",
+        "total": "13000.0000",
+        "balance": "13000.0000",
+        "currency": "INR",
+        "total_document": "13000.0000",
+        "status": "overdue",
+        "days_overdue": 185
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000010",
+        "invoice_number": "INV-00010",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-07-03",
+        "due_date": "2026-07-10",
+        "total": "134520.0000",
+        "balance": "4019.0000",
+        "currency": "INR",
+        "total_document": "134520.0000",
+        "status": "overdue",
+        "days_overdue": 77
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000009",
+        "invoice_number": "INV-00012",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-07-21",
+        "due_date": "2026-07-28",
+        "total": "2065.0000",
+        "balance": "2065.0000",
+        "currency": "INR",
+        "total_document": "2065.0000",
+        "status": "overdue",
+        "days_overdue": 59
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000005",
+        "invoice_number": "INV-00016",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-08-11",
+        "due_date": "2026-08-18",
+        "total": "17700.0000",
+        "balance": "7412.0000",
+        "currency": "INR",
+        "total_document": "17700.0000",
+        "status": "overdue",
+        "days_overdue": 38
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000002",
+        "invoice_number": "INV-00022",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-09-09",
+        "due_date": "2026-09-09",
+        "total": "2064.0000",
+        "balance": "2064.0000",
+        "currency": "INR",
+        "total_document": "2064.0000",
+        "status": "overdue",
+        "days_overdue": 16
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000001",
+        "invoice_number": "INV-00023",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-11",
+        "due_date": "2026-09-11",
+        "total": "2064.0000",
+        "balance": "2064.0000",
+        "currency": "INR",
+        "total_document": "2064.0000",
+        "status": "overdue",
+        "days_overdue": 14
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000003",
+        "invoice_number": "INV-00021",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-07",
+        "due_date": "2026-09-14",
+        "total": "1770.0000",
+        "balance": "1770.0000",
+        "currency": "INR",
+        "total_document": "1770.0000",
+        "status": "overdue",
+        "days_overdue": 11
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000000",
+        "invoice_number": "INV-00024",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-16",
+        "due_date": "2026-09-16",
+        "total": "8700.0000",
+        "balance": "8700.0000",
+        "currency": "INR",
+        "total_document": "8700.0000",
+        "status": "overdue",
+        "days_overdue": 9
+      }
+    ]
+  },
+  "gst": {
+    "meta": {
+      "organisation": "Crita Creative LLP",
+      "currency": "INR",
+      "fiscal_year": "FY 2026-27",
+      "fiscal_year_start_month": 4,
+      "today": "2026-09-25",
+      "freshness": {
+        "as_of": "2026-09-25T10:26:00Z",
+        "data_version": "01a0e291-1d44-727f-b5eb-1a85e039c705",
+        "sync_state": "idle"
+      }
+    },
+    "basis": "ledger",
+    "pending_definition": true,
+    "as_of": "2026-09-25",
+    "output_tax": "131137.0000",
+    "input_tax": "125472.0000",
+    "net_payable": "5665.0000"
+  },
+  "balance-sheet": {
+    "meta": {
+      "organisation": "Crita Creative LLP",
+      "currency": "INR",
+      "fiscal_year": "FY 2026-27",
+      "fiscal_year_start_month": 4,
+      "today": "2026-09-25",
+      "freshness": {
+        "as_of": "2026-09-25T10:26:00Z",
+        "data_version": "01a0e291-1d44-727f-b5eb-1a85e039c705",
+        "sync_state": "idle"
+      }
+    },
+    "basis": "balance",
+    "pending_definition": true,
+    "as_of": "2026-09-25",
+    "cash_on_hand": "72739.0000",
+    "groups": [
+      {
+        "name": "Accounts Receivable",
+        "total": "58094.0000",
+        "lines": [
+          {
+            "name": "Accounts Receivable",
+            "balance": "58094.0000"
+          }
+        ]
+      },
+      {
+        "name": "Bank",
+        "total": "70239.0000",
+        "lines": [
+          {
+            "name": "Current Account",
+            "balance": "70239.0000"
+          }
+        ]
+      },
+      {
+        "name": "Cash",
+        "total": "2500.0000",
+        "lines": [
+          {
+            "name": "Petty Cash",
+            "balance": "2500.0000"
+          }
+        ]
+      },
+      {
+        "name": "Current Liabilities",
+        "total": "131137.0000",
+        "lines": [
+          {
+            "name": "Output CGST",
+            "balance": "65568.5000"
+          },
+          {
+            "name": "Output SGST",
+            "balance": "65568.5000"
+          }
+        ]
+      },
+      {
+        "name": "Other Current Assets",
+        "total": "125472.0000",
+        "lines": [
+          {
+            "name": "Input CGST",
+            "balance": "62736.0000"
+          },
+          {
+            "name": "Input SGST",
+            "balance": "62736.0000"
+          }
+        ]
+      }
+    ]
+  },
+  "invoices": {
+    "items": [
+      {
+        "id": "00000000-0000-7000-8000-000000000000",
+        "invoice_number": "INV-00024",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-16",
+        "due_date": "2026-09-16",
+        "total": "8700.0000",
+        "balance": "8700.0000",
+        "currency": "INR",
+        "total_document": "8700.0000",
+        "status": "overdue",
+        "days_overdue": 9
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000001",
+        "invoice_number": "INV-00023",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-11",
+        "due_date": "2026-09-11",
+        "total": "2064.0000",
+        "balance": "2064.0000",
+        "currency": "INR",
+        "total_document": "2064.0000",
+        "status": "overdue",
+        "days_overdue": 14
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000002",
+        "invoice_number": "INV-00022",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-09-09",
+        "due_date": "2026-09-09",
+        "total": "2064.0000",
+        "balance": "2064.0000",
+        "currency": "INR",
+        "total_document": "2064.0000",
+        "status": "overdue",
+        "days_overdue": 16
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000003",
+        "invoice_number": "INV-00021",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-07",
+        "due_date": "2026-09-14",
+        "total": "1770.0000",
+        "balance": "1770.0000",
+        "currency": "INR",
+        "total_document": "1770.0000",
+        "status": "overdue",
+        "days_overdue": 11
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000004",
+        "invoice_number": "INV-00020",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-04",
+        "due_date": "2026-09-11",
+        "total": "139712.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "139712.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000005",
+        "invoice_number": "INV-00016",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-08-11",
+        "due_date": "2026-08-18",
+        "total": "17700.0000",
+        "balance": "7412.0000",
+        "currency": "INR",
+        "total_document": "17700.0000",
+        "status": "overdue",
+        "days_overdue": 38
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000006",
+        "invoice_number": "INV-00017",
+        "party_name": "Client B Threads",
+        "invoice_date": "2026-08-10",
+        "due_date": "2026-08-17",
+        "total": "41300.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "41300.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000007",
+        "invoice_number": "INV-00014",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-08-03",
+        "due_date": "2026-08-10",
+        "total": "134520.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "134520.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000008",
+        "invoice_number": "INV-00013",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-07-21",
+        "due_date": "2026-07-28",
+        "total": "2065.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "2065.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000009",
+        "invoice_number": "INV-00012",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-07-21",
+        "due_date": "2026-07-28",
+        "total": "2065.0000",
+        "balance": "2065.0000",
+        "currency": "INR",
+        "total_document": "2065.0000",
+        "status": "overdue",
+        "days_overdue": 59
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000010",
+        "invoice_number": "INV-00010",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-07-03",
+        "due_date": "2026-07-10",
+        "total": "134520.0000",
+        "balance": "4019.0000",
+        "currency": "INR",
+        "total_document": "134520.0000",
+        "status": "overdue",
+        "days_overdue": 77
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000011",
+        "invoice_number": "INV-00008",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-06-05",
+        "due_date": "2026-06-12",
+        "total": "134520.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "134520.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000012",
+        "invoice_number": "INV-00007",
+        "party_name": "Client B Threads",
+        "invoice_date": "2026-05-30",
+        "due_date": "2026-06-06",
+        "total": "118000.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "118000.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000013",
+        "invoice_number": "INV-00006",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-05-05",
+        "due_date": "2026-05-12",
+        "total": "120675.0000",
+        "balance": "0.0000",
+        "currency": "INR",
+        "total_document": "120675.0000",
+        "status": "paid",
+        "days_overdue": 0
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000014",
+        "invoice_number": "INV-000002",
+        "party_name": "Client D",
+        "invoice_date": "2026-03-24",
+        "due_date": "2026-03-24",
+        "total": "13000.0000",
+        "balance": "13000.0000",
+        "currency": "INR",
+        "total_document": "13000.0000",
+        "status": "overdue",
+        "days_overdue": 185
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000015",
+        "invoice_number": "INV-000001",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-03-24",
+        "due_date": "2026-03-24",
+        "total": "23000.0000",
+        "balance": "17000.0000",
+        "currency": "INR",
+        "total_document": "23000.0000",
+        "status": "overdue",
+        "days_overdue": 185
+      }
+    ],
+    "next_cursor": null
+  },
+  "invoices_overdue": {
+    "items": [
+      {
+        "id": "00000000-0000-7000-8000-000000000000",
+        "invoice_number": "INV-00024",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-16",
+        "due_date": "2026-09-16",
+        "total": "8700.0000",
+        "balance": "8700.0000",
+        "currency": "INR",
+        "total_document": "8700.0000",
+        "status": "overdue",
+        "days_overdue": 9
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000001",
+        "invoice_number": "INV-00023",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-11",
+        "due_date": "2026-09-11",
+        "total": "2064.0000",
+        "balance": "2064.0000",
+        "currency": "INR",
+        "total_document": "2064.0000",
+        "status": "overdue",
+        "days_overdue": 14
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000002",
+        "invoice_number": "INV-00022",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-09-09",
+        "due_date": "2026-09-09",
+        "total": "2064.0000",
+        "balance": "2064.0000",
+        "currency": "INR",
+        "total_document": "2064.0000",
+        "status": "overdue",
+        "days_overdue": 16
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000003",
+        "invoice_number": "INV-00021",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-09-07",
+        "due_date": "2026-09-14",
+        "total": "1770.0000",
+        "balance": "1770.0000",
+        "currency": "INR",
+        "total_document": "1770.0000",
+        "status": "overdue",
+        "days_overdue": 11
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000005",
+        "invoice_number": "INV-00016",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-08-11",
+        "due_date": "2026-08-18",
+        "total": "17700.0000",
+        "balance": "7412.0000",
+        "currency": "INR",
+        "total_document": "17700.0000",
+        "status": "overdue",
+        "days_overdue": 38
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000009",
+        "invoice_number": "INV-00012",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-07-21",
+        "due_date": "2026-07-28",
+        "total": "2065.0000",
+        "balance": "2065.0000",
+        "currency": "INR",
+        "total_document": "2065.0000",
+        "status": "overdue",
+        "days_overdue": 59
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000010",
+        "invoice_number": "INV-00010",
+        "party_name": "Client A Enviro Pvt Ltd",
+        "invoice_date": "2026-07-03",
+        "due_date": "2026-07-10",
+        "total": "134520.0000",
+        "balance": "4019.0000",
+        "currency": "INR",
+        "total_document": "134520.0000",
+        "status": "overdue",
+        "days_overdue": 77
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000014",
+        "invoice_number": "INV-000002",
+        "party_name": "Client D",
+        "invoice_date": "2026-03-24",
+        "due_date": "2026-03-24",
+        "total": "13000.0000",
+        "balance": "13000.0000",
+        "currency": "INR",
+        "total_document": "13000.0000",
+        "status": "overdue",
+        "days_overdue": 185
+      },
+      {
+        "id": "00000000-0000-7000-8000-000000000015",
+        "invoice_number": "INV-000001",
+        "party_name": "Client C Coffee Pvt Ltd",
+        "invoice_date": "2026-03-24",
+        "due_date": "2026-03-24",
+        "total": "23000.0000",
+        "balance": "17000.0000",
+        "currency": "INR",
+        "total_document": "23000.0000",
+        "status": "overdue",
+        "days_overdue": 185
+      }
+    ],
+    "next_cursor": null
+  }
+}

@@ -1,0 +1,115 @@
+{
+ "code": 0,
+ "message": "success",
+ "balance_sheet": [
+  {
+   "name": "Assets",
+   "total": 48500.0,
+   "account_transactions": [
+    {
+     "name": "Current Assets",
+     "total": 48500.0,
+     "account_transactions": [
+      {
+       "name": "Cash",
+       "total": -2500.0,
+       "account_transactions": [
+        {
+         "name": "Petty Cash",
+         "total": -2500.0,
+         "account_id": "4235431000000000459"
+        }
+       ]
+      },
+      {
+       "name": "Bank",
+       "total": 8000.0,
+       "account_transactions": [
+        {
+         "name": "TEST Bank Current",
+         "total": 8000.0,
+         "account_id": "4235431000000042002"
+        }
+       ]
+      },
+      {
+       "name": "Accounts Receivable",
+       "total": 43000.0,
+       "account_transactions": [
+        {
+         "name": "Accounts Receivable",
+         "total": 43000.0,
+         "account_id": "4235431000000000462"
+        }
+       ]
+      },
+      {
+       "name": "Other Current Assets",
+       "total": 0.0
+      },
+      {
+       "name": "Assets Held For Sale",
+       "total": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Non Current Assets",
+     "total": 0.0
+    },
+    {
+     "name": "Fixed Assets",
+     "total": 0.0
+    },
+    {
+     "name": "Other Assets",
+     "total": 0.0
+    }
+   ]
+  },
+  {
+   "name": "Liabilities & Equities",
+   "total": 48500.0,
+   "account_transactions": [
+    {
+     "name": "Liabilities",
+     "total": 0.0,
+     "account_transactions": [
+      {
+       "name": "Current Liabilities",
+       "total": 0.0
+      },
+      {
+       "name": "Non Current Liabilities",
+       "total": 0.0
+      },
+      {
+       "name": "Other Liabilities",
+       "total": 0.0
+      }
+     ]
+    },
+    {
+     "name": "Equities",
+     "total": 48500.0,
+     "account_transactions": [
+      {
+       "name": "Current Year Earnings",
+       "total": 38500.0,
+       "account_id": ""
+      },
+      {
+       "name": "Retained Earnings",
+       "total": 10000.0,
+       "account_id": "4235431000000000477"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "page_context": {
+  "report_basis": "Accrual",
+  "to_date": "2026-09-26"
+ }
+}

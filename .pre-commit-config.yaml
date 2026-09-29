@@ -1,0 +1,42 @@
+# Install once:  python -m uv tool install pre-commit && pre-commit install
+# Fast checks only; CI runs the full suite (tests, migrations, contract).
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+        exclude: ^frontend/tsconfig\.json$
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+
+  - repo: local
+    hooks:
+      - id: backend-ruff
+        name: backend · ruff (lint + format)
+        entry: bash -c 'cd backend && uv run ruff check --fix . && uv run ruff format .'
+        language: system
+        files: ^backend/
+        pass_filenames: false
+      - id: backend-layers
+        name: backend · import layers
+        entry: bash -c 'cd backend && uv run lint-imports'
+        language: system
+        files: ^backend/src/
+        pass_filenames: false
+      - id: frontend-lint
+        name: frontend · eslint + prettier
+        entry: bash -c 'cd frontend && npx eslint . && npx prettier --check .'
+        language: system
+        files: ^frontend/
+        pass_filenames: false
+      - id: no-env-files
+        name: block committing .env files (except .env.example)
+        entry: bash -c 'echo "Refusing to commit an .env file — use .env.example for placeholders." && exit 1'
+        language: system
+        files: (^|/)\.env(\..+)?$
+        exclude: (^|/)\.env\.example$

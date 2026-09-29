@@ -1,0 +1,4162 @@
+{
+  "components": {
+    "schemas": {
+      "ActionItemOut": {
+        "properties": {
+          "amount": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Amount",
+            "type": "string"
+          },
+          "days_overdue": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Overdue"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Date"
+          },
+          "kind": {
+            "enum": [
+              "overdue_invoice",
+              "gst_payable",
+              "accrual_loss"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          },
+          "severity": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "severity",
+          "title",
+          "detail",
+          "amount",
+          "reference",
+          "days_overdue",
+          "due_date"
+        ],
+        "title": "ActionItemOut",
+        "type": "object"
+      },
+      "AgeBucketOut": {
+        "properties": {
+          "amount": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Amount",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "amount",
+          "count"
+        ],
+        "title": "AgeBucketOut",
+        "type": "object"
+      },
+      "AssistantInfo": {
+        "properties": {
+          "available": {
+            "description": "False when no AI provider is configured on the server",
+            "title": "Available",
+            "type": "boolean"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "domain": {
+            "title": "Domain",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AssistantStatus"
+          },
+          "suggested_questions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Suggested Questions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "domain",
+          "display_name",
+          "suggested_questions",
+          "available",
+          "status"
+        ],
+        "title": "AssistantInfo",
+        "type": "object"
+      },
+      "AssistantStatus": {
+        "description": "What the AI provider's own responses last reported (never guessed). `unconfirmed`: nothing\nknown yet, or a limit's reset time has passed; the next question's real response decides.",
+        "properties": {
+          "limit_scope": {
+            "anyOf": [
+              {
+                "enum": [
+                  "daily",
+                  "minute"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit Scope"
+          },
+          "resets_in_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Seconds until questions are accepted again, from the provider's reply",
+            "title": "Resets In Seconds"
+          },
+          "state": {
+            "enum": [
+              "available",
+              "limit_reached",
+              "unconfirmed",
+              "not_configured"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "title": "AssistantStatus",
+        "type": "object"
+      },
+      "BalanceGroup": {
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/BalanceLineOut"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "total": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Total",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "total",
+          "lines"
+        ],
+        "title": "BalanceGroup",
+        "type": "object"
+      },
+      "BalanceLineOut": {
+        "properties": {
+          "balance": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Balance",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "balance"
+        ],
+        "title": "BalanceLineOut",
+        "type": "object"
+      },
+      "BalanceSheet": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "basis": {
+            "default": "balance",
+            "enum": [
+              "accrual",
+              "cash",
+              "billed",
+              "balance",
+              "ledger"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "cash_on_hand": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cash On Hand",
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/BalanceGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "pending_definition": {
+            "default": true,
+            "description": "Awaiting the director's definition (Q6)",
+            "title": "Pending Definition",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "meta",
+          "as_of",
+          "cash_on_hand",
+          "groups"
+        ],
+        "title": "BalanceSheet",
+        "type": "object"
+      },
+      "CashBucketOut": {
+        "properties": {
+          "cash_in": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cash In",
+            "type": "string"
+          },
+          "cash_out": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cash Out",
+            "type": "string"
+          },
+          "net": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Net",
+            "type": "string"
+          },
+          "start": {
+            "format": "date",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "cash_in",
+          "cash_out",
+          "net"
+        ],
+        "title": "CashBucketOut",
+        "type": "object"
+      },
+      "CategoryMonth": {
+        "properties": {
+          "amounts": {
+            "additionalProperties": {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            "title": "Amounts",
+            "type": "object"
+          },
+          "month": {
+            "format": "date",
+            "title": "Month",
+            "type": "string"
+          },
+          "other": {
+            "description": "Categories outside the top five",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Other",
+            "type": "string"
+          }
+        },
+        "required": [
+          "month",
+          "amounts",
+          "other"
+        ],
+        "title": "CategoryMonth",
+        "type": "object"
+      },
+      "Change": {
+        "properties": {
+          "compared_to": {
+            "title": "Compared To",
+            "type": "string"
+          },
+          "percent": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "(current − previous) ÷ |previous| × 100",
+            "title": "Percent"
+          }
+        },
+        "required": [
+          "percent",
+          "compared_to"
+        ],
+        "title": "Change",
+        "type": "object"
+      },
+      "ChangePasswordRequest": {
+        "properties": {
+          "current_password": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Current Password",
+            "type": "string"
+          },
+          "new_password": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "New Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "ChangePasswordRequest",
+        "type": "object"
+      },
+      "ClientBilled": {
+        "properties": {
+          "billed": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Billed",
+            "type": "string"
+          },
+          "has_overdue": {
+            "title": "Has Overdue",
+            "type": "boolean"
+          },
+          "outstanding": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Outstanding",
+            "type": "string"
+          },
+          "overdue": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Overdue",
+            "type": "string"
+          },
+          "party_name": {
+            "title": "Party Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "party_name",
+          "billed",
+          "outstanding",
+          "overdue",
+          "has_overdue"
+        ],
+        "title": "ClientBilled",
+        "type": "object"
+      },
+      "ConnectRequest": {
+        "properties": {
+          "region": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider data center; the default if omitted",
+            "title": "Region"
+          }
+        },
+        "title": "ConnectRequest",
+        "type": "object"
+      },
+      "ConnectResponse": {
+        "properties": {
+          "redirect_url": {
+            "description": "Send the browser here to continue (e.g. provider consent)",
+            "title": "Redirect Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "redirect_url"
+        ],
+        "title": "ConnectResponse",
+        "type": "object"
+      },
+      "ConnectionAccount": {
+        "description": "The external account the connection reads (e.g. a Zoho Books organisation).",
+        "properties": {
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "fiscal_year_start_month": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fiscal Year Start Month"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "ConnectionAccount",
+        "type": "object"
+      },
+      "ConnectionOut": {
+        "properties": {
+          "account": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConnectionAccount"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authorised": {
+            "description": "Credentials are stored (consent was given)",
+            "title": "Authorised",
+            "type": "boolean"
+          },
+          "connected_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Connected At"
+          },
+          "connected_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Name of the person who connected it",
+            "title": "Connected By"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "integration_key": {
+            "title": "Integration Key",
+            "type": "string"
+          },
+          "last_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error Code"
+          },
+          "last_verified_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Verified At"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "connected",
+              "needs_reauth",
+              "error"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "integration_key",
+          "status",
+          "authorised",
+          "account",
+          "region",
+          "connected_at",
+          "connected_by",
+          "last_verified_at",
+          "last_error_code"
+        ],
+        "title": "ConnectionOut",
+        "type": "object"
+      },
+      "ConversationDetail": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "last_message_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Message At"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "created_at",
+          "last_message_at",
+          "messages"
+        ],
+        "title": "ConversationDetail",
+        "type": "object"
+      },
+      "ConversationList": {
+        "properties": {
+          "conversations": {
+            "items": {
+              "$ref": "#/components/schemas/ConversationSummary"
+            },
+            "title": "Conversations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "conversations"
+        ],
+        "title": "ConversationList",
+        "type": "object"
+      },
+      "ConversationSummary": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "last_message_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Message At"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "created_at",
+          "last_message_at"
+        ],
+        "title": "ConversationSummary",
+        "type": "object"
+      },
+      "DatasetStatusOut": {
+        "properties": {
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "last_attempt_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Attempt At"
+          },
+          "last_success_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Success At"
+          },
+          "row_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Row Count"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "failed",
+              "never"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "window_end": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End"
+          },
+          "window_start": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "status",
+          "last_success_at",
+          "last_attempt_at",
+          "row_count",
+          "window_start",
+          "window_end",
+          "error_code"
+        ],
+        "title": "DatasetStatusOut",
+        "type": "object"
+      },
+      "ExpenseShare": {
+        "properties": {
+          "amount": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Amount",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Percent of the total",
+            "title": "Share"
+          }
+        },
+        "required": [
+          "name",
+          "amount",
+          "share"
+        ],
+        "title": "ExpenseShare",
+        "type": "object"
+      },
+      "ExternalAccountList": {
+        "properties": {
+          "accounts": {
+            "items": {
+              "$ref": "#/components/schemas/ExternalAccountOut"
+            },
+            "title": "Accounts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "accounts"
+        ],
+        "title": "ExternalAccountList",
+        "type": "object"
+      },
+      "ExternalAccountOut": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_default": {
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "selectable": {
+            "title": "Selectable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "detail",
+          "is_default",
+          "selectable"
+        ],
+        "title": "ExternalAccountOut",
+        "type": "object"
+      },
+      "Freshness": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Oldest successful dataset refresh",
+            "title": "As Of"
+          },
+          "data_version": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Id of the last sync that wrote data",
+            "title": "Data Version"
+          },
+          "sync_state": {
+            "enum": [
+              "idle",
+              "running"
+            ],
+            "title": "Sync State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "as_of",
+          "data_version",
+          "sync_state"
+        ],
+        "title": "Freshness",
+        "type": "object"
+      },
+      "GstOut": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "basis": {
+            "default": "ledger",
+            "enum": [
+              "accrual",
+              "cash",
+              "billed",
+              "balance",
+              "ledger"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "input_tax": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Tax"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "net_payable": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Payable"
+          },
+          "output_tax": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Tax"
+          },
+          "pending_definition": {
+            "default": true,
+            "description": "Awaiting the director's definition (Q5)",
+            "title": "Pending Definition",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "meta",
+          "as_of",
+          "output_tax",
+          "input_tax",
+          "net_payable"
+        ],
+        "title": "GstOut",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "IntegrationList": {
+        "properties": {
+          "integrations": {
+            "items": {
+              "$ref": "#/components/schemas/IntegrationTile"
+            },
+            "title": "Integrations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "integrations"
+        ],
+        "title": "IntegrationList",
+        "type": "object"
+      },
+      "IntegrationTile": {
+        "properties": {
+          "account_noun": {
+            "description": "What one external account is called (\"organisation\")",
+            "title": "Account Noun",
+            "type": "string"
+          },
+          "availability": {
+            "enum": [
+              "available",
+              "coming_soon"
+            ],
+            "title": "Availability",
+            "type": "string"
+          },
+          "can_manage": {
+            "description": "Whether the caller may connect/disconnect it",
+            "title": "Can Manage",
+            "type": "boolean"
+          },
+          "connection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConnectionOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The live connection, if any"
+          },
+          "connection_state": {
+            "enum": [
+              "not_connected",
+              "pending",
+              "connected",
+              "needs_reauth",
+              "error",
+              "coming_soon"
+            ],
+            "title": "Connection State",
+            "type": "string"
+          },
+          "domain": {
+            "title": "Domain",
+            "type": "string"
+          },
+          "domain_name": {
+            "title": "Domain Name",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "read_only": {
+            "title": "Read Only",
+            "type": "boolean"
+          },
+          "reads": {
+            "description": "Plain-language list of the data Clario reads",
+            "items": {
+              "type": "string"
+            },
+            "title": "Reads",
+            "type": "array"
+          },
+          "regions": {
+            "description": "Data centers to choose from; first is default",
+            "items": {
+              "$ref": "#/components/schemas/RegionOut"
+            },
+            "title": "Regions",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "vendor": {
+            "title": "Vendor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "vendor",
+          "domain",
+          "domain_name",
+          "summary",
+          "reads",
+          "read_only",
+          "availability",
+          "connection_state",
+          "connection",
+          "regions",
+          "account_noun",
+          "can_manage"
+        ],
+        "title": "IntegrationTile",
+        "type": "object"
+      },
+      "InvoiceOut": {
+        "properties": {
+          "balance": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Balance",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "days_overdue": {
+            "title": "Days Overdue",
+            "type": "integer"
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Date"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "invoice_date": {
+            "format": "date",
+            "title": "Invoice Date",
+            "type": "string"
+          },
+          "invoice_number": {
+            "title": "Invoice Number",
+            "type": "string"
+          },
+          "party_name": {
+            "title": "Party Name",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "void",
+              "paid",
+              "partially_paid",
+              "open",
+              "overdue",
+              "unknown"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Total",
+            "type": "string"
+          },
+          "total_document": {
+            "description": "In the invoice's own currency",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Total Document",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "invoice_number",
+          "party_name",
+          "invoice_date",
+          "due_date",
+          "total",
+          "balance",
+          "currency",
+          "total_document",
+          "status",
+          "days_overdue"
+        ],
+        "title": "InvoiceOut",
+        "type": "object"
+      },
+      "InvoicePage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/InvoiceOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "InvoicePage",
+        "type": "object"
+      },
+      "Kpi": {
+        "properties": {
+          "basis": {
+            "enum": [
+              "accrual",
+              "cash",
+              "billed",
+              "balance",
+              "ledger"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "change": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Change"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "e.g. overdue invoices for receivables",
+            "title": "Count"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "ratio": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Percent: collection ratio, net margin",
+            "title": "Ratio"
+          },
+          "related": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NamedAmount"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "e.g. {\"billed\": 895675} for collected"
+          },
+          "value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Value",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "value",
+          "basis",
+          "window"
+        ],
+        "title": "Kpi",
+        "type": "object"
+      },
+      "Liveness": {
+        "properties": {
+          "status": {
+            "const": "ok",
+            "default": "ok",
+            "title": "Status",
+            "type": "string"
+          },
+          "version": {
+            "default": "0.1.0",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "title": "Liveness",
+        "type": "object"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "maxLength": 320,
+            "minLength": 1,
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "Member": {
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "full_name": {
+            "title": "Full Name",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "email",
+          "full_name",
+          "role"
+        ],
+        "title": "Member",
+        "type": "object"
+      },
+      "MemberList": {
+        "properties": {
+          "members": {
+            "items": {
+              "$ref": "#/components/schemas/Member"
+            },
+            "title": "Members",
+            "type": "array"
+          }
+        },
+        "required": [
+          "members"
+        ],
+        "title": "MemberList",
+        "type": "object"
+      },
+      "MessageOut": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Data freshness of the figures used",
+            "title": "As Of"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "sources": {
+            "description": "For \"Based on …\" (assistant)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "complete",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "content",
+          "status",
+          "created_at"
+        ],
+        "title": "MessageOut",
+        "type": "object"
+      },
+      "Meta": {
+        "properties": {
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "fiscal_year": {
+            "description": "e.g. \"FY 2026-27\"",
+            "title": "Fiscal Year",
+            "type": "string"
+          },
+          "fiscal_year_start_month": {
+            "title": "Fiscal Year Start Month",
+            "type": "integer"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/Freshness"
+          },
+          "organisation": {
+            "title": "Organisation",
+            "type": "string"
+          },
+          "today": {
+            "description": "Today in the organisation's time zone",
+            "format": "date",
+            "title": "Today",
+            "type": "string"
+          }
+        },
+        "required": [
+          "organisation",
+          "currency",
+          "fiscal_year",
+          "fiscal_year_start_month",
+          "today",
+          "freshness"
+        ],
+        "title": "Meta",
+        "type": "object"
+      },
+      "MonthFigures": {
+        "properties": {
+          "billed": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Billed",
+            "type": "string"
+          },
+          "collected": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Collected",
+            "type": "string"
+          },
+          "expenses": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Expenses",
+            "type": "string"
+          },
+          "month": {
+            "format": "date",
+            "title": "Month",
+            "type": "string"
+          },
+          "net_cash": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Net Cash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "month",
+          "billed",
+          "collected",
+          "expenses",
+          "net_cash"
+        ],
+        "title": "MonthFigures",
+        "type": "object"
+      },
+      "NamedAmount": {
+        "properties": {
+          "amount": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Amount",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "amount"
+        ],
+        "title": "NamedAmount",
+        "type": "object"
+      },
+      "Overview": {
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/ActionItemOut"
+            },
+            "title": "Actions",
+            "type": "array"
+          },
+          "expense_mix": {
+            "description": "Operating expenses by account (accrual)",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseShare"
+            },
+            "title": "Expense Mix",
+            "type": "array"
+          },
+          "expense_mix_window": {
+            "$ref": "#/components/schemas/Window"
+          },
+          "kpis": {
+            "items": {
+              "$ref": "#/components/schemas/Kpi"
+            },
+            "title": "Kpis",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "months": {
+            "description": "Billed vs collected vs expenses (cash)",
+            "items": {
+              "$ref": "#/components/schemas/MonthFigures"
+            },
+            "title": "Months",
+            "type": "array"
+          },
+          "pnl": {
+            "$ref": "#/components/schemas/PnlStatement"
+          },
+          "register_totals": {
+            "$ref": "#/components/schemas/RegisterTotalsOut"
+          },
+          "revenue_by_client": {
+            "items": {
+              "$ref": "#/components/schemas/ClientBilled"
+            },
+            "title": "Revenue By Client",
+            "type": "array"
+          }
+        },
+        "required": [
+          "meta",
+          "kpis",
+          "pnl",
+          "months",
+          "actions",
+          "revenue_by_client",
+          "expense_mix",
+          "expense_mix_window",
+          "register_totals"
+        ],
+        "title": "Overview",
+        "type": "object"
+      },
+      "Permission": {
+        "enum": [
+          "workspace.view",
+          "finance.view",
+          "assistant.use",
+          "integrations.manage",
+          "members.manage"
+        ],
+        "title": "Permission",
+        "type": "string"
+      },
+      "PnlStatement": {
+        "properties": {
+          "basis": {
+            "default": "accrual",
+            "enum": [
+              "accrual",
+              "cash",
+              "billed",
+              "balance",
+              "ledger"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "cogs": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cogs",
+            "type": "string"
+          },
+          "gross_margin": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gross Margin"
+          },
+          "gross_profit": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Gross Profit",
+            "type": "string"
+          },
+          "largest_cost": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NamedAmount"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "latest_month_spend": {
+            "description": "Cash expenses of the current month (the PDF's run-rate note; director Q3)",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Latest Month Spend",
+            "type": "string"
+          },
+          "net_margin": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Margin"
+          },
+          "net_pnl": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Net Pnl",
+            "type": "string"
+          },
+          "operating_expenses": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Operating Expenses",
+            "type": "string"
+          },
+          "other_expenses": {
+            "description": "Non-operating; not in net P&L (director Q4)",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Other Expenses",
+            "type": "string"
+          },
+          "other_income": {
+            "description": "Non-operating; not in net P&L (director Q4)",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Other Income",
+            "type": "string"
+          },
+          "revenue": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Revenue",
+            "type": "string"
+          },
+          "total_costs": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Total Costs",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          }
+        },
+        "required": [
+          "window",
+          "revenue",
+          "cogs",
+          "operating_expenses",
+          "total_costs",
+          "gross_profit",
+          "gross_margin",
+          "net_pnl",
+          "net_margin",
+          "other_income",
+          "other_expenses",
+          "largest_cost",
+          "latest_month_spend"
+        ],
+        "title": "PnlStatement",
+        "type": "object"
+      },
+      "Readiness": {
+        "properties": {
+          "checks": {
+            "additionalProperties": {
+              "const": "ok",
+              "type": "string"
+            },
+            "title": "Checks",
+            "type": "object"
+          },
+          "status": {
+            "const": "ready",
+            "default": "ready",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "checks"
+        ],
+        "title": "Readiness",
+        "type": "object"
+      },
+      "Receivables": {
+        "properties": {
+          "ageing": {
+            "items": {
+              "$ref": "#/components/schemas/AgeBucketOut"
+            },
+            "title": "Ageing",
+            "type": "array"
+          },
+          "basis": {
+            "default": "balance",
+            "enum": [
+              "accrual",
+              "cash",
+              "billed",
+              "balance",
+              "ledger"
+            ],
+            "title": "Basis",
+            "type": "string"
+          },
+          "by_client": {
+            "items": {
+              "$ref": "#/components/schemas/ClientBilled"
+            },
+            "title": "By Client",
+            "type": "array"
+          },
+          "invoices": {
+            "description": "Every receivable, most overdue first",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceOut"
+            },
+            "title": "Invoices",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "open_count": {
+            "title": "Open Count",
+            "type": "integer"
+          },
+          "outstanding": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Outstanding",
+            "type": "string"
+          },
+          "overdue": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Overdue",
+            "type": "string"
+          },
+          "overdue_count": {
+            "title": "Overdue Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "meta",
+          "outstanding",
+          "overdue",
+          "overdue_count",
+          "open_count",
+          "ageing",
+          "by_client",
+          "invoices"
+        ],
+        "title": "Receivables",
+        "type": "object"
+      },
+      "RegionOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "label"
+        ],
+        "title": "RegionOut",
+        "type": "object"
+      },
+      "RegisterTotalsOut": {
+        "properties": {
+          "balance": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Balance",
+            "type": "string"
+          },
+          "billed": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Billed",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "count",
+          "billed",
+          "balance"
+        ],
+        "title": "RegisterTotalsOut",
+        "type": "object"
+      },
+      "Reply": {
+        "properties": {
+          "assistant_message": {
+            "$ref": "#/components/schemas/MessageOut"
+          },
+          "conversation": {
+            "$ref": "#/components/schemas/ConversationSummary"
+          },
+          "user_message": {
+            "$ref": "#/components/schemas/MessageOut"
+          }
+        },
+        "required": [
+          "conversation",
+          "user_message",
+          "assistant_message"
+        ],
+        "title": "Reply",
+        "type": "object"
+      },
+      "Role": {
+        "enum": [
+          "owner",
+          "admin",
+          "member",
+          "viewer"
+        ],
+        "title": "Role",
+        "type": "string"
+      },
+      "SelectAccountRequest": {
+        "properties": {
+          "account_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "SelectAccountRequest",
+        "type": "object"
+      },
+      "SendMessage": {
+        "properties": {
+          "content": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "title": "SendMessage",
+        "type": "object"
+      },
+      "SessionOut": {
+        "description": "What the SPA needs after sign-in or on reload.",
+        "properties": {
+          "csrf_token": {
+            "description": "Send as the X-CSRF-Token header on every non-GET request",
+            "title": "Csrf Token",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserOut"
+          },
+          "workspaces": {
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceSummary"
+            },
+            "title": "Workspaces",
+            "type": "array"
+          }
+        },
+        "required": [
+          "user",
+          "workspaces",
+          "csrf_token"
+        ],
+        "title": "SessionOut",
+        "type": "object"
+      },
+      "SyncRequest": {
+        "properties": {
+          "mode": {
+            "default": "manual",
+            "description": "manual: 'Refresh now' (cooldown applies); if_stale: only when data is stale",
+            "enum": [
+              "manual",
+              "if_stale"
+            ],
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "title": "SyncRequest",
+        "type": "object"
+      },
+      "SyncRunOut": {
+        "properties": {
+          "api_calls": {
+            "title": "Api Calls",
+            "type": "integer"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "running",
+              "succeeded",
+              "partial",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "trigger": {
+            "enum": [
+              "initial",
+              "manual",
+              "stale",
+              "scheduled"
+            ],
+            "title": "Trigger",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "trigger",
+          "status",
+          "started_at",
+          "finished_at",
+          "api_calls",
+          "error_code"
+        ],
+        "title": "SyncRunOut",
+        "type": "object"
+      },
+      "SyncStatus": {
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Oldest successful refresh among the datasets; null until all have data",
+            "title": "As Of"
+          },
+          "datasets": {
+            "items": {
+              "$ref": "#/components/schemas/DatasetStatusOut"
+            },
+            "title": "Datasets",
+            "type": "array"
+          },
+          "run": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SyncRunOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The run in progress, else the latest one"
+          },
+          "state": {
+            "enum": [
+              "idle",
+              "running"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state",
+          "as_of",
+          "run",
+          "datasets"
+        ],
+        "title": "SyncStatus",
+        "type": "object"
+      },
+      "Trends": {
+        "properties": {
+          "daily": {
+            "description": "Last 30 days",
+            "items": {
+              "$ref": "#/components/schemas/CashBucketOut"
+            },
+            "title": "Daily",
+            "type": "array"
+          },
+          "expense_trend": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryMonth"
+            },
+            "title": "Expense Trend",
+            "type": "array"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          },
+          "months": {
+            "items": {
+              "$ref": "#/components/schemas/MonthFigures"
+            },
+            "title": "Months",
+            "type": "array"
+          },
+          "top_categories": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Top Categories",
+            "type": "array"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/MonthFigures"
+          },
+          "weekly": {
+            "description": "Last 10 weeks, weeks start on Monday",
+            "items": {
+              "$ref": "#/components/schemas/CashBucketOut"
+            },
+            "title": "Weekly",
+            "type": "array"
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          }
+        },
+        "required": [
+          "meta",
+          "window",
+          "months",
+          "totals",
+          "top_categories",
+          "expense_trend",
+          "weekly",
+          "daily"
+        ],
+        "title": "Trends",
+        "type": "object"
+      },
+      "UserOut": {
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "full_name": {
+            "title": "Full Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_platform_admin": {
+            "title": "Is Platform Admin",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "full_name",
+          "is_platform_admin"
+        ],
+        "title": "UserOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "Window": {
+        "properties": {
+          "end": {
+            "format": "date",
+            "title": "End",
+            "type": "string"
+          },
+          "label": {
+            "description": "e.g. \"FY 2026-27 to date\", \"Apr 2025 – 25 Sep 2026\"",
+            "title": "Label",
+            "type": "string"
+          },
+          "start": {
+            "format": "date",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "label"
+        ],
+        "title": "Window",
+        "type": "object"
+      },
+      "WorkspaceDetail": {
+        "properties": {
+          "base_currency": {
+            "title": "Base Currency",
+            "type": "string"
+          },
+          "fiscal_year_start_month": {
+            "title": "Fiscal Year Start Month",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "permissions": {
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            },
+            "title": "Permissions",
+            "type": "array"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "status",
+          "role",
+          "timezone",
+          "base_currency",
+          "fiscal_year_start_month",
+          "permissions"
+        ],
+        "title": "WorkspaceDetail",
+        "type": "object"
+      },
+      "WorkspaceList": {
+        "properties": {
+          "workspaces": {
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceSummary"
+            },
+            "title": "Workspaces",
+            "type": "array"
+          }
+        },
+        "required": [
+          "workspaces"
+        ],
+        "title": "WorkspaceList",
+        "type": "object"
+      },
+      "WorkspaceSummary": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "status",
+          "role"
+        ],
+        "title": "WorkspaceSummary",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Clario API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Incorrect email or password"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "Too many attempts"
+          }
+        },
+        "summary": "Sign in",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Sign out",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/password": {
+      "post": {
+        "operationId": "change_password_api_v1_auth_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Change my password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/session": {
+      "get": {
+        "operationId": "current_session_api_v1_auth_session_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Current session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "liveness_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Liveness"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "readiness_api_v1_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "description": "A dependency is unavailable"
+          }
+        },
+        "summary": "Readiness probe",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/api/v1/oauth/{integration}/callback": {
+      "get": {
+        "operationId": "oauth_callback_api_v1_oauth__integration__callback_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "integration",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "title": "Integration",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Provider redirect target (always answers with a redirect into the app)",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/api/v1/workspaces": {
+      "get": {
+        "operationId": "list_my_workspaces_api_v1_workspaces_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Workspaces I belong to",
+        "tags": [
+          "workspaces"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}": {
+      "get": {
+        "operationId": "get_workspace_api_v1_workspaces__workspace_id__get",
+        "parameters": [
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One workspace",
+        "tags": [
+          "workspaces"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}": {
+      "delete": {
+        "operationId": "disconnect_api_v1_workspaces__workspace_id__connections__connection_id__delete",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Disconnect: revoke access, delete credentials, remove the connection",
+        "tags": [
+          "connections"
+        ]
+      },
+      "get": {
+        "operationId": "get_connection_api_v1_workspaces__workspace_id__connections__connection_id__get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One connection",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/account": {
+      "post": {
+        "operationId": "select_account_api_v1_workspaces__workspace_id__connections__connection_id__account_post",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelectAccountRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "An account is already chosen"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Choose the account this connection reads",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/accounts": {
+      "get": {
+        "operationId": "list_accounts_api_v1_workspaces__workspace_id__connections__connection_id__accounts_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalAccountList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Accounts the authorised login can see (e.g. Zoho organisations)",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/assistant": {
+      "get": {
+        "operationId": "get_assistant_api_v1_workspaces__workspace_id__connections__connection_id__assistant_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantInfo"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "The assistant for this connection",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/assistant/conversations": {
+      "get": {
+        "operationId": "list_conversations_api_v1_workspaces__workspace_id__connections__connection_id__assistant_conversations_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Your conversations",
+        "tags": [
+          "assistant"
+        ]
+      },
+      "post": {
+        "operationId": "create_conversation_api_v1_workspaces__workspace_id__connections__connection_id__assistant_conversations_post",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start a conversation",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/assistant/conversations/{conversation_id}": {
+      "delete": {
+        "operationId": "delete_conversation_api_v1_workspaces__workspace_id__connections__connection_id__assistant_conversations__conversation_id__delete",
+        "parameters": [
+          {
+            "description": "Conversation id",
+            "in": "path",
+            "name": "conversation_id",
+            "required": true,
+            "schema": {
+              "description": "Conversation id",
+              "format": "uuid",
+              "title": "Conversation Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete a conversation",
+        "tags": [
+          "assistant"
+        ]
+      },
+      "get": {
+        "operationId": "get_conversation_api_v1_workspaces__workspace_id__connections__connection_id__assistant_conversations__conversation_id__get",
+        "parameters": [
+          {
+            "description": "Conversation id",
+            "in": "path",
+            "name": "conversation_id",
+            "required": true,
+            "schema": {
+              "description": "Conversation id",
+              "format": "uuid",
+              "title": "Conversation Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "A conversation",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/assistant/conversations/{conversation_id}/messages": {
+      "post": {
+        "operationId": "send_message_api_v1_workspaces__workspace_id__connections__connection_id__assistant_conversations__conversation_id__messages_post",
+        "parameters": [
+          {
+            "description": "Conversation id",
+            "in": "path",
+            "name": "conversation_id",
+            "required": true,
+            "schema": {
+              "description": "Conversation id",
+              "format": "uuid",
+              "title": "Conversation Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reply"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "Sending too quickly, or the AI usage limit is reached"
+          },
+          "503": {
+            "description": "Assistant unavailable or not configured"
+          }
+        },
+        "summary": "Ask the assistant",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/finance/balance-sheet": {
+      "get": {
+        "operationId": "get_balance_sheet_api_v1_workspaces__workspace_id__connections__connection_id__finance_balance_sheet_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceSheet"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Balance Sheet tab (pending the director's definition)",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/finance/gst": {
+      "get": {
+        "operationId": "get_gst_api_v1_workspaces__workspace_id__connections__connection_id__finance_gst_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GstOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "GST tab (pending the director's definition)",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/finance/invoices": {
+      "get": {
+        "operationId": "get_invoices_api_v1_workspaces__workspace_id__connections__connection_id__finance_invoices_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "overdue",
+                    "unpaid",
+                    "paid",
+                    "partially_paid",
+                    "open",
+                    "draft",
+                    "void"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "party",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Party"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoicePage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invoice register, newest first",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/finance/overview": {
+      "get": {
+        "operationId": "get_overview_api_v1_workspaces__workspace_id__connections__connection_id__finance_overview_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Overview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Overview tab",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/finance/receivables": {
+      "get": {
+        "operationId": "get_receivables_api_v1_workspaces__workspace_id__connections__connection_id__finance_receivables_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receivables"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Receivables tab",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/finance/trends": {
+      "get": {
+        "operationId": "get_trends_api_v1_workspaces__workspace_id__connections__connection_id__finance_trends_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trends"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trends & Analysis tab",
+        "tags": [
+          "finance"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/connections/{connection_id}/sync": {
+      "get": {
+        "operationId": "get_sync_api_v1_workspaces__workspace_id__connections__connection_id__sync_get",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "How current this connection's data is",
+        "tags": [
+          "sync"
+        ]
+      },
+      "post": {
+        "operationId": "request_sync_api_v1_workspaces__workspace_id__connections__connection_id__sync_post",
+        "parameters": [
+          {
+            "description": "Connection id",
+            "in": "path",
+            "name": "connection_id",
+            "required": true,
+            "schema": {
+              "description": "Connection id",
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SyncRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "Not connected, or needs reconnecting"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "Cooldown, or the provider's daily budget is nearly used up"
+          }
+        },
+        "summary": "Refresh this connection's data (runs in the background)",
+        "tags": [
+          "sync"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/integrations": {
+      "get": {
+        "operationId": "list_integrations_api_v1_workspaces__workspace_id__integrations_get",
+        "parameters": [
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Integrations for this workspace",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/integrations/{integration}": {
+      "get": {
+        "operationId": "get_integration_api_v1_workspaces__workspace_id__integrations__integration__get",
+        "parameters": [
+          {
+            "description": "Integration key, e.g. zoho-books",
+            "in": "path",
+            "name": "integration",
+            "required": true,
+            "schema": {
+              "description": "Integration key, e.g. zoho-books",
+              "maxLength": 64,
+              "title": "Integration",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationTile"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One integration",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/integrations/{integration}/connect": {
+      "post": {
+        "operationId": "connect_api_v1_workspaces__workspace_id__integrations__integration__connect_post",
+        "parameters": [
+          {
+            "description": "Integration key, e.g. zoho-books",
+            "in": "path",
+            "name": "integration",
+            "required": true,
+            "schema": {
+              "description": "Integration key, e.g. zoho-books",
+              "maxLength": 64,
+              "title": "Integration",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ConnectRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "description": "Requires integrations.manage"
+          },
+          "404": {
+            "description": "Unknown or not visible to this workspace"
+          },
+          "409": {
+            "description": "Not available yet (coming soon)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start connecting (or reconnecting) an integration",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/workspaces/{workspace_id}/members": {
+      "get": {
+        "operationId": "list_members_api_v1_workspaces__workspace_id__members_get",
+        "parameters": [
+          {
+            "description": "Workspace id",
+            "in": "path",
+            "name": "workspace_id",
+            "required": true,
+            "schema": {
+              "description": "Workspace id",
+              "format": "uuid",
+              "title": "Workspace Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Workspace members",
+        "tags": [
+          "workspaces"
+        ]
+      }
+    }
+  }
+}

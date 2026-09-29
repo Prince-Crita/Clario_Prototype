@@ -1,0 +1,52 @@
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  background: var(--paper);
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--ink-inverse);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.02em;
+}
+
+.text {
+  display: grid;
+  min-width: 0;
+}
+
+.name,
+.email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.email {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}

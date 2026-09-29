@@ -1,0 +1,28 @@
+[Unit]
+Description=Clario multi-tenant Zoho Books intelligence API
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=clario
+Group=clario
+WorkingDirectory=/opt/clario
+EnvironmentFile=/opt/clario/.env
+# Single worker: ADK chat sessions use in-memory storage (see docs/09_VPS_DEPLOY.md).
+ExecStart=/opt/clario/.venv/bin/python -m clario serve
+Restart=on-failure
+RestartSec=5
+# Soft resource limits (adjust for VPS size)
+MemoryMax=1G
+TasksMax=256
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/clario/.data /opt/clario
+
+[Install]
+WantedBy=multi-user.target

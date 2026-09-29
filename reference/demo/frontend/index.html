@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clario · Crita</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=panels-5" />
+  </head>
+  <body>
+    <div id="auth-gate" class="auth-gate">
+      <aside class="auth-brand" aria-hidden="false">
+        <div class="brand-mark">
+          <span class="logo-word">CRITA</span>
+          <span class="logo-product">Clario</span>
+        </div>
+        <p class="brand-eyebrow">Consulting-led technology partner</p>
+        <h1 class="brand-headline">Clarity for your <em>Zoho Books</em> numbers</h1>
+        <p class="brand-copy">
+          Multi-tenant business intelligence — each workspace connects its own Zoho Books
+          org, with platform OAuth credentials kept in your environment.
+        </p>
+        <ul class="brand-points">
+          <li>Workspace-isolated credentials</li>
+          <li>Grounded chat over live Books data</li>
+          <li>Connect via OAuth or refresh token</li>
+        </ul>
+      </aside>
+      <div class="auth-panel">
+        <div class="auth-card">
+          <h2 id="auth-title">Welcome back</h2>
+          <p class="auth-sub" id="auth-sub">Sign in to your Clario workspace</p>
+          <div class="tabs" role="tablist">
+            <button type="button" id="tab-login" class="tab active" role="tab">Sign in</button>
+            <button type="button" id="tab-register" class="tab" role="tab">Create account</button>
+          </div>
+          <form id="auth-form">
+            <label>Email<input id="auth-email" type="email" required autocomplete="username" /></label>
+            <label>Password<input id="auth-password" type="password" required minlength="8" autocomplete="current-password" /></label>
+            <label id="name-field" hidden>Full name<input id="auth-name" type="text" autocomplete="name" /></label>
+            <label id="tenant-field" hidden>Workspace name<input id="auth-tenant" type="text" placeholder="Acme Corp" /></label>
+            <button type="submit" id="auth-submit" class="btn-primary">Sign in</button>
+            <p id="auth-error" class="error" hidden></p>
+          </form>
+        </div>
+        <p class="auth-foot">Built by <a href="https://www.crita.in/home" target="_blank" rel="noreferrer">Crita</a></p>
+      </div>
+    </div>
+
+    <div id="app" class="shell" hidden>
+      <div id="sidebar-backdrop" class="panel-backdrop" hidden aria-hidden="true"></div>
+      <aside id="sidebar" class="sidebar" aria-label="Workspace menu">
+        <div class="sidebar-brand">
+          <div class="brand-text">
+            <span class="logo-word sm">CRITA</span>
+            <span class="logo-product sm">Clario</span>
+          </div>
+          <button
+            type="button"
+            id="sidebar-collapse-btn"
+            class="panel-toggle"
+            aria-controls="sidebar"
+            aria-expanded="true"
+            title="Collapse menu"
+          >
+            <span class="sr-only">Collapse menu</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="sidebar-body">
+          <label class="field-label" for="tenant-select">Workspace</label>
+          <select id="tenant-select" aria-label="Workspace"></select>
+
+          <div class="sidebar-status">
+            <span id="status-pill" class="pill">Checking…</span>
+            <p id="user-email" class="muted small"></p>
+          </div>
+
+          <nav class="side-nav" aria-label="Primary">
+            <button type="button" id="nav-analytics" class="nav-item active" data-view="analytics">
+              <span class="nav-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16M8 16V10M12 16V7M16 16v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span class="nav-label">Analytics</span>
+            </button>
+            <button type="button" id="nav-chat" class="nav-item" data-view="chat">
+              <span class="nav-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 6h14v9H9l-4 4V6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="nav-label">Chat</span>
+            </button>
+          </nav>
+
+          <div class="sidebar-actions">
+            <button id="zoho-panel-btn" type="button" class="btn-primary block">
+              <span class="btn-label">Zoho Books</span>
+            </button>
+            <button id="refresh-analytics-btn" type="button" class="btn-ghost block">
+              <span class="btn-label">Refresh analytics</span>
+            </button>
+            <button id="clear-btn" type="button" class="btn-ghost block">
+              <span class="btn-label">Delete chat</span>
+            </button>
+            <button id="logout-btn" type="button" class="btn-ghost block">
+              <span class="btn-label">Log out</span>
+            </button>
+          </div>
+
+          <p class="sidebar-hint muted small">
+            Each workspace adds its own Zoho Client ID + Secret. Tokens are encrypted per workspace.
+          </p>
+        </div>
+      </aside>
+
+      <div class="main">
+        <section id="view-analytics" class="view view-analytics">
+          <header class="topbar">
+            <div class="topbar-row">
+              <button
+                type="button"
+                id="sidebar-open-btn"
+                class="panel-toggle topbar-toggle"
+                aria-controls="sidebar"
+                aria-expanded="false"
+                title="Open menu"
+              >
+                <span class="sr-only">Open menu</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <div>
+                <h1 id="analytics-title">Business overview</h1>
+                <p id="analytics-period" class="muted small">Month to date from Zoho Books</p>
+              </div>
+            </div>
+          </header>
+          <div id="analytics-body" class="analytics-body">
+            <p class="muted analytics-empty">Connect Zoho Books to load analytics for this workspace.</p>
+          </div>
+        </section>
+
+        <section id="view-chat" class="view view-chat" hidden>
+          <div class="chat-layout">
+            <div id="history-backdrop" class="panel-backdrop history-backdrop" hidden aria-hidden="true"></div>
+            <aside id="history-rail" class="history-rail" aria-label="Chat history">
+              <div class="history-head">
+                <div class="history-head-left">
+                  <button
+                    type="button"
+                    id="history-collapse-btn"
+                    class="panel-toggle"
+                    aria-controls="history-rail"
+                    aria-expanded="true"
+                    title="Hide chats"
+                  >
+                    <span class="sr-only">Hide chats</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 6h10M4 12h10M4 18h10M18 8l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <h2>History</h2>
+                </div>
+                <button type="button" id="new-chat-btn" class="btn-accent sm">New</button>
+              </div>
+              <ul id="history-list" class="history-list"></ul>
+              <p id="history-empty" class="muted small history-empty">No chats yet.</p>
+            </aside>
+            <div class="chat-pane">
+              <header class="topbar">
+                <div class="topbar-row">
+                  <button
+                    type="button"
+                    id="sidebar-open-btn-chat"
+                    class="panel-toggle topbar-toggle"
+                    aria-controls="sidebar"
+                    aria-expanded="false"
+                    title="Open menu"
+                  >
+                    <span class="sr-only">Open menu</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    id="history-open-btn"
+                    class="panel-toggle topbar-toggle"
+                    aria-controls="history-rail"
+                    aria-expanded="false"
+                    title="Show chats"
+                  >
+                    <span class="sr-only">Show chats</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M8 6h13M8 12h13M8 18h13M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  <div class="topbar-copy">
+                    <h1 id="chat-title">Ask Clario</h1>
+                    <p class="muted small">Sales, receivables, expenses, and business health — grounded in Zoho Books.</p>
+                  </div>
+                </div>
+              </header>
+              <main id="transcript" class="transcript" aria-live="polite"></main>
+              <p id="error" class="error banner" hidden></p>
+              <form id="composer" class="composer">
+                <label class="sr-only" for="message">Message</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="1"
+                  required
+                  placeholder="Ask about sales, overdue invoices, expenses, or business health…"
+                ></textarea>
+                <button id="send-btn" type="submit" class="btn-primary">Send</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="zoho-modal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-zoho></div>
+      <div class="modal-card" role="dialog" aria-labelledby="zoho-title">
+        <header class="modal-head">
+          <h2 id="zoho-title">Connect Zoho Books</h2>
+          <button type="button" class="icon-btn" data-close-zoho aria-label="Close">×</button>
+        </header>
+        <p class="muted">
+          Each workspace uses its own Zoho API Console app (Client ID + Secret).
+          Register this redirect URI on that app:
+          <code id="zoho-redirect-uri">http://localhost:8000/oauth/zoho/callback</code>
+        </p>
+        <form id="zoho-form" class="zoho-form">
+          <label>
+            Zoho Client ID
+            <input id="zoho-client-id" type="text" placeholder="From Zoho API Console" autocomplete="off" />
+          </label>
+          <label>
+            Zoho Client Secret
+            <input id="zoho-client-secret" type="password" placeholder="Paste to set or replace" autocomplete="off" />
+          </label>
+          <p id="zoho-secret-hint" class="muted small" hidden></p>
+          <label>
+            Data center
+            <select id="zoho-dc">
+              <option value="in">India (zoho.in)</option>
+              <option value="com">US (zoho.com)</option>
+              <option value="eu">Europe (zoho.eu)</option>
+              <option value="au">Australia</option>
+              <option value="jp">Japan</option>
+              <option value="ca">Canada</option>
+            </select>
+          </label>
+          <label>
+            Organization ID
+            <input id="zoho-org" type="text" placeholder="Optional until first sync" autocomplete="off" />
+          </label>
+          <label>
+            Refresh token
+            <input id="zoho-refresh" type="password" placeholder="Paste workspace refresh token" autocomplete="off" />
+          </label>
+          <p class="muted small">Leave refresh token blank if you will use OAuth connect instead.</p>
+          <div class="modal-actions">
+            <button type="submit" class="btn-primary" id="zoho-save">Save settings</button>
+            <button type="button" class="btn-accent" id="connect-btn">Connect with Zoho</button>
+            <button type="button" class="btn-ghost" id="disconnect-btn">Disconnect</button>
+          </div>
+          <p id="zoho-error" class="error" hidden></p>
+          <p id="zoho-ok" class="ok-msg" hidden></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js?v=panels-5"></script>
+  </body>
+</html>

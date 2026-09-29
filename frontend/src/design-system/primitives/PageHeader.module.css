@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.header[data-divider] {
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.eyebrow {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: var(--text-2xl);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-5);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}

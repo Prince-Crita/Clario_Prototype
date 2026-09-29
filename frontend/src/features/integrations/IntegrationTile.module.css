@@ -1,0 +1,103 @@
+.tile {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-2);
+  min-height: 188px;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color var(--duration) var(--ease);
+}
+
+.tile:not([data-coming-soon]):hover {
+  border-color: var(--line-strong);
+}
+
+.tile:not([data-coming-soon]):focus-within {
+  box-shadow: var(--focus-ring);
+}
+
+.domain {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.name {
+  font-size: var(--text-lg);
+}
+
+/* Stretched link: the whole card is the click target, with one accessible link name. */
+.link {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+
+.link:focus-visible {
+  box-shadow: none;
+}
+
+.summary {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+/* Status (with the connected account under it) and the action share a row when they fit; in a
+   narrow card the action wraps below instead of overlapping. */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.state {
+  display: grid;
+  gap: 2px;
+}
+
+.account {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+.cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--forest);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+/* Coming soon: quieter surface and text, no interactive affordances. */
+.tile[data-coming-soon] {
+  background: var(--paper);
+  border-style: dashed;
+}
+
+.tile[data-coming-soon] .name {
+  color: var(--ink-2);
+}
+
+.comingSoon {
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}

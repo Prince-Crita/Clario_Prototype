@@ -1,0 +1,82 @@
+# Clario CI — every check here must pass before merging to main (plan §32, §33).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (lint · types · layers · tests · migrations · contract)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: clario
+          POSTGRES_PASSWORD: clario-ci
+          POSTGRES_DB: clario_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U clario -d clario_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://clario:clario-ci@localhost:5432/clario_test
+      TEST_DATABASE_URL: postgresql+asyncpg://clario:clario-ci@localhost:5432/clario_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Ephemeral CI secrets (never real values)
+        run: |
+          echo "SESSION_SECRET=$(python3 -c 'import secrets;print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+          echo "ENCRYPTION_KEYS=$(python3 -c 'import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())')" >> "$GITHUB_ENV"
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run lint-imports
+      - run: uv run pytest
+      - name: Migrations are idempotent
+        run: |
+          uv run clario db upgrade
+          uv run clario db upgrade
+      - name: OpenAPI contract is up to date
+        run: uv run clario openapi export --check
+
+  frontend:
+    name: Frontend (contract types · lint · types · format · tests incl. contrast + a11y · build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: API types match the OpenAPI contract
+        run: |
+          npm run gen:api
+          git diff --exit-code -- src/lib/api/schema.d.ts
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build

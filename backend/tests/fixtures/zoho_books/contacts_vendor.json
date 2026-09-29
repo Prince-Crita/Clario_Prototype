@@ -1,0 +1,19 @@
+{
+ "code": 0,
+ "message": "success",
+ "contacts": [
+  {
+   "contact_id": "4235431000000042027",
+   "contact_name": "TEST Vendor One",
+   "company_name": "TEST Vendor One",
+   "contact_type": "vendor",
+   "currency_code": "INR",
+   "status": "active"
+  }
+ ],
+ "page_context": {
+  "page": 1,
+  "per_page": 200,
+  "has_more_page": false
+ }
+}

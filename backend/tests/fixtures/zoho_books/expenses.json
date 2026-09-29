@@ -1,0 +1,59 @@
+{
+ "code": 0,
+ "message": "success",
+ "expenses": [
+  {
+   "expense_id": "4235431000000042228",
+   "date": "2026-09-18",
+   "account_name": "IT and Internet Expenses",
+   "paid_through_account_name": "Petty Cash",
+   "vendor_name": "",
+   "currency_code": "INR",
+   "total": 2500.0,
+   "bcy_total": 2500.0,
+   "bcy_total_without_tax": 2500.0,
+   "last_modified_time": "2026-09-26T18:19:18+0530"
+  },
+  {
+   "expense_id": "4235431000000042218",
+   "date": "2026-09-05",
+   "account_name": "Cost of Goods Sold",
+   "paid_through_account_name": "TEST Bank Current",
+   "vendor_name": "",
+   "currency_code": "INR",
+   "total": 9000.0,
+   "bcy_total": 9000.0,
+   "bcy_total_without_tax": 9000.0,
+   "last_modified_time": "2026-09-26T18:19:17+0530"
+  },
+  {
+   "expense_id": "4235431000000042207",
+   "date": "2026-08-10",
+   "account_name": "Rent Expense",
+   "paid_through_account_name": "TEST Bank Current",
+   "vendor_name": "TEST Vendor One",
+   "currency_code": "INR",
+   "total": 12000.0,
+   "bcy_total": 12000.0,
+   "bcy_total_without_tax": 12000.0,
+   "last_modified_time": "2026-09-26T18:19:17+0530"
+  },
+  {
+   "expense_id": "4235431000000042197",
+   "date": "2026-07-15",
+   "account_name": "Salaries and Employee Wages",
+   "paid_through_account_name": "TEST Bank Current",
+   "vendor_name": "",
+   "currency_code": "INR",
+   "total": 40000.0,
+   "bcy_total": 40000.0,
+   "bcy_total_without_tax": 40000.0,
+   "last_modified_time": "2026-09-26T18:19:16+0530"
+  }
+ ],
+ "page_context": {
+  "page": 1,
+  "per_page": 200,
+  "has_more_page": false
+ }
+}

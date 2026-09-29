@@ -1,0 +1,31 @@
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunken) 0%,
+    var(--paper) 50%,
+    var(--surface-sunken) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  animation: shimmer 1.4s linear infinite;
+}
+
+.skeleton[data-radius="md"] {
+  border-radius: var(--radius-md);
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

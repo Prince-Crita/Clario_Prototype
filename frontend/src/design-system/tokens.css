@@ -1,0 +1,91 @@
+/*
+ * Clario design tokens — "a well-kept ledger" (FINAL_ARCHITECTURE_PLAN.md §27.2).
+ * Every colour pairing used for text or UI is checked for WCAG 2.2 AA by tokens.test.ts.
+ * Light theme only for the prototype; dark mode is [Future].
+ */
+:root {
+  /* Neutrals — faint green-grey paper, white surfaces, hairlines */
+  --paper: #f5f6f2;
+  --surface: #ffffff;
+  --surface-sunken: #eef0ea;
+  --line: #dde1d6;
+  --line-strong: #c4cabb;
+  --ink: #18211b;
+  --ink-2: #4a554d;
+  --ink-3: #5f6a61;
+  --ink-inverse: #ffffff;
+
+  /* Brand (from Crita's green family; flat, never gradient) */
+  --forest: #1f3b28;
+  --forest-hover: #2a4d35;
+  --forest-pressed: #16301f;
+  --olive: #52702f;
+  --lime: #a8cb3c; /* accents only — never text on light surfaces */
+
+  /* Semantic (kept distinct from brand green) */
+  --negative: #b3362c;
+  --negative-bg: #fbedeb;
+  --positive: #1f7a5a;
+  --positive-bg: #eaf5f0;
+  --warning: #8c5a0e;
+  --warning-bg: #fbf3e6;
+  --info: #35597f;
+  --info-bg: #edf2f8;
+
+  /* Chart series — each ≥ 3:1 against the surface (non-text contrast) */
+  --series-1: #1f3b28; /* billed */
+  --series-2: #52702f; /* collected */
+  --series-3: #b8652f; /* expenses — clay, contrasts with revenue greens */
+  --series-4: #35597f;
+  --series-5: #5f7f26;
+  --series-6: #8c7a4e;
+
+  /* Type */
+  --font-sans: "Manrope Variable", "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.8125rem; /* 13 — tables */
+  --text-md: 0.875rem; /* 14 — body */
+  --text-lg: 1rem; /* 16 */
+  --text-xl: 1.25rem; /* 20 */
+  --text-2xl: 1.5rem; /* 24 */
+  --text-3xl: 2rem; /* 32 — KPI figures */
+  --weight-regular: 450;
+  --weight-medium: 550;
+  --weight-semibold: 650;
+  --weight-bold: 750;
+  --tracking-tight: -0.015em;
+  --tracking-label: 0.06em;
+
+  /* Space (4-px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Shape & depth — hairlines, small radii, one elevation level */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --shadow-pop: 0 8px 24px rgb(24 33 27 / 0.12), 0 0 0 1px rgb(24 33 27 / 0.06);
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--forest);
+  --focus-halo: 0 0 0 3px rgb(168 203 60 / 0.45); /* inputs: forest border + lime halo */
+
+  /* Layout */
+  --rail-width: 232px;
+  --content-max: 1440px;
+  --control-height: 36px;
+  --control-height-sm: 30px;
+
+  /* Motion */
+  --duration: 150ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
+  }
+}

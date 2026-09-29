@@ -1,0 +1,16 @@
+.page {
+  width: min(100% - 2 * var(--space-4), 480px);
+  margin: 18vh auto 0;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.title {
+  margin-top: var(--space-4);
+  font-size: var(--text-2xl);
+}
+
+.message {
+  color: var(--ink-2);
+}

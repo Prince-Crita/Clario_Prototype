@@ -1,0 +1,27 @@
+{
+  "description": "Shared money/percent formatting cases. Backend (clario.core.money) and frontend (lib/format) must both pass every case so the dashboard and the assistant show identical strings. Values are decimal strings; minus is U+2212.",
+  "money": [
+    { "value": "1245300", "decimals": 0, "full": "₹12,45,300", "compact": "₹12.45 lakh" },
+    { "value": "-648028", "decimals": 0, "full": "−₹6,48,028", "compact": "−₹6.48 lakh" },
+    { "value": "482000", "decimals": 0, "full": "₹4,82,000", "compact": "₹4.82 lakh" },
+    { "value": "150000", "decimals": 0, "full": "₹1,50,000", "compact": "₹1.5 lakh" },
+    { "value": "100000", "decimals": 0, "full": "₹1,00,000", "compact": "₹1 lakh" },
+    { "value": "62000", "decimals": 0, "full": "₹62,000", "compact": "₹62,000" },
+    { "value": "999", "decimals": 0, "full": "₹999", "compact": "₹999" },
+    { "value": "0", "decimals": 0, "full": "₹0", "compact": "₹0" },
+    { "value": "-0.4", "decimals": 0, "full": "₹0", "compact": "₹0" },
+    { "value": "0.5", "decimals": 0, "full": "₹1", "compact": "₹1" },
+    { "value": "1234.5", "decimals": 2, "full": "₹1,234.50", "compact": "₹1,235" },
+    { "value": "9999999", "decimals": 0, "full": "₹99,99,999", "compact": "₹1 crore" },
+    { "value": "10000000", "decimals": 0, "full": "₹1,00,00,000", "compact": "₹1 crore" },
+    { "value": "12345678", "decimals": 0, "full": "₹1,23,45,678", "compact": "₹1.23 crore" },
+    { "value": "1234567890", "decimals": 0, "full": "₹1,23,45,67,890", "compact": "₹123.46 crore" }
+  ],
+  "percent": [
+    { "value": "53.87", "decimals": 0, "text": "54%" },
+    { "value": "-88.95", "decimals": 0, "text": "−89%" },
+    { "value": "-11.43", "decimals": 1, "text": "−11.4%" },
+    { "value": "0.05", "decimals": 1, "text": "0.1%" },
+    { "value": null, "decimals": 0, "text": "n/a" }
+  ]
+}

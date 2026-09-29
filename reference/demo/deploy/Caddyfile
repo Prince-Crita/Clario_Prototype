@@ -1,0 +1,19 @@
+# Clario reverse proxy — replace clario.crita.in with your public hostname.
+# Install: sudo cp deploy/Caddyfile /etc/caddy/Caddyfile && sudo systemctl reload caddy
+
+clario.crita.in {
+	encode gzip
+	reverse_proxy 127.0.0.1:8000
+
+	header {
+		# Basic hardening; Caddy already terminates TLS.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	log {
+		output file /var/log/caddy/clario.log
+	}
+}

@@ -1,0 +1,114 @@
+[project]
+name = "clario"
+version = "0.1.0"
+description = "Clario — Crita's business intelligence platform (backend)"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "Proprietary" }
+authors = [{ name = "Crita Creative LLP" }]
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "cryptography>=43",
+    "tzdata>=2024.2",
+    "argon2-cffi>=23.1",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+clario = "clario.cli.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "respx>=0.21",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "import-linter>=2.1",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/clario"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "B", "UP", "SIM", "RUF", "N", "ASYNC", "PT", "DTZ", "S", "C4", "PIE", "RET", "TID",
+]
+ignore = [
+    "S101",   # assert is fine in tests and for type narrowing
+    "RUF001", # typographic characters (₹, −, …) are intentional in money formatting
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S105", "S106", "S311"]
+"migrations/**" = ["N999", "E501"]  # generated SQL strings are kept verbatim
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+# ---------------------------------------------------------------- mypy
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+packages = ["clario"]
+warn_unreachable = true
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+addopts = "-ra --strict-markers -m 'not llm_eval'"
+markers = [
+    "db: needs TEST_DATABASE_URL pointing at a PostgreSQL database whose name ends in _test",
+    "llm_eval: calls the real AI provider (GROQ_API_KEY); run on demand with `pytest -m llm_eval`",
+]
+filterwarnings = ["error::DeprecationWarning:clario.*"]
+
+# ---------------------------------------------------------------- import-linter
+# Layering from FINAL_ARCHITECTURE_PLAN.md §7.2. Higher layers may import lower ones, never the reverse.
+[tool.importlinter]
+root_package = "clario"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layered architecture (plan §7.2)"
+type = "layers"
+layers = [
+    "clario.cli",
+    "clario.main",
+    "clario.api",
+    "clario.integrations",
+    "clario.domains",
+    "clario.ai",
+    "clario.platform",
+    "clario.settings",
+    "clario.core",
+]
+
+[[tool.importlinter.contracts]]
+name = "core stays framework-free (no web or ORM-session framework imports)"
+type = "forbidden"
+source_modules = ["clario.core"]
+forbidden_modules = ["fastapi", "starlette", "uvicorn", "httpx"]

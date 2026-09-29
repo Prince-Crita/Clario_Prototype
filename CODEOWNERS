@@ -1,0 +1,23 @@
+# Ownership per FINAL_ARCHITECTURE_PLAN.md §8.3.
+# Last matching rule wins, so broad paths come before specific ones.
+# Team handles are placeholders until the GitHub organisation is set up — replace @crita/* with real teams.
+
+*                                            @crita/clario-platform
+
+/backend/src/clario/core/                    @crita/clario-platform
+/backend/src/clario/platform/                @crita/clario-platform
+/backend/src/clario/api/                     @crita/clario-platform
+/backend/src/clario/settings.py              @crita/clario-platform
+/backend/migrations/                         @crita/clario-platform
+/backend/src/clario/ai/                      @crita/clario-ai
+/backend/src/clario/domains/finance/         @crita/clario-finance
+/backend/src/clario/integrations/zoho_books/ @crita/clario-connectors
+
+/frontend/                                   @crita/clario-frontend
+/frontend/src/design-system/                 @crita/clario-design
+/frontend/src/brand/                         @crita/clario-design
+/frontend/src/features/finance/              @crita/clario-finance
+
+/contracts/                                  @crita/clario-platform
+/deploy/                                     @crita/clario-platform
+/docs/FINAL_ARCHITECTURE_PLAN.md             @crita/clario-platform

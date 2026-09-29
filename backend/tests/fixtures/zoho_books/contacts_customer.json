@@ -1,0 +1,38 @@
+{
+ "code": 0,
+ "message": "success",
+ "contacts": [
+  {
+   "contact_id": "4235431000000042006",
+   "contact_name": "TEST Customer Alpha",
+   "company_name": "TEST Customer Alpha",
+   "contact_type": "customer",
+   "currency_code": "INR",
+   "status": "active",
+   "last_modified_time": "2026-09-26T18:19:06+0530"
+  },
+  {
+   "contact_id": "4235431000000042013",
+   "contact_name": "TEST Customer Beta",
+   "company_name": "TEST Customer Beta",
+   "contact_type": "customer",
+   "currency_code": "INR",
+   "status": "active",
+   "last_modified_time": "2026-09-26T18:19:07+0530"
+  },
+  {
+   "contact_id": "4235431000000042020",
+   "contact_name": "TEST Customer Gamma",
+   "company_name": "TEST Customer Gamma",
+   "contact_type": "customer",
+   "currency_code": "INR",
+   "status": "active",
+   "last_modified_time": "2026-09-26T18:19:07+0530"
+  }
+ ],
+ "page_context": {
+  "page": 1,
+  "per_page": 200,
+  "has_more_page": false
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "code": 0,
+ "message": "success",
+ "profit_and_loss": [
+  {
+   "name": "Gross Profit",
+   "total": 50000.0,
+   "account_transactions": [
+    {
+     "name": "Operating Income",
+     "total": 50000.0,
+     "account_transactions": [
+      {
+       "name": "Sales",
+       "total": 50000.0,
+       "account_id": "4235431000000000486"
+      }
+     ]
+    },
+    {
+     "name": "Cost of Goods Sold",
+     "total": 0.0
+    }
+   ]
+  },
+  {
+   "name": "Operating Profit",
+   "total": 10000.0,
+   "account_transactions": [
+    {
+     "name": "Operating Expense",
+     "total": 40000.0,
+     "account_transactions": [
+      {
+       "name": "Salaries and Employee Wages",
+       "total": 40000.0,
+       "account_id": "4235431000000000543"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Net Profit/Loss",
+   "total": 10000.0,
+   "account_transactions": [
+    {
+     "name": "Non Operating Income",
+     "total": 0.0
+    },
+    {
+     "name": "Non Operating Expense",
+     "total": 0.0
+    }
+   ]
+  }
+ ],
+ "page_context": {
+  "report_basis": "Accrual",
+  "from_date": "2026-07-01",
+  "to_date": "2026-07-31"
+ }
+}

@@ -1,0 +1,46 @@
+.root {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.list {
+  display: flex;
+  gap: var(--space-5);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+
+.trigger {
+  position: relative;
+  padding: var(--space-2) 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  color: var(--ink);
+}
+
+.trigger[data-state="active"] {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.trigger[data-state="active"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--lime);
+}
+
+.content:focus-visible {
+  box-shadow: none;
+}

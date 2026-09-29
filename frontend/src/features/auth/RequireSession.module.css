@@ -1,0 +1,28 @@
+.loading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  min-height: 100vh;
+}
+
+.loadingMain {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+.error {
+  max-width: 640px;
+  margin: 15vh auto 0;
+  padding: 0 var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .loading {
+    grid-template-columns: 1fr;
+  }
+
+  .loading > span:first-child {
+    display: none;
+  }
+}

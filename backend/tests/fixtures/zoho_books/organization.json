@@ -1,0 +1,12 @@
+{
+ "code": 0,
+ "message": "success",
+ "organization": {
+  "organization_id": "60089553909",
+  "name": "Crita Creative LLP (TEST trial)",
+  "currency_code": "INR",
+  "time_zone": "Asia/Calcutta",
+  "fiscal_year_start_month": "april",
+  "country": "India"
+ }
+}

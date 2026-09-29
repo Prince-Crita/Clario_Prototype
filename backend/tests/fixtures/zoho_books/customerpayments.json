@@ -1,0 +1,50 @@
+{
+ "code": 0,
+ "message": "success",
+ "customerpayments": [
+  {
+   "payment_id": "4235431000000042164",
+   "customer_id": "4235431000000042006",
+   "customer_name": "TEST Customer Alpha",
+   "date": "2026-09-10",
+   "amount": 50000.0,
+   "bcy_amount": 50000.0,
+   "payment_mode": "banktransfer",
+   "reference_number": "TEST",
+   "account_name": "TEST Bank Current",
+   "invoice_numbers": "INV-000002",
+   "last_modified_time": "2026-09-26T18:19:15+0530"
+  },
+  {
+   "payment_id": "4235431000000042181",
+   "customer_id": "4235431000000042013",
+   "customer_name": "TEST Customer Beta",
+   "date": "2026-08-25",
+   "amount": 15000.0,
+   "bcy_amount": 15000.0,
+   "payment_mode": "banktransfer",
+   "reference_number": "TEST",
+   "account_name": "TEST Bank Current",
+   "invoice_numbers": "INV-000003",
+   "last_modified_time": "2026-09-26T18:19:16+0530"
+  },
+  {
+   "payment_id": "4235431000000042146",
+   "customer_id": "4235431000000042006",
+   "customer_name": "TEST Customer Alpha",
+   "date": "2026-04-05",
+   "amount": 10000.0,
+   "bcy_amount": 10000.0,
+   "payment_mode": "banktransfer",
+   "reference_number": "TEST",
+   "account_name": "TEST Bank Current",
+   "invoice_numbers": "INV-000001",
+   "last_modified_time": "2026-09-26T18:19:15+0530"
+  }
+ ],
+ "page_context": {
+  "page": 1,
+  "per_page": 200,
+  "has_more_page": false
+ }
+}
