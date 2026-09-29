@@ -1,3 +1,2 @@
-/** Shared with the dashboards that host the panel (kept apart so the panel stays a lazy chunk). */
-export type PanelMode = "open" | "full";
+/** Shared with the Clario AI page that hosts the conversation (kept apart so it stays a lazy chunk). */
 export const PANEL_ID = "assistant-panel";

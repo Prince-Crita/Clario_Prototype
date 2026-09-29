@@ -1,15 +1,22 @@
 /**
- * The assistant panel (plan §26): a right-hand panel inside a domain dashboard, expandable to full
- * width, with the conversation list for that module. Not a separate chat app.
+ * The Finance Assistant conversation (plan §26, §27.11): the centre of the Clario AI page, with
+ * the conversation list for that module behind "Your conversations". Never a popup.
  *
- * URL state lives with the dashboard (`?assistant=open|full&c=:conversationId`). A conversation is
+ * URL state lives with the page (`/finance/clario?c=:conversationId&q=…`). A conversation is
  * created with its first question, so none is left empty. Failure states: provider down (the
  * question is kept and can be asked again), the AI usage limit (with the provider's own reset
  * time, counted down), not configured, the assistant unreachable, sending too quickly, connection
  * needing reauthorisation, and a conversation that no longer exists.
  */
-import { History, Maximize2, Minimize2, SquarePen, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { History, SquarePen } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { Link } from "react-router";
 
 import { Alert, Button, Skeleton, Status } from "../../design-system";
@@ -24,7 +31,8 @@ import {
   useAssistantInfo,
   useConversation,
 } from "./hooks";
-import { PANEL_ID, type PanelMode } from "./panel";
+import { PANEL_ID } from "./panel";
+import { ApertureMark } from "../../brand/ApertureMark";
 import { Transcript } from "./Transcript";
 import { clockTime, formatWait, useCountdown } from "./usage";
 
@@ -36,22 +44,32 @@ export interface AssistantPanelProps {
   organisation: string;
   /** "Finance" */
   domainName: string;
-  mode: PanelMode;
   conversationId: string | null;
+  /** A question to place in the box, ready to review and send (e.g. from a signal). */
+  prefill?: string | null | undefined;
+  /** Questions to start an empty conversation with (else the server's suggestions). */
+  suggestions?: string[] | undefined;
+  /** Send the prefill at once: the user typed it into the Ask Clario command line. */
+  autoSend?: boolean | undefined;
   onConversationChange: (id: string | null) => void;
-  onModeChange: (mode: PanelMode | null) => void;
   needsReauth: boolean;
   canManage: boolean;
   connectionHref: string;
 }
 
 export default function AssistantPanel(props: AssistantPanelProps) {
-  const { workspaceId, connectionId, system, organisation, mode, conversationId } = props;
-  const { onConversationChange, onModeChange } = props;
+  const { workspaceId, connectionId, system, organisation, conversationId } = props;
+  const { onConversationChange } = props;
   const info = useAssistantInfo(workspaceId, connectionId);
   const conversation = useConversation(workspaceId, connectionId, conversationId);
   const ask = useAsk(workspaceId, connectionId);
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = useState(props.prefill ?? "");
+  // A new prefill (e.g. "Ask Clario" on another signal) replaces the box's text; never auto-sent.
+  const [placed, setPlaced] = useState(props.prefill ?? null);
+  if (props.prefill && props.prefill !== placed) {
+    setPlaced(props.prefill);
+    setDraft(props.prefill);
+  }
   const [notice, setNotice] = useState<ApiError | null>(null);
   const [showList, setShowList] = useState(false);
   const composer = useRef<HTMLTextAreaElement>(null);
@@ -71,13 +89,13 @@ export default function AssistantPanel(props: AssistantPanelProps) {
   if (status?.state === "available" && limitSeen) setLimitSeen(false);
   const recheckPending = limitSeen && status?.state === "unconfirmed";
   const available = info.data?.available !== false && !unreachable && !limited;
-  const full = mode === "full";
-  const listVisible = full || showList;
+  const listVisible = showList;
   const missing =
     conversation.error instanceof ApiError && conversation.error.status === 404 && !ask.isPending;
 
+  // Clario AI is for asking: the box has focus once it is ready (disabled until info loads).
   useEffect(() => {
-    if (!info.isPending) composer.current?.focus({ preventScroll: true }); // disabled until info loads
+    if (!info.isPending) composer.current?.focus({ preventScroll: true });
   }, [info.isPending]);
 
   const submit = (text: string) => {
@@ -96,6 +114,17 @@ export default function AssistantPanel(props: AssistantPanelProps) {
     );
   };
 
+  // A question submitted from a page's Ask box is asked once, when Clario is ready.
+  const sent = useRef<string | null>(null);
+  const sendNow =
+    props.autoSend && props.prefill && available && !info.isPending ? props.prefill : null;
+  const sendPrefill = useEffectEvent((question: string) => submit(question));
+  useEffect(() => {
+    if (!sendNow || sent.current === sendNow) return;
+    sent.current = sendNow;
+    sendPrefill(sendNow);
+  }, [sendNow]);
+
   const startNew = () => {
     onConversationChange(null);
     setShowList(false);
@@ -105,11 +134,12 @@ export default function AssistantPanel(props: AssistantPanelProps) {
 
   const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key !== "Escape") return;
+    if (!showList) return;
     event.stopPropagation();
-    if (showList && !full) setShowList(false);
-    else onModeChange(null);
+    setShowList(false);
   };
 
+  const suggestions = props.suggestions ?? info.data?.suggested_questions ?? [];
   const messages = conversationId ? (conversation.data?.messages ?? []) : [];
   const pendingQuestion = ask.isPending ? (ask.variables?.content ?? null) : null;
   const empty = !messages.length && !pendingQuestion;
@@ -128,68 +158,54 @@ export default function AssistantPanel(props: AssistantPanelProps) {
   ) : null; // unconfirmed: nothing claims availability until a real answer
 
   return (
-    <aside
+    <section
       id={PANEL_ID}
       className={styles.panel}
-      data-mode={mode}
+      data-mode="page"
       aria-label={name}
       onKeyDown={onKeyDown}
     >
       <header className={styles.header}>
         <div className={styles.heading}>
-          <h2 className={styles.title}>{name}</h2>
-          <p className={styles.subtitle}>
-            {organisation} · {system}
-          </p>
-          {usage ? <p className={styles.usage}>{usage}</p> : null}
+          <span className={styles.brandMark} aria-hidden="true">
+            <ApertureMark size={22} tone="inverse" />
+          </span>
+          <div className={styles.headingText}>
+            <h2 className={styles.title}>Ask Clario</h2>
+            <p className={styles.tagline}>Understand your business, not just your numbers.</p>
+          </div>
         </div>
         <div className={styles.tools}>
-          {!full ? (
-            <button
-              type="button"
-              className={styles.iconButton}
-              aria-label="Your conversations"
-              aria-pressed={showList}
-              title="Your conversations"
-              onClick={() => setShowList((shown) => !shown)}
-            >
-              <History size={16} aria-hidden="true" />
-            </button>
-          ) : null}
           <button
             type="button"
-            className={styles.iconButton}
+            className={styles.textButton}
+            aria-label="Your conversations"
+            aria-pressed={showList}
+            title="Your conversations"
+            onClick={() => setShowList((shown) => !shown)}
+          >
+            <History size={16} aria-hidden="true" />
+            <span>History</span>
+          </button>
+          <button
+            type="button"
+            className={styles.textButton}
             aria-label="New conversation"
             title="New conversation"
             onClick={startNew}
           >
             <SquarePen size={16} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className={`${styles.iconButton} ${styles.expand}`}
-            aria-label={full ? "Show beside the dashboard" : "Expand to full width"}
-            title={full ? "Show beside the dashboard" : "Expand to full width"}
-            onClick={() => onModeChange(full ? "open" : "full")}
-          >
-            {full ? (
-              <Minimize2 size={16} aria-hidden="true" />
-            ) : (
-              <Maximize2 size={16} aria-hidden="true" />
-            )}
-          </button>
-          <button
-            type="button"
-            className={styles.iconButton}
-            aria-label={`Close ${name}`}
-            title="Close"
-            onClick={() => onModeChange(null)}
-          >
-            <X size={16} aria-hidden="true" />
+            <span>New</span>
           </button>
         </div>
       </header>
 
+      <div className={styles.context}>
+        <p className={styles.subtitle}>
+          {name} · {organisation} · {system}
+        </p>
+        {usage ? <p className={styles.usage}>{usage}</p> : null}
+      </div>
       <div className={styles.body} data-list={listVisible || undefined}>
         {listVisible ? (
           <div className={styles.listColumn}>
@@ -209,7 +225,7 @@ export default function AssistantPanel(props: AssistantPanelProps) {
           </div>
         ) : null}
 
-        {!listVisible || full ? (
+        {!listVisible ? (
           <div className={styles.chat}>
             {props.needsReauth ? (
               <Alert
@@ -279,12 +295,13 @@ export default function AssistantPanel(props: AssistantPanelProps) {
               available ? (
                 <div className={styles.intro}>
                   <p>
-                    Ask about {organisation}'s {props.domainName.toLowerCase()} in {system}. Answers
-                    use the same figures as this dashboard.
+                    Ask about {organisation}'s {props.domainName.toLowerCase()} in {system}, in
+                    plain words: performance, cash, customers, costs or what to focus on. Answers
+                    use the same figures as your reports and show where they come from.
                   </p>
-                  {info.data?.suggested_questions.length ? (
+                  {suggestions.length ? (
                     <ul className={styles.suggestions} aria-label="Suggested questions">
-                      {info.data.suggested_questions.map((question) => (
+                      {suggestions.map((question) => (
                         <li key={question}>
                           <button
                             type="button"
@@ -327,6 +344,6 @@ export default function AssistantPanel(props: AssistantPanelProps) {
           </div>
         ) : null}
       </div>
-    </aside>
+    </section>
   );
 }

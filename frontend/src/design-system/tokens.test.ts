@@ -50,6 +50,14 @@ const PAIRS: [string, string, number][] = [
   ["ink-inverse", "forest-hover", TEXT],
   ["forest", "surface", TEXT],
   ["forest", "paper", TEXT],
+  ["forest", "forest-tint", TEXT], // active navigation and selected states
+  ["rail-ink", "rail", TEXT], // the navigation rail
+  ["rail-ink-2", "rail", TEXT],
+  ["rail-ink", "rail-raised", TEXT],
+  ["accent", "surface", TEXT],
+  ["accent", "paper", TEXT],
+  ["forest", "accent-soft", TEXT],
+  ["negative", "negative-bg", TEXT],
   ["olive", "surface", TEXT],
   ["negative", "surface", TEXT],
   ["negative", "negative-bg", TEXT],

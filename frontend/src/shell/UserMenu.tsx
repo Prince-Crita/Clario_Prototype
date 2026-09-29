@@ -16,7 +16,8 @@ export function UserMenu({ user, settingsPath }: { user: User; settingsPath: str
   const signOut = useSignOut();
   return (
     <Menu
-      side="top"
+      side="bottom"
+      align="end"
       trigger={
         <button type="button" className={styles.trigger} aria-label={`Account: ${user.email}`}>
           <span className={styles.avatar} aria-hidden="true">

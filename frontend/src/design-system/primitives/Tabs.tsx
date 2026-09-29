@@ -1,4 +1,4 @@
-/** Text tabs with a 2-px lime underline on the active tab (plan §27.3). Radix handles a11y/keys. */
+/** Text tabs with a 2-px forest underline on the active tab (plan §27.3). Radix handles a11y/keys. */
 import * as RadixTabs from "@radix-ui/react-tabs";
 import type { ReactNode } from "react";
 

@@ -5,7 +5,12 @@ import { apiFetch } from "../../lib/api/client";
 import type { InvoicePage } from "../../lib/api/types";
 import { useSyncStatus } from "../integrations/sync";
 
-export type FinanceTab = "overview" | "trends" | "receivables" | "gst" | "balance-sheet";
+/** The Command Centre's pages (URL segments). */
+export type FinanceTab =
+  "overview" | "trends" | "payables" | "gst" | "receivables" | "balance-sheet" | "clario";
+/** The finance API's page endpoints (Payable is composed from balance-sheet and trends; Clario AI
+ * from overview and receivables). */
+export type FinanceEndpoint = Exclude<FinanceTab, "payables" | "clario">;
 export type InvoiceFilter = "all" | "unpaid" | "overdue";
 
 const base = (workspaceId: string, connectionId: string) =>
@@ -13,8 +18,8 @@ const base = (workspaceId: string, connectionId: string) =>
 export const financeKey = (workspaceId: string, connectionId: string) =>
   ["workspace", workspaceId, "connections", connectionId, "finance"] as const;
 
-/** One Command Centre tab. The server computes every figure; this only fetches it. */
-export function useFinanceTab<T>(workspaceId: string, connectionId: string, tab: FinanceTab) {
+/** One finance endpoint. The server computes every figure; this only fetches it. */
+export function useFinanceTab<T>(workspaceId: string, connectionId: string, tab: FinanceEndpoint) {
   return useQuery({
     queryKey: [...financeKey(workspaceId, connectionId), tab],
     queryFn: () => apiFetch<T>(`${base(workspaceId, connectionId)}/${tab}`),

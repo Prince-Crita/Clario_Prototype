@@ -1,7 +1,8 @@
 /**
- * Command Centre charts (plan §22.2, §25, §27.5). Each sits in `ChartFrame` with the same data as
- * a table ("View as table"), uses the token series colours, an HTML legend, and tooltips that
- * show the server's exact figures (numbers are used for bar geometry only).
+ * Command Centre charts (plan §22.2, §25, §27.10). Each sits in `ChartFrame` with the same data as
+ * a table ("View as table"), uses the token series colours (ink, Crita green, warm grey), rounded
+ * bars on a dotted grid with the latest period at full strength, an HTML legend, and tooltips
+ * that show the server's exact figures (numbers are used for bar geometry only).
  */
 import {
   Bar,
@@ -38,9 +39,9 @@ interface Series {
   stack?: string;
 }
 
-const HEIGHT = 260;
-const AXIS = { fontSize: 12, fill: "var(--ink-3)" };
-const POSITIVE = "var(--positive)";
+const HEIGHT = 250;
+const AXIS = { fontSize: 11.5, fill: "var(--ink-3)" };
+const POSITIVE = "var(--brand-strong)";
 const NEGATIVE = "var(--negative)";
 const OTHER = "var(--line-strong)";
 
@@ -95,9 +96,13 @@ interface BarsProps {
   /** Colour each bar of a single series by its sign (net cash). */
   bySign?: boolean;
   line?: Series;
+  /** Draw the latest period at full strength and earlier ones muted (the "now" bar). */
+  focusLast?: boolean;
 }
 
-function Bars({ data, series, bySign = false, line }: BarsProps) {
+const MUTED = 0.34;
+
+function Bars({ data, series, bySign = false, line, focusLast = false }: BarsProps) {
   const Chart = line ? ComposedChart : BarChart;
   const scale = niceScale(extents(data, series, line));
   return (
@@ -108,7 +113,7 @@ function Bars({ data, series, bySign = false, line }: BarsProps) {
         initialDimension={{ width: 640, height: HEIGHT }}
       >
         <Chart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }} barGap={2}>
-          <CartesianGrid vertical={false} stroke="var(--line)" />
+          <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 4" />
           <XAxis
             dataKey="label"
             tick={AXIS}
@@ -128,8 +133,15 @@ function Bars({ data, series, bySign = false, line }: BarsProps) {
           <ReferenceLine y={0} stroke="var(--line-strong)" />
           <Tooltip
             formatter={tooltipText}
-            cursor={{ fill: "var(--paper)" }}
-            contentStyle={{ borderRadius: 4, border: "1px solid var(--line)", fontSize: 13 }}
+            cursor={{ fill: "var(--surface-sunken)", opacity: 0.6 }}
+            contentStyle={{
+              borderRadius: 8,
+              border: "1px solid var(--line)",
+              boxShadow: "var(--shadow-pop)",
+              fontSize: 13,
+              fontVariantNumeric: "tabular-nums",
+            }}
+            labelStyle={{ color: "var(--ink)", fontWeight: 650, marginBottom: 4 }}
           />
           {series.map((s) => (
             <Bar
@@ -137,13 +149,18 @@ function Bars({ data, series, bySign = false, line }: BarsProps) {
               dataKey={s.key}
               name={s.name}
               fill={s.colour}
-              maxBarSize={28}
+              maxBarSize={24}
+              radius={s.stack ? 0 : [5, 5, 0, 0]}
               {...(s.stack ? { stackId: s.stack } : {})}
               isAnimationActive={false}
             >
-              {bySign
-                ? data.map((d) => (
-                    <Cell key={String(d.label)} fill={Number(d[s.key]) < 0 ? NEGATIVE : POSITIVE} />
+              {bySign || focusLast
+                ? data.map((d, i) => (
+                    <Cell
+                      key={String(d.label)}
+                      fill={bySign ? (Number(d[s.key]) < 0 ? NEGATIVE : POSITIVE) : s.colour}
+                      fillOpacity={focusLast && i < data.length - 1 ? MUTED : 1}
+                    />
                   ))
                 : null}
             </Bar>
@@ -219,6 +236,7 @@ export function MonthlyChart({ months, window }: { months: MonthFigures[] } & Wi
           }),
         )}
         series={MONTH_SERIES}
+        focusLast
       />
     </ChartFrame>
   );
@@ -242,6 +260,7 @@ export function NetCashChart({ months, window }: { months: MonthFigures[] } & Wi
         data={months.map((m) => row(monthLabel(m.month), { net: m.net_cash }))}
         series={[{ key: "net", name: "Net cash", colour: POSITIVE }]}
         bySign
+        focusLast
       />
     </ChartFrame>
   );
@@ -348,6 +367,7 @@ export function CashFlowChart({
             )}
             series={series}
             line={{ key: "net", name: "Net", colour: "var(--ink)" }}
+            focusLast
           />
         </>
       ) : (

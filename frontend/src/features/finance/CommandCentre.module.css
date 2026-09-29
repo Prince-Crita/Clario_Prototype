@@ -1,5 +1,7 @@
+/* ---------------------------------------------------------------- the page and its header */
 .page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
   min-width: 0;
 }
@@ -9,106 +11,178 @@
   gap: var(--space-4);
 }
 
-.meta {
-  display: inline-flex;
+.dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7);
+  align-content: start;
+  min-width: 0;
+}
+
+/* Header and the Ask strip sit close together; sections below get the page rhythm. */
+.header + * {
+  margin-top: calc(-1 * var(--space-5));
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-4) var(--space-6);
+}
+
+.headText {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.context {
+  display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-1);
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+.context > * + *::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin-right: var(--space-3);
+  border-radius: 50%;
+  background: var(--line-strong);
+  vertical-align: middle;
+}
+
+.org {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-2);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+.state[data-tone="positive"] .dot {
+  background: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
+.state[data-tone="info"] .dot {
+  background: var(--info);
+}
+
+.state[data-tone="warning"] {
+  color: var(--warning);
+}
+
+.state[data-tone="warning"] .dot {
+  background: var(--warning);
 }
 
 .link {
-  color: var(--forest);
-  font-size: var(--text-sm);
+  color: var(--ink);
   font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
 }
 
-/*
- * The assistant panel's placement (plan §26): docked beside the dashboard when there is room,
- * a sheet over it (with a scrim) when there isn't, the whole screen on phones. "Full" gives the
- * panel the dashboard's space.
- */
-.body {
+.link:hover {
+  text-decoration-color: var(--ink);
+}
+
+.title {
+  color: var(--ink);
+  font-size: clamp(1.875rem, 1.3rem + 1.5vw, 2.625rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+}
+
+.lede {
+  max-width: 60ch;
+  color: var(--ink-2);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+}
+
+.tools {
   display: grid;
-  gap: var(--space-5);
-  min-width: 0;
+  justify-items: end;
+  gap: var(--space-2);
 }
 
-.dashboard {
-  min-width: 0;
+.today {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
 }
 
-.scrim {
-  display: none;
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
-.body[data-assistant] > aside,
+.sync {
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------- Clario AI: the conversation loading */
 .panelLoading {
-  height: calc(100dvh - 2 * var(--space-4));
-}
-
-.panelLoading {
+  height: 100%;
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface);
 }
 
-.body[data-assistant="full"] > aside {
-  height: calc(100dvh - 12rem);
-  min-height: 32rem;
-}
-
-@media (min-width: 1360px) {
-  .body[data-assistant="open"] {
-    grid-template-columns: minmax(0, 1fr) 440px;
-    align-items: start;
+@media (max-width: 899.98px) {
+  .header {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  /* It starts below the page header, so it is shorter than the viewport: the question box is
-     on screen without scrolling, and stays there (sticky) as the dashboard scrolls. */
-  .body[data-assistant="open"] > aside,
-  .body[data-assistant="open"] > .panelLoading {
-    position: sticky;
-    top: var(--space-4);
-    height: calc(100dvh - 9.5rem);
-    min-height: 28rem;
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .today {
+    display: none;
   }
 }
 
-@media (max-width: 1359.98px) {
-  .body[data-assistant="open"] > aside,
-  .body[data-assistant="open"] > .panelLoading {
-    position: fixed;
-    z-index: 40;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: min(440px, 100vw);
-    height: auto;
-    border-width: 0 0 0 1px;
-    border-radius: 0;
-    box-shadow: var(--shadow-pop);
+@media (max-width: 719.98px) {
+  .dashboard {
+    gap: var(--space-6);
   }
 
-  .body[data-assistant="open"] > .scrim {
-    display: block;
-    position: fixed;
-    z-index: 35;
-    inset: 0;
-    border: 0;
-    background: rgb(24 33 27 / 0.24);
-    cursor: default;
+  .context {
+    gap: 2px var(--space-3);
+    font-size: var(--text-xs);
   }
-}
 
-@media (max-width: 640px) {
-  .body[data-assistant] > aside,
-  .body[data-assistant] > .panelLoading {
-    position: fixed;
-    z-index: 40;
-    inset: 0;
-    width: 100vw;
-    height: auto;
-    min-height: 0;
-    border: 0;
-    border-radius: 0;
+  .lede {
+    font-size: var(--text-md);
+  }
+
+  .controls {
+    width: 100%;
+    justify-content: space-between;
   }
 }

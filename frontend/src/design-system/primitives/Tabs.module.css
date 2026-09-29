@@ -38,7 +38,8 @@
   right: 0;
   bottom: -1px;
   height: 2px;
-  background: var(--lime);
+  border-radius: 2px 2px 0 0;
+  background: var(--forest);
 }
 
 .content:focus-visible {

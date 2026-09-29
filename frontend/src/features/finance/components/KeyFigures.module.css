@@ -1,0 +1,335 @@
+/*
+ * The Overview's opening (plan §27.10): an asymmetric pair.
+ *   Financial health — white, wide, editorial: briefing, Net P&L at display size, in vs out.
+ *   Cash position    — the page's one solid Crita-green object; ink text only (7.4:1).
+ *   ≥ 1000 px side by side · 720–999 stacked, the cash card in three columns · < 720 one column.
+ */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr);
+  gap: var(--space-4);
+}
+
+.health,
+.cash {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  min-width: 0;
+  padding: clamp(var(--space-5), 2.6vw, 2.5rem);
+  border-radius: var(--radius-lg);
+}
+
+.health {
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.cash {
+  align-content: space-between;
+  background: var(--brand);
+  color: var(--ink);
+}
+
+.healthHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.kicker::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--brand);
+}
+
+.cash .kicker::before {
+  background: var(--ink);
+}
+
+.stamp {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}
+
+.briefing {
+  max-width: 64ch;
+  color: var(--ink-2);
+  font-size: clamp(1rem, 0.92rem + 0.3vw, 1.1875rem);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+.briefingFirst {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.healthBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  align-items: end;
+  gap: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.compare {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* ---------------------------------------------------------------- in vs out */
+.scale {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.scaleRow {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: center;
+}
+
+.scaleKey {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.scaleTrack {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+
+.scaleFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.scaleFill[data-tone="in"] {
+  background: var(--brand);
+}
+
+.scaleFill[data-tone="out"] {
+  background: var(--ink);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+/* ---------------------------------------------------------------- a figure */
+.figure {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+}
+
+.label {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.value {
+  color: var(--ink);
+  font-size: 1.625rem;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.figure[data-size="hero"] .value {
+  font-size: clamp(2.5rem, 1.6rem + 2.4vw, var(--text-hero));
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+.figure[data-size="row"] .value {
+  font-size: 1.375rem;
+}
+
+.value[data-negative] {
+  color: var(--negative);
+}
+
+.context {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.context [data-tone="negative"] {
+  color: var(--negative);
+  font-weight: var(--weight-semibold);
+}
+
+.context [data-tone="positive"] {
+  color: var(--positive);
+  font-weight: var(--weight-semibold);
+}
+
+.muted {
+  color: var(--ink-3);
+}
+
+.basis {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}
+
+.ask {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease);
+}
+
+.figure:hover > .ask,
+.figure:focus-within > .ask {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .ask {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------- on Crita green: ink only */
+.cash .label,
+.cash .context,
+.cash .basis,
+.cash .muted,
+.cash .value[data-negative],
+.cash .ask > button {
+  color: var(--ink);
+}
+
+.cash .basis {
+  font-weight: var(--weight-medium);
+}
+
+.cash .context [data-tone] {
+  display: inline-block;
+  padding: 1px var(--space-2);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.cashRows {
+  display: grid;
+}
+
+.cashRows > .figure {
+  padding: var(--space-4) 0;
+  border-top: 1px solid rgb(15 21 31 / 0.2);
+}
+
+.cashRows > .figure:last-child {
+  padding-bottom: 0;
+}
+
+.meter {
+  display: block;
+  height: 6px;
+  margin: 4px 0 2px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.5);
+  overflow: hidden;
+}
+
+.meterFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.meterFill[data-tone="negative"] {
+  background: var(--negative);
+}
+
+/* ---------------------------------------------------------------- tablet */
+@media (max-width: 999.98px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cash {
+    grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: var(--space-5);
+  }
+
+  .cash > .kicker {
+    grid-column: 1 / -1;
+  }
+
+  .cashRows {
+    grid-column: 2 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .cashRows > .figure {
+    padding-bottom: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- phone */
+@media (max-width: 719.98px) {
+  .healthBody {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .pair {
+    gap: var(--space-4);
+  }
+
+  .value {
+    font-size: 1.375rem;
+  }
+
+  .cash {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cashRows {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .cashRows > .figure:last-child {
+    padding-bottom: 0;
+  }
+}

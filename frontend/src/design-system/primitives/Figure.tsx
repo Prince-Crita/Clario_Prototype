@@ -1,6 +1,6 @@
 /**
- * A single KPI figure (plan §27.3 "KPI band" cell): small uppercase label, large tabular figure,
- * basis tag ("ACCRUAL · FY-TO-DATE") and a context line. Negative values render in --negative
+ * A single figure (plan §27.10): sentence-case label, large tabular figure, basis pill
+ * ("Accrual · FY-to-date") and a context line. Negative values render in --negative
  * with a true minus sign (the value string arrives pre-formatted from lib/format).
  */
 import type { ReactNode } from "react";

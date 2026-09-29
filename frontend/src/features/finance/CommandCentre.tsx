@@ -1,40 +1,50 @@
 /**
- * /w/:workspace/:integration/finance/:tab — the Finance Command Centre (plan §22, §25).
+ * /w/:workspace/:integration/finance/:page — the Finance Command Centre, "Crita Intelligence"
+ * (plan §22, §25, §27.10).
  *
- * Header: organisation, data-as-of, sync state, Refresh live and a link to the connection.
- * Tabs are real URLs; only the active tab's data is fetched. Opening a tab refreshes stale data
- * in the background; `useSyncWatcher` notices the run and reloads the tabs when it finishes.
- * Loaded lazily (charts are not in the main bundle).
+ * The top bar (in the shell) carries the six reports and Ask Clario, which leads to the Clario AI
+ * page (finance/clario): the Finance Assistant conversation with Signals, Decision support and
+ * Scenarios. Each page opens with a compact header: the organisation and sync state, the page
+ * title and its question, then the date, period and Sync on the right. Every report has an Ask
+ * Clario box (a card on the Overview, a strip elsewhere); asking there goes to Clario AI with the
+ * question. Pages are real URLs that keep the period and conversation; only the active page's
+ * data is fetched. Opening a page refreshes stale data in the background;
+ * `useSyncWatcher` notices the run and reloads the pages when it finishes. Loaded lazily.
  */
-import { MessageSquareText, RefreshCw } from "lucide-react";
-import { lazy, Suspense, useRef } from "react";
+import { RefreshCw } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 
-import { Alert, Button, PageHeader, Skeleton, Status, Tabs } from "../../design-system";
+import { Alert, Button, Skeleton } from "../../design-system";
 import { ApiError } from "../../lib/api/client";
 import { fiscalYearLabel } from "../../lib/labels";
-import { PANEL_ID, type PanelMode } from "../assistant/panel";
 import { useIntegration } from "../integrations/hooks";
 import { useRefresh } from "../integrations/sync";
 import { useCurrentWorkspace, useWorkspaceDetail } from "../workspace/hooks";
+import { AskBar } from "./AskBar";
 import styles from "./CommandCentre.module.css";
 import { stampLabel } from "./format";
 import { useSyncWatcher, type FinanceTab } from "./hooks";
+import { CLARIO, OVERVIEW, PAGES } from "./pages";
+import { isMonthKey, isPeriodKey, resolvePeriod, type PeriodKey } from "./period";
+import { PeriodPicker } from "./PeriodPicker";
+import { ClarioTab } from "./tabs/ClarioTab";
 import { BalanceSheetTab, GstTab } from "./tabs/LedgerTabs";
 import { OverviewTab } from "./tabs/OverviewTab";
+import { PayablesTab } from "./tabs/PayablesTab";
 import { ReceivablesTab } from "./tabs/ReceivablesTab";
+import type { TabProps } from "./tabs/TabBody";
 import { TrendsTab } from "./tabs/TrendsTab";
 
-// The panel is its own chunk, fetched the first time someone opens it.
+// The conversation is its own chunk, fetched the first time someone opens Clario AI.
 const AssistantPanel = lazy(() => import("../assistant/AssistantPanel"));
 
-const TABS: { value: FinanceTab; label: string }[] = [
-  { value: "overview", label: "Overview" },
-  { value: "trends", label: "Trends & Analysis" },
-  { value: "balance-sheet", label: "Balance Sheet" },
-  { value: "gst", label: "GST" },
-  { value: "receivables", label: "Receivables" },
-];
+const DATELINE = new Intl.DateTimeFormat("en-IN", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 
 export default function CommandCentre() {
   const { integration: key = "", tab = "overview" } = useParams();
@@ -46,7 +56,7 @@ export default function CommandCentre() {
   if (integration.isPending) {
     return (
       <div className={styles.loading} aria-busy="true">
-        <Skeleton width="40%" height={28} />
+        <Skeleton width="30%" height={26} />
         <Skeleton height={176} radius="md" />
       </div>
     );
@@ -56,7 +66,7 @@ export default function CommandCentre() {
   if (!tile || tile.domain !== "finance" || !connection?.account) {
     return <Navigate to={overview} replace />;
   }
-  if (!TABS.some((t) => t.value === tab))
+  if (tab !== CLARIO.value && !PAGES.some((t) => t.value === tab))
     return <Navigate to={`${overview}/finance/overview`} replace />;
 
   return (
@@ -93,89 +103,135 @@ interface CentreProps {
 function Centre(props: CentreProps) {
   const { workspaceId, connectionId, base, tab, organisation, system, needsReauth, canManage } =
     props;
-  const navigate = useNavigate();
   const [search, setSearch] = useSearchParams();
-  const askButton = useRef<HTMLButtonElement>(null);
-  const requested = search.get("assistant");
-  const mode: PanelMode | null =
-    props.canAsk && (requested === "open" || requested === "full") ? requested : null;
-  const conversationId = mode ? search.get("c") : null;
+  const navigate = useNavigate();
+  const onClario = tab === CLARIO.value;
+  const conversationId = onClario ? search.get("c") : null;
+  const page = onClario ? CLARIO : (PAGES.find((p) => p.value === tab) ?? OVERVIEW);
 
-  /** Panel state lives in the URL (plan §9.3), so a reload or a shared link keeps it. */
-  const setPanel = (next: PanelMode | null, conversation: string | null = conversationId) => {
+  // ---------------------------------------------------------------- period (URL state)
+  const today = new Date();
+  const periodKey = search.get("period");
+  const from = search.get("from");
+  const to = search.get("to");
+  const period = resolvePeriod(
+    isPeriodKey(periodKey) ? periodKey : "all",
+    today,
+    props.fiscalStart ?? 4,
+    isMonthKey(from) && isMonthKey(to) ? { from, to } : null,
+  );
+  const setPeriod = (key: PeriodKey, custom?: { from: string; to: string }) =>
     setSearch(
       (current) => {
         const params = new URLSearchParams(current);
-        params.delete("assistant");
-        params.delete("c");
-        if (next) params.set("assistant", next);
-        if (next && conversation) params.set("c", conversation);
+        for (const name of ["period", "from", "to"]) params.delete(name);
+        if (key !== "all") params.set("period", key);
+        if (key === "custom" && custom) {
+          params.set("from", custom.from);
+          params.set("to", custom.to);
+        }
         return params;
       },
       { replace: true },
     );
-    if (!next) askButton.current?.focus();
+
+  /** The conversation lives in the URL (plan §9.3), so a reload or a shared link keeps it. */
+  const clarioSearch = (conversation: string | null, question?: string, send = false) => {
+    const params = new URLSearchParams(search);
+    for (const name of ["assistant", "c", "q", "send"]) params.delete(name);
+    if (conversation) params.set("c", conversation);
+    if (question) params.set("q", question);
+    if (question && send) params.set("send", "1");
+    return params;
   };
+  const setConversation = (id: string | null) => setSearch(clarioSearch(id), { replace: true });
+  /**
+   * Ask Clario with `question` in a new conversation; `send` asks it at once (typed into an Ask
+   * box), otherwise it is placed in the box to review. From a report this goes to Clario AI; on
+   * Clario AI it fills the conversation at the top of the page.
+   */
+  const ask = props.canAsk
+    ? (question: string, send = false) => {
+        const params = clarioSearch(null, question, send);
+        if (onClario) {
+          setSearch(params, { replace: true });
+          document.getElementById("ask")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          void navigate({ pathname: `${base}/finance/${CLARIO.value}`, search: params.toString() });
+        }
+      }
+    : undefined;
+
+  const pageHref = (value: FinanceTab) => ({
+    pathname: `${base}/finance/${value}`,
+    search: clarioSearch(value === CLARIO.value ? conversationId : null).toString(),
+  });
+
   const sync = useSyncWatcher(workspaceId, connectionId);
   const refresh = useRefresh(workspaceId, connectionId);
   const running = sync.data?.state === "running";
   const asOf = sync.data?.as_of;
   const refreshError = refresh.error instanceof ApiError ? refresh.error.detail : null;
-  const tabProps = { workspaceId, connectionId };
+  const tabProps: TabProps = {
+    workspaceId,
+    connectionId,
+    period,
+    pageHref,
+    ask,
+    askCard: ask ? (
+      <AskBar organisation={organisation} prompts={page.prompts} onAsk={ask} variant="card" />
+    ) : null,
+    chat: props.canAsk ? (
+      <Suspense fallback={<div className={styles.panelLoading} aria-busy="true" />}>
+        <AssistantPanel
+          workspaceId={workspaceId}
+          connectionId={connectionId}
+          system={system}
+          organisation={organisation}
+          domainName={props.domainName}
+          conversationId={conversationId}
+          suggestions={CLARIO.prompts}
+          prefill={search.get("q")}
+          autoSend={search.get("send") === "1"}
+          onConversationChange={setConversation}
+          needsReauth={needsReauth}
+          canManage={canManage}
+          connectionHref={`${base}/connection`}
+        />
+      </Suspense>
+    ) : null,
+  };
+
+  // Links from before Clario AI was a page (`?assistant=open`) land on it, conversation kept.
+  if (search.has("assistant")) {
+    const params = new URLSearchParams(search);
+    params.delete("assistant");
+    return (
+      <Navigate
+        to={{ pathname: `${base}/finance/${CLARIO.value}`, search: params.toString() }}
+        replace
+      />
+    );
+  }
+
+  const state = (tone: string, text: string) => (
+    <span className={styles.state} data-tone={tone}>
+      <span className={styles.dot} aria-hidden="true" />
+      {text}
+    </span>
+  );
+  const status = needsReauth
+    ? state("warning", "Reconnect needed")
+    : !sync.data
+      ? null
+      : running
+        ? state("info", `Updating from ${system}…`)
+        : asOf
+          ? state("positive", `Synced ${stampLabel(asOf)}`)
+          : state("neutral", "Not fully imported yet");
 
   return (
     <div className={styles.page}>
-      <PageHeader
-        eyebrow={`Finance · ${system}`}
-        title={organisation}
-        divider={false}
-        meta={
-          <span className={styles.meta}>
-            {props.fiscalStart ? (
-              <span>Financial year {fiscalYearLabel(props.fiscalStart)}</span>
-            ) : null}
-            <span aria-live="polite">
-              {!sync.data ? null : running ? (
-                <Status tone="info">{`Updating from ${system}…`}</Status>
-              ) : asOf ? (
-                `Data as of ${stampLabel(asOf)}`
-              ) : (
-                "Not fully imported yet"
-              )}
-            </span>
-          </span>
-        }
-        actions={
-          <>
-            <Link to={`${base}/connection`} className={styles.link}>
-              Connection
-            </Link>
-            {props.canAsk ? (
-              <Button
-                ref={askButton}
-                size="sm"
-                variant={mode ? "secondary" : "primary"}
-                icon={<MessageSquareText size={14} aria-hidden="true" />}
-                aria-expanded={mode !== null}
-                aria-controls={mode ? PANEL_ID : undefined}
-                onClick={() => setPanel(mode ? null : "open")}
-              >
-                {`Ask ${props.domainName}`}
-              </Button>
-            ) : null}
-            <Button
-              size="sm"
-              icon={<RefreshCw size={14} aria-hidden="true" />}
-              pending={refresh.isPending || running}
-              pendingLabel={running ? "Updating…" : "Starting…"}
-              disabled={needsReauth}
-              onClick={() => refresh.mutate()}
-            >
-              Refresh live
-            </Button>
-          </>
-        }
-      />
       {needsReauth ? (
         <Alert
           tone="warning"
@@ -192,61 +248,63 @@ function Centre(props: CentreProps) {
           Some data hasn't been imported yet, so figures may be incomplete.
         </Alert>
       ) : null}
-      <div className={styles.body} data-assistant={mode ?? undefined}>
-        {mode !== "full" ? (
-          <div className={styles.dashboard}>
-            <Tabs
-              label="Command Centre sections"
-              value={tab}
-              onValueChange={(value) =>
-                void navigate({ pathname: `${base}/finance/${value}`, search: search.toString() })
-              }
-              tabs={TABS.map((t) => ({
-                value: t.value,
-                label: t.label,
-                content:
-                  t.value === "overview" ? (
-                    <OverviewTab {...tabProps} />
-                  ) : t.value === "trends" ? (
-                    <TrendsTab {...tabProps} />
-                  ) : t.value === "receivables" ? (
-                    <ReceivablesTab {...tabProps} />
-                  ) : t.value === "gst" ? (
-                    <GstTab {...tabProps} />
-                  ) : (
-                    <BalanceSheetTab {...tabProps} />
-                  ),
-              }))}
-            />
+      <div className={styles.dashboard}>
+        <header className={styles.header}>
+          <div className={styles.headText}>
+            <p className={styles.context} aria-live="polite">
+              <span className={styles.org}>{organisation}</span>
+              <span>{system}</span>
+              {status}
+              {props.fiscalStart ? (
+                <span>Financial year {fiscalYearLabel(props.fiscalStart)}</span>
+              ) : null}
+              <Link to={`${base}/connection`} className={styles.link}>
+                Connection
+              </Link>
+            </p>
+            <h1 className={styles.title}>{page.label}</h1>
+            <p className={styles.lede}>{page.lede}</p>
           </div>
+          <div className={styles.tools}>
+            <span className={styles.today}>{DATELINE.format(today)}</span>
+            <div className={styles.controls}>
+              {onClario ? null : (
+                <PeriodPicker period={period} today={today} onChange={setPeriod} />
+              )}
+              <Button
+                size="sm"
+                variant="secondary"
+                className={styles.sync}
+                icon={<RefreshCw size={15} aria-hidden="true" />}
+                pending={refresh.isPending || running}
+                pendingLabel={running ? "Updating…" : "Starting…"}
+                disabled={needsReauth}
+                onClick={() => refresh.mutate()}
+                title={`Refresh from ${system}`}
+              >
+                Sync
+              </Button>
+            </div>
+          </div>
+        </header>
+        {ask && tab !== "overview" && !onClario ? (
+          <AskBar organisation={organisation} prompts={page.prompts} onAsk={ask} />
         ) : null}
-        {mode ? (
-          <>
-            <button
-              type="button"
-              className={styles.scrim}
-              aria-hidden="true"
-              tabIndex={-1}
-              onClick={() => setPanel(null)}
-            />
-            <Suspense fallback={<div className={styles.panelLoading} aria-busy="true" />}>
-              <AssistantPanel
-                workspaceId={workspaceId}
-                connectionId={connectionId}
-                system={system}
-                organisation={organisation}
-                domainName={props.domainName}
-                mode={mode}
-                conversationId={conversationId}
-                onConversationChange={(id) => setPanel(mode, id)}
-                onModeChange={(next) => setPanel(next)}
-                needsReauth={needsReauth}
-                canManage={canManage}
-                connectionHref={`${base}/connection`}
-              />
-            </Suspense>
-          </>
-        ) : null}
+        {tab === "overview" ? (
+          <OverviewTab {...tabProps} />
+        ) : tab === "trends" ? (
+          <TrendsTab {...tabProps} />
+        ) : tab === "payables" ? (
+          <PayablesTab {...tabProps} />
+        ) : tab === "gst" ? (
+          <GstTab {...tabProps} />
+        ) : tab === "receivables" ? (
+          <ReceivablesTab {...tabProps} />
+        ) : tab === "balance-sheet" ? (
+          <BalanceSheetTab {...tabProps} />
+        ) : (
+          <ClarioTab {...tabProps} />
+        )}
       </div>
     </div>
   );

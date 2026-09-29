@@ -1,23 +1,24 @@
+/* A figure (plan §27.10): sentence-case label, a large tabular number, a quiet basis pill. */
 .figure {
   display: grid;
-  gap: var(--space-1);
+  align-content: start;
+  gap: 6px;
   min-width: 0;
+  margin: 0;
 }
 
 .label {
-  color: var(--ink-3);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
 }
 
 .value {
-  /* Compositions may shrink figures with --figure-size (e.g. the 2-up KPI band on phones). */
-  font-size: var(--figure-size, var(--text-3xl));
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-tight);
-  line-height: 1.1;
+  /* Compositions may resize figures with --figure-size. */
+  font-size: var(--figure-size, 1.875rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
 }
@@ -28,11 +29,16 @@
 
 .basis {
   justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
   color: var(--ink-3);
   font-size: 0.6875rem;
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
 }
 
 .context {

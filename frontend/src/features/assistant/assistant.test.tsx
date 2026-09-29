@@ -1,5 +1,5 @@
 /**
- * The assistant panel inside the Finance Command Centre (plan §26), on the real route tree against
+ * The Finance Assistant on the Clario AI page (plan §26, §27.11), on the real route tree against
  * a stateful mock of the chat API.
  */
 import { configure, screen, waitFor, within } from "@testing-library/react";
@@ -108,6 +108,7 @@ function api(options: Options = {}) {
     },
     [`GET ${connection}/finance/overview`]: { status: 200, body: golden.overview },
     [`GET ${connection}/finance/trends`]: { status: 200, body: golden.trends },
+    [`GET ${connection}/finance/receivables`]: { status: 200, body: golden.receivables },
     [`GET ${connection}/finance/invoices`]: { status: 200, body: golden.invoices },
     [`GET ${assistant}`]: () => {
       const info = typeof options.info === "function" ? options.info() : options.info;
@@ -181,15 +182,21 @@ function api(options: Options = {}) {
 }
 
 const box = () => screen.getByRole("textbox", { name: "Ask the Finance Assistant" });
-/** The open panel, once its assistant info has loaded (the box is disabled until then). */
+/** The conversation, once its assistant info has loaded (the box is disabled until then). */
 async function panel() {
-  const aside = await screen.findByRole("complementary", { name: "Finance Assistant" });
+  const aside = await screen.findByRole("region", { name: "Finance Assistant" });
   await waitFor(() => expect(box()).toBeEnabled());
   return aside;
 }
 
-describe("Finance Assistant panel", () => {
-  it("opens from the Command Centre and answers a suggested question with its sources", async () => {
+/** The Ask Clario pill in the top bar. */
+const topBarAsk = () =>
+  within(screen.getAllByRole("banner")[0] as HTMLElement).findByRole("link", {
+    name: "Ask Clario",
+  });
+
+describe("Clario AI: the Finance Assistant", () => {
+  it("opens as its own page from the top bar and answers a suggested question", async () => {
     const { calls } = api({
       answers: [
         {
@@ -199,13 +206,18 @@ describe("Finance Assistant panel", () => {
       ],
     });
     const { user, router } = renderApp(`${PAGE}/overview`);
-    const ask = await screen.findByRole("button", { name: "Ask Finance" });
-    expect(ask).toHaveAttribute("aria-expanded", "false");
+    await screen.findByRole("region", { name: "Key figures" });
+    const ask = await topBarAsk();
+    expect(ask).not.toHaveAttribute("aria-current");
     await user.click(ask);
 
+    expect(router.state.location.pathname).toBe(`${PAGE}/clario`);
+    expect(await screen.findByRole("heading", { level: 1, name: "Clario AI" })).toBeVisible();
     const aside = await panel();
-    expect(ask).toHaveAttribute("aria-expanded", "true");
-    expect(within(aside).getByText("Crita Creative LLP · Zoho Books")).toBeInTheDocument();
+    expect(await topBarAsk()).toHaveAttribute("aria-current", "page");
+    expect(
+      within(aside).getByText("Finance Assistant · Crita Creative LLP · Zoho Books"),
+    ).toBeInTheDocument();
     await waitFor(() => expect(box()).toHaveFocus());
     await user.click(within(aside).getByRole("button", { name: "Which invoices are overdue?" }));
 
@@ -213,7 +225,7 @@ describe("Finance Assistant panel", () => {
     expect(await within(log).findByText("₹58,094")).toBeInTheDocument();
     expect(log).toHaveTextContent("You asked: Which invoices are overdue?");
     expect(log).toHaveTextContent("Based on Receivables · data as of 25 Sept");
-    expect(router.state.location.search).toBe("?assistant=open&c=c-1");
+    expect(router.state.location.search).toBe("?c=c-1");
     expect(calls.filter((c) => c.method === "POST").map((c) => c.path)).toEqual([
       `${assistant}/conversations`,
       `${assistant}/conversations/c-1/messages`,
@@ -222,9 +234,9 @@ describe("Finance Assistant panel", () => {
     expect(within(aside).queryByRole("list", { name: "Suggested questions" })).toBeNull();
   });
 
-  it("sends with Enter, keeps Shift+Enter for new lines, and keeps panel state across tabs", async () => {
+  it("sends with Enter, keeps Shift+Enter for new lines, and never pops up on a report", async () => {
     const { calls } = api();
-    const { user, router } = renderApp(`${PAGE}/overview?assistant=open`);
+    const { user, router } = renderApp(`${PAGE}/clario`);
     await panel();
     await user.type(box(), "Revenue this year?{Shift>}{Enter}{/Shift}please");
     expect(box()).toHaveValue("Revenue this year?\nplease");
@@ -233,10 +245,15 @@ describe("Finance Assistant panel", () => {
     expect(await screen.findByText("Noted.")).toBeInTheDocument();
     expect(box()).toHaveValue("");
 
-    await user.click(screen.getByRole("tab", { name: "Trends & Analysis" }));
+    await user.click(
+      within(screen.getByRole("navigation", { name: "Finance pages" })).getByRole("link", {
+        name: "Trends & Analysis",
+      }),
+    );
     expect(router.state.location.pathname).toBe(`${PAGE}/trends`);
-    expect(router.state.location.search).toBe("?assistant=open&c=c-1");
-    expect(await panel()).toBeInTheDocument();
+    expect(router.state.location.search).toBe("");
+    await screen.findByRole("table", { name: "Month on month" });
+    expect(screen.queryByRole("region", { name: "Finance Assistant" })).toBeNull();
   });
 
   it("reopens a conversation from the URL, lists earlier ones and deletes with confirmation", async () => {
@@ -249,7 +266,7 @@ describe("Finance Assistant panel", () => {
       message("assistant", "GST payable is ₹5,665.", { sources: ["GST"], as_of: AS_OF }),
     ]);
     const { store } = api({ conversations: [first, second] });
-    const { user, router, container } = renderApp(`${PAGE}/overview?assistant=open&c=c-1`);
+    const { user, router, container } = renderApp(`${PAGE}/clario?c=c-1`);
     const aside = await panel();
     expect(await within(aside).findByText("Client A owes ₹23,965.")).toBeInTheDocument();
 
@@ -262,13 +279,13 @@ describe("Finance Assistant panel", () => {
     await expectNoA11yViolations(container);
     await user.click(within(list).getByRole("button", { name: /^GST payable\?/ }));
     expect(await within(aside).findByText("GST payable is ₹5,665.")).toBeInTheDocument();
-    expect(router.state.location.search).toBe("?assistant=open&c=c-2");
+    expect(router.state.location.search).toBe("?c=c-2");
 
     await user.click(within(aside).getByRole("button", { name: "Your conversations" }));
     await user.click(await within(aside).findByRole("button", { name: "Delete “GST payable?”" }));
     await user.click(within(aside).getByRole("button", { name: "Delete" }));
     await waitFor(() => expect(store.has("c-2")).toBe(false));
-    expect(router.state.location.search).toBe("?assistant=open");
+    expect(router.state.location.search).toBe("");
     expect(
       await within(aside).findByRole("button", { name: /^Who owes us the most\?/ }),
     ).toBeInTheDocument();
@@ -286,7 +303,7 @@ describe("Finance Assistant panel", () => {
     const { calls } = api({
       answers: [down, { content: "GST payable is ₹5,665.", sources: ["GST"] }],
     });
-    const { user } = renderApp(`${PAGE}/overview?assistant=open`);
+    const { user } = renderApp(`${PAGE}/clario`);
     await panel();
     await user.type(box(), "GST payable?{Enter}");
     expect(
@@ -314,7 +331,7 @@ describe("Finance Assistant panel", () => {
         },
       ],
     });
-    const { user } = renderApp(`${PAGE}/overview?assistant=open`);
+    const { user } = renderApp(`${PAGE}/clario`);
     await panel();
     await user.type(box(), "Cash on hand?{Enter}");
     expect(await screen.findByText(/sending messages quickly/)).toBeInTheDocument();
@@ -323,8 +340,8 @@ describe("Finance Assistant panel", () => {
 
   it("says so when the assistant isn't set up, or the connection needs reconnecting", async () => {
     api({ info: { ...INFO, available: false }, needsReauth: true });
-    renderApp(`${PAGE}/overview?assistant=open`);
-    const aside = await screen.findByRole("complementary", { name: "Finance Assistant" });
+    renderApp(`${PAGE}/clario`);
+    const aside = await screen.findByRole("region", { name: "Finance Assistant" });
     expect(await within(aside).findByText(/isn't set up on this server yet/)).toBeInTheDocument();
     expect(within(aside).getByText(/needs reconnecting, so answers use figures/)).toBeVisible();
     expect(within(aside).getByRole("link", { name: "Reconnect" })).toHaveAttribute(
@@ -335,24 +352,48 @@ describe("Finance Assistant panel", () => {
     expect(within(aside).queryByRole("list", { name: "Suggested questions" })).toBeNull();
   });
 
-  it("closes with Escape and returns focus to Ask Finance; expands to full width", async () => {
-    api();
-    const { user, router } = renderApp(`${PAGE}/overview`);
-    await user.click(await screen.findByRole("button", { name: "Ask Finance" }));
+  it("takes links from the old popup (?assistant=open) to Clario AI, keeping the conversation", async () => {
+    api({
+      conversations: [
+        conversation("c-1", "Who owes us the most?", [
+          message("user", "Who owes us the most?"),
+          message("assistant", "Client A owes ₹23,965.", { sources: ["Receivables"] }),
+        ]),
+      ],
+    });
+    const { router } = renderApp(`${PAGE}/overview?assistant=open&c=c-1`);
     const aside = await panel();
-    await user.click(within(aside).getByRole("button", { name: "Expand to full width" }));
-    expect(router.state.location.search).toBe("?assistant=full");
-    expect(screen.queryByRole("tablist")).toBeNull();
-    expect(await within(aside).findByText(/No conversations yet/)).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe(`${PAGE}/clario`);
+    expect(router.state.location.search).toBe("?c=c-1");
+    expect(await within(aside).findByText("Client A owes ₹23,965.")).toBeInTheDocument();
+    // No close or expand: it is a page, not a panel.
+    expect(within(aside).queryByRole("button", { name: /Close|Expand/ })).toBeNull();
+  });
 
-    // Focus stays on the button that was pressed; Escape works from anywhere in the panel.
-    expect(within(aside).getByRole("button", { name: "Show beside the dashboard" })).toHaveFocus();
-    await user.keyboard("{Escape}");
-    await waitFor(() =>
-      expect(screen.queryByRole("complementary", { name: "Finance Assistant" })).toBeNull(),
+  it("sends a question typed into a report's Ask box on Clario AI; a suggestion only places it", async () => {
+    const { calls } = api({ answers: [{ content: "TEST Bluefin owes the most.", sources: [] }] });
+    const { user, router } = renderApp(`${PAGE}/trends?period=fy`);
+    const field = await screen.findByRole("textbox", { name: "Ask Clario a question" });
+    await user.type(field, "Who owes us the most?{Enter}");
+
+    expect(router.state.location.pathname).toBe(`${PAGE}/clario`);
+    const aside = await panel();
+    expect(await within(aside).findByText("TEST Bluefin owes the most.")).toBeInTheDocument();
+    expect(router.state.location.search).toBe("?period=fy&c=c-1");
+    expect(calls.filter((c) => c.path.endsWith("/messages")).map((c) => c.body)).toEqual([
+      { content: "Who owes us the most?" },
+    ]);
+
+    await user.click(
+      within(screen.getByRole("navigation", { name: "Finance pages" })).getByRole("link", {
+        name: "GST",
+      }),
     );
-    expect(router.state.location.search).toBe("");
-    expect(screen.getByRole("button", { name: "Ask Finance" })).toHaveFocus();
+    await user.click(await screen.findByRole("button", { name: "What is our GST position?" }));
+    expect(router.state.location.pathname).toBe(`${PAGE}/clario`);
+    await panel();
+    expect(box()).toHaveValue("What is our GST position?");
+    expect(calls.filter((c) => c.path.endsWith("/messages"))).toHaveLength(1);
   });
 
   it("renders answers as safe text: no raw HTML, no links", async () => {
@@ -365,7 +406,7 @@ describe("Finance Assistant panel", () => {
         },
       ],
     });
-    const { user } = renderApp(`${PAGE}/overview?assistant=open`);
+    const { user } = renderApp(`${PAGE}/clario`);
     const aside = await panel();
     await user.type(box(), "Revenue?{Enter}");
     const log = await within(aside).findByRole("log");
@@ -375,15 +416,14 @@ describe("Finance Assistant panel", () => {
     expect(log).toHaveTextContent("See the report.");
   });
 
-  it("is not offered to people without the assistant permission", async () => {
+  it("without the assistant permission, Clario AI shows its intelligence but no conversation", async () => {
     api({ permissions: ["workspace.view", "finance.view"] });
-    renderApp(`${PAGE}/overview?assistant=open`);
-    expect(
-      await screen.findByRole("heading", { level: 1, name: "Crita Creative LLP" }),
-    ).toBeVisible();
-    await screen.findByRole("region", { name: "Key figures" });
-    expect(screen.queryByRole("button", { name: "Ask Finance" })).toBeNull();
-    expect(screen.queryByRole("complementary", { name: "Finance Assistant" })).toBeNull();
+    renderApp(`${PAGE}/clario`);
+    expect(await screen.findByRole("heading", { level: 1, name: "Clario AI" })).toBeVisible();
+    expect(await screen.findByRole("region", { name: "Signals" })).toBeInTheDocument();
+    expect(screen.getByText("Ask Clario isn't available for your role")).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Finance Assistant" })).toBeNull();
+    expect(screen.queryByRole("textbox", { name: "Ask Clario a question" })).toBeNull();
   });
 
   it("shows the AI usage limit with the server's reset time, and keeps the question", async () => {
@@ -404,7 +444,7 @@ describe("Finance Assistant panel", () => {
           : INFO,
       answers: [{ status: 429, body: LIMIT }],
     });
-    const { user } = renderApp(`${PAGE}/overview?assistant=open`);
+    const { user } = renderApp(`${PAGE}/clario`);
     const aside = await panel();
     expect(within(aside).getByText("Available")).toBeInTheDocument();
     limited = true; // the server records Groq's 429, so its status now reports the limit
@@ -427,8 +467,8 @@ describe("Finance Assistant panel", () => {
     const { calls } = api({
       info: { status: 404, body: { code: "not_found", detail: "Not Found" } },
     });
-    renderApp(`${PAGE}/overview?assistant=open`);
-    const aside = await screen.findByRole("complementary", { name: "Finance Assistant" });
+    renderApp(`${PAGE}/clario`);
+    const aside = await screen.findByRole("region", { name: "Finance Assistant" });
     expect(await within(aside).findByText(/can't be reached right now/)).toBeInTheDocument();
     expect(within(aside).getByText("Can't be reached")).toBeInTheDocument();
     expect(within(aside).queryByText("Not Found")).toBeNull();
@@ -443,7 +483,7 @@ describe("Finance Assistant panel", () => {
         status: { state: "unconfirmed", resets_in_seconds: null, limit_scope: null },
       },
     });
-    renderApp(`${PAGE}/overview?assistant=open`);
+    renderApp(`${PAGE}/clario`);
     const aside = await panel(); // the box is enabled: the next question decides
     expect(within(aside).queryByText("Available")).toBeNull();
     expect(within(aside).queryByText("Usage limit reached")).toBeNull();
@@ -456,5 +496,18 @@ describe("Finance Assistant panel", () => {
       "9s",
       "1h",
     ]);
+  });
+
+  it("asks about a signal with the question ready to send, never sent automatically", async () => {
+    const { calls } = api();
+    const { user, router } = renderApp(`${PAGE}/clario`);
+    const signals = await screen.findByRole("region", { name: "Signals" });
+    const [ask] = within(signals).getAllByRole("button", { name: "Ask Clario" });
+    await user.click(ask as HTMLElement);
+    await panel();
+    expect(box()).toHaveValue("Which invoices are overdue and who should I follow up with first?");
+    expect(router.state.location.pathname).toBe(`${PAGE}/clario`);
+    expect(router.state.location.search).toContain("q=");
+    expect(calls.some((c) => c.method === "POST")).toBe(false);
   });
 });

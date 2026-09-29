@@ -4,7 +4,7 @@
   align-content: start;
   padding: var(--space-5);
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface);
 }
 
@@ -18,6 +18,8 @@
 
 .title {
   font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
 }
 
 .statement {
@@ -61,7 +63,7 @@
 
 .line[data-kind="total"] {
   margin-top: var(--space-1);
-  border-top: 3px double var(--line-strong);
+  border-top: 2px solid var(--ink);
 }
 
 .amount {
@@ -71,8 +73,9 @@
 }
 
 .line[data-kind="total"] .amount {
-  font-size: var(--text-xl);
-  font-weight: var(--weight-semibold);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
 }
 
 .amount[data-negative] {

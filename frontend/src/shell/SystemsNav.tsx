@@ -1,5 +1,5 @@
-/** "Systems" group in the left navigation: the workspace's available integrations only. */
-import { Database } from "lucide-react";
+/** The workspace's available systems, as compact links in the top bar (a list in the drawer). */
+import { LayoutGrid } from "lucide-react";
 import { NavLink } from "react-router";
 
 import { useIntegrations } from "../features/integrations/hooks";
@@ -15,12 +15,15 @@ export function SystemsNav({ workspaceId, base }: { workspaceId: string; base: s
       <p className={styles.groupLabel} id="systems-nav-label">
         Systems
       </p>
-      <ul className={styles.nav} aria-labelledby="systems-nav-label">
+      <ul className={styles.links} aria-labelledby="systems-nav-label">
         {available.map((i) => (
           <li key={i.key}>
-            <NavLink to={`${base}/${i.key}`} className={cx(styles.navItem)}>
-              <Database size={16} aria-hidden="true" />
-              {i.name}
+            <NavLink to={`${base}/${i.key}`} end className={cx(styles.iconLink)} title={i.name}>
+              <LayoutGrid size={18} aria-hidden="true" />
+              <span className={styles.linkLabel}>{i.name}</span>
+              {i.connection_state === "needs_reauth" ? (
+                <span className={styles.attention} aria-label="needs reconnecting" />
+              ) : null}
             </NavLink>
           </li>
         ))}

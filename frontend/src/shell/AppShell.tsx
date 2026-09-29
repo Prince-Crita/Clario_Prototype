@@ -1,7 +1,11 @@
 /**
- * Workspace layout (plan §9.3, §27.2): left navigation (232 px, collapses to a top bar + drawer
- * under 900 px), workspace switcher, user menu, and the page outlet. Resolves the workspace from
- * the URL slug against the signed-in user's memberships; unknown slugs show "not found".
+ * Workspace layout — "Crita Intelligence" (plan §27.10). One white top bar carries the product:
+ * the Clario mark and workspace on the left, the finance pages in the centre (a green dot marks
+ * the current one), and on the right Ask Clario (an ink pill), Home, Systems, Settings and the
+ * account. Under 1180 px the pages become a menu; under 720 px a slim bar, a drawer and a bottom
+ * bar with Ask Clario at its centre.
+ * Resolves the workspace from the URL slug against the signed-in user's memberships; unknown
+ * slugs show "not found".
  */
 import { Home, Menu as MenuIcon, Settings, X } from "lucide-react";
 import { useState } from "react";
@@ -11,7 +15,9 @@ import { Lockup } from "../brand/Wordmark";
 import { useRequiredSession } from "../features/auth/hooks";
 import { CurrentWorkspaceContext } from "../features/workspace/hooks";
 import { cx } from "../lib/cx";
+import { AskClarioEntry, MobileFinanceBar } from "./AskClarioEntry";
 import styles from "./AppShell.module.css";
+import { FinancePagesNav } from "./FinancePagesNav";
 import { NotFound } from "./NotFound";
 import { SystemsNav } from "./SystemsNav";
 import { UserMenu } from "./UserMenu";
@@ -39,58 +45,66 @@ export function AppShell() {
 
   return (
     <CurrentWorkspaceContext.Provider value={workspace}>
-      <div className={styles.shell}>
+      <div className={styles.shell} data-drawer={drawerOpen || undefined}>
         <header className={styles.topbar}>
-          <button
-            type="button"
-            className={styles.menuButton}
-            aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
-            aria-expanded={drawerOpen}
-            aria-controls="primary-navigation"
-            onClick={() => setDrawerOpen(!drawerOpen)}
-          >
-            {drawerOpen ? (
-              <X size={20} aria-hidden="true" />
-            ) : (
-              <MenuIcon size={20} aria-hidden="true" />
-            )}
-          </button>
-          <Link to={base} className={styles.brandLink} aria-label={`${workspace.name} home`}>
-            <Lockup size="sm" />
-          </Link>
-        </header>
+          <div className={styles.inner}>
+            <button
+              type="button"
+              className={styles.menuButton}
+              aria-label={drawerOpen ? "Close navigation" : "Open navigation"}
+              aria-expanded={drawerOpen}
+              aria-controls="primary-navigation"
+              onClick={() => setDrawerOpen(!drawerOpen)}
+            >
+              {drawerOpen ? (
+                <X size={20} aria-hidden="true" />
+              ) : (
+                <MenuIcon size={20} aria-hidden="true" />
+              )}
+            </button>
+            <Link to={base} className={styles.brand} aria-label={`${workspace.name} home`}>
+              <Lockup size="sm" />
+            </Link>
+            <div className={styles.workspace}>
+              <WorkspaceSwitcher current={workspace} workspaces={session.workspaces} />
+            </div>
 
-        <nav
-          id="primary-navigation"
-          className={styles.rail}
-          data-open={drawerOpen || undefined}
-          aria-label="Primary"
-        >
-          <Link to={base} className={styles.brand} aria-label={`${workspace.name} home`}>
-            <Lockup size="sm" />
-          </Link>
-          <WorkspaceSwitcher current={workspace} workspaces={session.workspaces} />
-          <ul className={styles.nav}>
-            <li>
-              <NavLink to={base} end className={cx(styles.navItem)}>
-                <Home size={16} aria-hidden="true" />
-                Home
-              </NavLink>
-            </li>
-          </ul>
-          <SystemsNav workspaceId={workspace.id} base={base} />
-          <div className={styles.railFooter}>
-            <ul className={styles.nav}>
-              <li>
-                <NavLink to={`${base}/settings`} className={cx(styles.navItem)}>
-                  <Settings size={16} aria-hidden="true" />
-                  Settings
-                </NavLink>
-              </li>
-            </ul>
-            <UserMenu user={session.user} settingsPath={`${base}/settings`} />
+            <FinancePagesNav workspaceId={workspace.id} base={base} />
+
+            <div className={styles.actions}>
+              <AskClarioEntry workspaceId={workspace.id} base={base} />
+              <nav
+                id="primary-navigation"
+                className={styles.nav}
+                data-open={drawerOpen || undefined}
+                aria-label="Primary"
+              >
+                <ul className={styles.links}>
+                  <li>
+                    <NavLink to={base} end className={cx(styles.iconLink)} title="Home">
+                      <Home size={18} aria-hidden="true" />
+                      <span className={styles.linkLabel}>Home</span>
+                    </NavLink>
+                  </li>
+                </ul>
+                <SystemsNav workspaceId={workspace.id} base={base} />
+                <ul className={styles.links}>
+                  <li>
+                    <NavLink
+                      to={`${base}/settings`}
+                      className={cx(styles.iconLink)}
+                      title="Settings"
+                    >
+                      <Settings size={18} aria-hidden="true" />
+                      <span className={styles.linkLabel}>Settings</span>
+                    </NavLink>
+                  </li>
+                </ul>
+              </nav>
+              <UserMenu user={session.user} settingsPath={`${base}/settings`} />
+            </div>
           </div>
-        </nav>
+        </header>
         {drawerOpen ? (
           <div className={styles.scrim} onClick={() => setDrawerOpen(false)} aria-hidden="true" />
         ) : null}
@@ -100,6 +114,11 @@ export function AppShell() {
             <Outlet />
           </div>
         </main>
+        <MobileFinanceBar
+          workspaceId={workspace.id}
+          base={base}
+          onMore={() => setDrawerOpen(true)}
+        />
       </div>
     </CurrentWorkspaceContext.Provider>
   );

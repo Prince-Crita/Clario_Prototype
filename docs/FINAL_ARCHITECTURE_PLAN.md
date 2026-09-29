@@ -1454,6 +1454,62 @@ Finance Command Centre: header · tabs · content · [Ask Finance] opens the ass
 | Quality gates | 74 frontend tests: 29 token-contrast checks, shared money vectors, API client, and flow tests on the real route tree (sign-in, redirects, chooser, shell, switcher, settings, CSRF on writes, session expiry). **axe accessibility scans** of sign-in, chooser, home and settings. A visual review of 11 real screenshots (desktop and 390-px mobile, via headless Edge) against §27 led to five refinements. |
 | Dev | `CLARIO_API_URL` overrides the Vite proxy target (default `http://127.0.0.1:8000`). |
 
+### 27.11 Clario AI as its own page (2026-09-29)
+
+Information architecture only, on the approved §27.10 design; no backend, API or data change.
+
+| Area | As built |
+|---|---|
+| Route | `/w/:workspace/:integration/finance/clario` — Clario AI. The top-bar **Ask Clario** pill and the phone's centre button are links to it (a green ring marks it as current); the tablet/phone page menu lists it after the six reports. There is no popup anywhere: the panel, its close/expand and `?assistant=` state are gone, and old `?assistant=open&c=…` links redirect to the page with the conversation kept. |
+| Clario AI | 1 **Ask Clario** — the Finance Assistant conversation (unchanged backend; starting questions inside it, "History" and "New"), beside a map of *What Clario sees right now* (counts of the sections below, as jump links) → 2 **Signals** (what needs attention) → 3 **Decision support** (what to consider) → 4 **Scenarios** (what could happen). "Ask Clario" on a signal or step places its question in the conversation and scrolls to it. The period picker is hidden here (nothing on the page depends on it). Without the assistant permission the page shows the intelligence and says the conversation isn't available for the role. |
+| Overview | "How is the business performing right now?": key figures → a line to Clario AI (how many signals it sees) → Cash & profitability → Business performance beside Ask Clario and *Where the business stands*. Signals, Decision support and Scenarios moved to Clario AI unchanged. |
+| Ask boxes | On every report, typing a question and pressing Ask goes to Clario AI and asks it straight away (`?q=…&send=1`, cleared once the conversation exists); a suggested prompt or an "Ask" on a figure goes there with the question placed, not sent. |
+
+### 27.10 Frontend redesign v3: "Crita Intelligence" (2026-09-29, supersedes §27.8 and §27.9)
+
+A new interface architecture built from Crita's brand language (crita.in): white canvas, near-black ink, one decisive green. Frontend only; content, data, routes, the assistant and the backend are unchanged. No dark rail, dark sections, gradients or glass.
+
+| Area | As built |
+|---|---|
+| Identity | White `--paper`, ink `#0F151F`, Crita green `#7DB52A` (fills and one hero object per page; deep green `#3E6B12` for green text); semantic red, amber and green only for meaning. **Inter only** (variable, self-hosted). Actions are ink pills, as on crita.in. Surfaces are 20-px-radius hairline objects; sections are separated by whitespace with a short green tick over each title. |
+| Navigation | One white **top bar**: the Clario mark and workspace (left); the six pages in order, the current one underlined in Crita green (centre; a page menu under 1180 px); an ink **Ask Clario** pill with the aperture mark, then Home, Systems and Settings as icons, and the account (right). Under 720 px: a slim bar with the page menu, a drawer (workspace, Home, Systems, Settings), and a white bottom bar with Ask Clario as a raised ink button. |
+| Page header | Organisation, system, sync, FY and connection on one line; the page title and its question; the date, period (a pill) and Sync on the right. On the pages other than Overview, an Ask Clario strip (question box and prompt chips) sits beneath it. |
+| Overview | **Key figures** as an asymmetric pair: *Financial health* (briefing sentence, Net P&L at display size, revenue against costs drawn to scale) beside a solid Crita-green *Cash position* card (cash on hand, cash collected, receivables, with meters): six figures, not a grid. Then **Signals** as horizontal rows (severity and area → what is happening with evidence → why it matters / consider → Open page / Ask Clario) beside the **Ask Clario card** and the balances panel; Cash & profitability (bars with the latest month highlighted, P&L statement); Business performance as editorial columns; Decision support as numbered rows with a tinted action cell; Scenarios as one three-part object. |
+| Pages | Each opens with its answer in words on a white panel beside a tinted summary card. Receivables ("where the money is stuck"): the ageing bar beside who owes, a collecting row with Ask Clario, open invoices, the register. GST: the answer over the equation, with the net in Crita green. Balance Sheet: one statement document, what you own and what you owe side by side. Payable: the answer beside the liability groups, then accounts, money going out and the bill-import section. Trends: a highlights band (the first in green) and a sticky segmented jump bar over the five sections. |
+| Ask Clario | Top-bar pill, Overview card, strip on other pages, phone centre button, and "Ask" pills on figures, signals, insights and sections. The panel is white with the mark on an ink disc; questions sit right-aligned, and answers are marked by a short green rule. Backend, prompts, tools and provider are untouched. |
+| Validation | Frontend 133 tests (axe included), lint, types, format and build; screenshots at 390, 900 and 1440 px on the synthetic dataset with the scripted assistant; no horizontal overflow at 390 px on any page. |
+
+### 27.9 Frontend redesign v2: "The Briefing" (2026-09-29, supersedes §27.8's composition)
+
+Clario presents itself as an executive financial briefing: numbers → signals → why it matters → what to consider → Ask Clario. Frontend only; content, data, routes and backend unchanged.
+
+| Area | As built |
+|---|---|
+| Identity | Ivory canvas (`--paper #F4F1E9`), a dark forest rail (`--rail #0F261C`), one teal-green accent derived from it (`--accent #2F6A55`); semantic colours only for meaning. **Serif + sans pairing:** Source Serif 4 (self-hosted) for page titles, chapter titles, the briefing and headline figures; Manrope for UI and tabular data. Small-caps eyebrows and labels; strong 2-px rules above chapters; cards only for single objects (tables, statements, the Position panel). |
+| Navigation | A dark rail: workspace, Home, Systems, **Finance · Zoho Books** with the six pages (Overview · Trends & Analysis · Payable · GST · Receivables · Balance Sheet), a distinct ivory **Ask Clario** block with Clario's aperture mark, then Settings and the account. Icon rail from 720 to 1179 px; under 720 px a forest app bar, the rail as a drawer, and a bottom bar with Ask Clario raised at the centre. |
+| Masthead | Every finance page: a dateline (date, organisation, system, sync, FY, connection), a serif page title and its question, Period and Sync, and the **Ask Clario command line** (a typed question is sent; suggested prompts per page only place the question). |
+| Overview | The briefing lead (serif sentences written from server figures) → the six figures as one flat ruled strip (swipeable on phones, "Ask" per figure) → numbered **Signals** beside a sticky **Where the business stands** (revenue against costs, cash against receivables and spending, collections, drawn to scale) → Cash & profitability → Business performance in ruled columns → Decision support as a timeline → Scenarios as a spectrum (risk ← current trajectory → upside). |
+| Pages | Each opens by answering its question in one serif line. Trends: chapters with a sticky numbered index and a takeaway per chapter (a month, client or category picked, or months counted, from server rows). Receivables: the ageing timeline (not yet due → 90+ days). GST: Output − Input credit = Net payable as an equation. Balance Sheet: what you own and what you owe as two ruled statements. Payable: liabilities, money going out, and the labelled bill-import section. |
+| Ask Clario | The rail block, the masthead command line, the phone bar, "Ask" on every figure, signal, insight and chapter; the panel has a forest header with the mark and "Understand your business, not just your numbers." `autoSend` asks a question typed into the command line once; everything else only places the question. |
+| Validation | Frontend 133 tests (axe scans included); lint, types, format, build; screenshots at 390, 900 and 1440 px on the synthetic dataset with a scripted assistant. |
+
+### 27.8 Frontend redesign: "financial intelligence, quietly" (2026-09-29)
+
+The CEO-approved direction: Clario interprets the business (DATA → SIGNAL → INSIGHT → DECISION → ACTION); it is not a Zoho Books viewer. Frontend only; no backend, API or AI change.
+
+| Area | As built |
+|---|---|
+| Colour | Three carriers: deep oily green `--forest #173A2B` (brand, primary actions, key data), warm off-white `--paper #F6F5F1`, charcoal `--ink #161D19`. `--forest-tint` for active and selected states. Red, amber and green only when they mean something. Charts: a green ramp plus a warm neutral for money out (`--series-*`), debt age `--age-*`. Lime survives only in the logo. All text pairs pass WCAG AA (`tokens.test.ts`). |
+| Type & shape | Manrope; sentence-case labels; page title 22, section 15, KPI 28, body 14, metadata 12; tabular figures. Radius 6 / 10, hairlines, one faint card shadow (`--shadow-card`), one popover elevation. |
+| Shell | A compact top header (brand, workspace, Home · systems · Settings, account); a drawer under 900 px. A slot beneath it (`shell/subbar.ts`) where a dashboard portals its sticky bar. |
+| Finance bar | The six pages as links with `aria-current` (Overview · Trends & Analysis · Payable · GST · Receivables · Balance Sheet), then Period, Sync and **Ask Clario**. A page menu under 1100 px; on phones a thumb-reachable Ask Clario bar. |
+| Period | `period.ts` + `PeriodPicker`: All imported data (default, keeps the approved totals), this/last month, this/last fiscal quarter, this/last FY, custom months; in the URL. The API has no period parameter, so the period selects which months the charts and monthly tables show; headline figures keep their printed window, and the picker says so. Server totals show only for All imported data (the UI never sums). |
+| Intelligence | `intelligence.ts`: pure rules over server figures that compare but never derive an amount. **Signals** (replacing "Needs attention"): what happened, why it matters, what to consider, evidence page, Ask Clario. **Business performance**: observation → impact. **Decision support**: time-boxed steps (observation → impact → recommended action). **Scenarios**: current trajectory from actual figures, with upside and risk levers from today's receivables, labelled "not forecasts" until scenario modelling exists. |
+| Overview | Six KPI cards (revenue, net P&L, cash on hand; cash collected, total costs, receivables) → Signals → Business performance → Cash & profitability → Decision support → Scenarios. Revenue by client and where the money goes moved to Trends; the invoice register moved to Receivables. |
+| Pages | Trends & Analysis: an index, then Performance, Cash movement, Revenue & billing, Expenses, Profitability. **Payable (new)**: liability balances and money going out, plus a labelled "needs vendor bill import" block (bills and due dates are not in the API). GST: a three-figure position and statement; an informative state when the books have no GST. Receivables: summary, collection risk (the ageing distribution), how overdue, who owes, open invoices, register. Balance Sheet: what you own beside what you owe, with precise group tables. |
+| Ask Clario | The product name for the capability; the panel's assistant is still the server's Finance Assistant. Signals, insights and sections carry "Ask Clario" links that open the panel with the question placed in the box (`?q=`), never sent automatically. |
+| Validation | Frontend 127 tests (the Command Centre tests keep every director-PDF figure and add Signals, insights, Payable, period and page links); lint, types, format and build pass; screenshots at 375, 768, 1024 and 1440 px on the synthetic dataset with a scripted assistant. |
+
 ### 27.7 Phase 8 implementation notes (2026-09-27)
 
 | Area | As built |

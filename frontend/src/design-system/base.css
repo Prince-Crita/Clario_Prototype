@@ -47,7 +47,8 @@ a {
   text-underline-offset: 2px;
 }
 
-a:hover {
+/* :where keeps this a default: a component's own link colour (e.g. an ink pill) wins on hover. */
+a:where(:hover) {
   color: var(--forest-hover);
 }
 

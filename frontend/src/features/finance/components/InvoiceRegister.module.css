@@ -3,7 +3,7 @@
   gap: var(--space-4);
   padding: var(--space-5);
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--surface);
 }
 
@@ -17,6 +17,8 @@
 
 .title {
   font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
 }
 
 .description {
@@ -31,27 +33,44 @@
   gap: var(--space-4);
 }
 
-/* A quiet segmented control: underline on the chosen option, like the tabs. */
+/* A segmented control: a sunken track, the chosen option raised in white. */
 .filters {
   display: inline-flex;
-  gap: var(--space-3);
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
 }
 
 .filter {
-  padding: var(--space-1) 0;
+  height: 30px;
+  padding: 0 var(--space-3);
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-radius: 999px;
   background: none;
   color: var(--ink-2);
+  font: inherit;
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   cursor: pointer;
 }
 
+.filter:hover {
+  color: var(--ink);
+}
+
 .filter[aria-pressed="true"] {
-  border-bottom-color: var(--lime);
+  background: var(--surface);
   color: var(--ink);
   font-weight: var(--weight-semibold);
+  box-shadow:
+    0 1px 2px rgb(15 21 31 / 0.08),
+    0 0 0 1px var(--line);
+}
+
+.filter:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .number {

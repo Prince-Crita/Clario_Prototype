@@ -91,7 +91,7 @@
 }
 
 .option[data-checked] {
-  box-shadow: inset 2px 0 0 var(--lime);
+  box-shadow: inset 2px 0 0 var(--forest);
   background: var(--paper);
 }
 
