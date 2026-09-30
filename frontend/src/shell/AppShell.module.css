@@ -37,7 +37,7 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  height: 40px;
+  height: var(--header-height);
   padding: 0 var(--space-1);
   border-radius: var(--radius-sm);
   color: var(--ink);
@@ -324,12 +324,14 @@
     box-shadow: var(--focus-ring);
   }
 
-  /* The mark alone */
+  /* The full logo, just smaller: the header is too narrow here for the top bar's size */
   .brand {
-    width: 30px;
-    padding: 0 0 0 4px;
-    overflow: hidden;
-    clip-path: inset(0 3px 0 0);
+    height: 60px;
+    padding: 0;
+  }
+
+  .brand img {
+    height: 50px;
   }
 
   /* The drawer lives in the header's stacking context: lift it above the scrim while open */

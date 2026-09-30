@@ -37,12 +37,18 @@
   background: var(--lime);
 }
 
-.lockup {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+/* The logo image (brand/logo.png). Height scales with `size`; width follows the file's own ratio. */
+.logo {
+  display: block;
+  height: 60px;
+  width: auto;
 }
 
-.lockup[data-size="lg"] {
-  gap: 0.75rem;
+.logo[data-size="sm"] {
+  height: 60px;
+}
+
+
+.logo[data-size="lg"] {
+  height: 90px;
 }

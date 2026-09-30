@@ -5,7 +5,7 @@
  */
 import styles from "./Wordmark.module.css";
 
-import { ApertureMark } from "./ApertureMark";
+import logo from "./logo.png";
 
 interface WordmarkProps {
   size?: "sm" | "md" | "lg";
@@ -32,13 +32,10 @@ export function Wordmark({ size = "md", tone = "default" }: WordmarkProps) {
   );
 }
 
-/** Horizontal lockup: mark + wordmark. */
-export function Lockup({ size = "md", tone = "default" }: WordmarkProps) {
-  const markSize = { sm: 22, md: 28, lg: 40 }[size];
-  return (
-    <span className={styles.lockup} data-size={size}>
-      <ApertureMark size={markSize} tone={tone} />
-      <Wordmark size={size} tone={tone} />
-    </span>
-  );
+/**
+ * The app logo. Reads its image from `logo.png` in this folder — replace that file (same name)
+ * to change the logo everywhere it appears; no code change needed.
+ */
+export function Lockup({ size = "md" }: WordmarkProps) {
+  return <img className={styles.logo} data-size={size} src={logo} alt="Clario" />;
 }
