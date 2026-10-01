@@ -1,20 +1,29 @@
 /**
- * The Overview's opening composition (plan §27.10): the six headline figures, not as six equal
- * tiles, but as two questions a director asks first.
- *   Financial health (white, wide)  — today's briefing in words, Net P&L at display size, then
- *                                     revenue against total costs drawn to scale.
- *   Cash position (Crita green)     — cash on hand, cash collected and what customers still owe.
- * Every figure keeps its label, value, one context line from server fields, its basis and window,
- * and "Ask". Bar lengths use the figures for geometry only; nothing here is summed.
+ * The six headline figures on the Overview (plan §27.12).
+ *
+ * Laid out as one row across the top of the page: a deep-green "cash card" leads five compact
+ * metric cards. All six stay inside one "Key figures" region, so the set the director asked for
+ * remains a single, checkable group: Revenue, Net P&L, Cash on hand, Cash collected, Total costs,
+ * Receivables. Every figure keeps its label, value, one context line built from server fields, and
+ * its basis and window. Nothing here is summed or derived.
  */
-import type { ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
 
-import type { FinanceOverview, FinanceReceivables, Kpi } from "../../../lib/api/types";
-import { isNegative, money, percent, plot } from "../format";
+import { ApertureMark } from "../../../brand/ApertureMark";
+import type { Kpi } from "../../../lib/api/types";
+import { isNegative, money, percent } from "../format";
 import styles from "./KeyFigures.module.css";
-import { AskLink } from "./Section";
 
 type Ask = ((question: string, send?: boolean) => void) | undefined;
+
+const ORDER = [
+  "cash_on_hand",
+  "revenue",
+  "net_pnl",
+  "cash_collected",
+  "total_costs",
+  "receivables",
+];
 
 const QUESTIONS: Record<string, string> = {
   revenue: "What's our revenue this financial year?",
@@ -53,164 +62,84 @@ function context(kpi: Kpi) {
           <span aria-hidden="true">{down ? "▼" : "▲"}</span>{" "}
           {percent(change.percent.replace(/^-/, ""))} {down ? "lower" : "higher"}
         </span>{" "}
-        · <span className={styles.muted}>{change.compared_to.toLowerCase()}</span>
+        <span className={styles.muted}>{change.compared_to.toLowerCase()}</span>
       </>
     );
   }
   return kpi.note ?? null;
 }
 
-function Figure({
-  kpi,
-  size,
-  ask,
-  children,
-}: {
-  kpi: Kpi;
-  size: "hero" | "lead" | "row";
-  ask: Ask;
-  children?: ReactNode;
-}) {
+/** The circular "ask about this figure" button the reference puts at a card's top-right. */
+function AskDot({ ask, question }: { ask: Ask; question: string }) {
+  if (!ask) return null;
   return (
-    <figure className={styles.figure} data-size={size}>
+    <button
+      type="button"
+      className={styles.dot}
+      onClick={() => ask(question)}
+      aria-label={`Ask Clario: ${question}`}
+      title={`Ask Clario: “${question}”`}
+    >
+      <ArrowUpRight size={14} aria-hidden="true" />
+    </button>
+  );
+}
+
+function Metric({ kpi, ask }: { kpi: Kpi; ask: Ask }) {
+  const question = QUESTIONS[kpi.key] ?? `Tell me about ${kpi.label}`;
+  return (
+    <figure className={styles.card}>
       <figcaption className={styles.label}>{kpi.label}</figcaption>
+      <AskDot ask={ask} question={question} />
       <p className={styles.value} data-negative={isNegative(kpi.value) || undefined}>
         {money(kpi.value)}
       </p>
       <p className={styles.context}>{context(kpi)}</p>
-      {children}
       <p className={styles.basis}>
         {kpi.basis} · {kpi.window.label}
       </p>
-      <span className={styles.ask}>
-        <AskLink
-          ask={ask}
-          question={QUESTIONS[kpi.key] ?? `Tell me about ${kpi.label}`}
-          label="Ask"
-        />
-      </span>
     </figure>
   );
 }
 
-/** A proportion drawn as a bar (decorative; the figure beside it carries the number). */
-function Meter({ share, tone }: { share: number; tone: "ink" | "negative" }) {
-  const width = Number.isFinite(share) ? Math.max(0, Math.min(100, share)) : 0;
+/** Cash on hand, as the page's one solid object: what the business can actually spend today. */
+function CashCard({ kpi, ask }: { kpi: Kpi; ask: Ask }) {
   return (
-    <span className={styles.meter} aria-hidden="true">
-      <span className={styles.meterFill} data-tone={tone} style={{ width: `${width}%` }} />
-    </span>
+    <figure className={styles.cash}>
+      <div className={styles.cashTop}>
+        <span className={styles.cashMark} aria-hidden="true">
+          <ApertureMark size={20} tone="inverse" />
+        </span>
+        <AskDot
+          ask={ask}
+          question={QUESTIONS.cash_on_hand ?? "How much cash do we have on hand?"}
+        />
+      </div>
+      <figcaption className={styles.cashLabel}>{kpi.label}</figcaption>
+      <p className={styles.cashValue}>{money(kpi.value)}</p>
+      <p className={styles.cashFoot}>
+        <span>{kpi.note ?? "Available today"}</span>
+        <span>
+          {kpi.basis} · {kpi.window.label}
+        </span>
+      </p>
+    </figure>
   );
 }
 
-export function KeyFigures({
-  kpis,
-  pnl,
-  receivables,
-  briefing,
-  asOf,
-  ask,
-}: {
-  kpis: Kpi[];
-  pnl: FinanceOverview["pnl"];
-  receivables: FinanceReceivables | undefined;
-  briefing: string[];
-  asOf: string;
-  ask: Ask;
-}) {
-  const by = (key: string) => kpis.find((k) => k.key === key);
-  const known = [
-    "net_pnl",
-    "revenue",
-    "total_costs",
-    "cash_on_hand",
-    "cash_collected",
-    "receivables",
-  ];
-  const others = kpis.filter((k) => !known.includes(k.key));
-  const net = by("net_pnl");
-  const revenue = by("revenue");
-  const costs = by("total_costs");
-  const cash = by("cash_on_hand");
-  const collected = by("cash_collected");
-  const owed = by("receivables");
-
-  const earn = Math.max(plot(pnl.revenue), 0);
-  const spend = Math.max(plot(pnl.total_costs), 0);
-  const scale = Math.max(earn, spend);
-  const outstanding = receivables ? plot(receivables.outstanding) : 0;
-
+export function KeyFigures({ kpis, ask }: { kpis: Kpi[]; ask: Ask }) {
+  const rank = (kpi: Kpi) => (ORDER.includes(kpi.key) ? ORDER.indexOf(kpi.key) : ORDER.length);
+  // Stable for unknown keys, and tolerant of a payload that carries none.
+  const ordered = [...(kpis ?? [])].sort((a, b) => rank(a) - rank(b)).slice(0, 6);
   return (
-    <section className={styles.hero} aria-label="Key figures">
-      <div className={styles.health}>
-        <div className={styles.healthHead}>
-          <p className={styles.kicker}>Financial health</p>
-          <p className={styles.stamp}>Briefing · {asOf}</p>
-        </div>
-        <p className={styles.briefing}>
-          {briefing.map((line, i) => (
-            <span key={line} className={i === 0 ? styles.briefingFirst : undefined}>
-              {line}{" "}
-            </span>
-          ))}
-        </p>
-
-        <div className={styles.healthBody}>
-          {net ? <Figure kpi={net} size="hero" ask={ask} /> : null}
-          <div className={styles.compare}>
-            {scale > 0 ? (
-              <div className={styles.scale} aria-hidden="true">
-                <span className={styles.scaleRow}>
-                  <span className={styles.scaleKey}>In</span>
-                  <span className={styles.scaleTrack}>
-                    <span
-                      className={styles.scaleFill}
-                      data-tone="in"
-                      style={{ width: `${(earn / scale) * 100}%` }}
-                    />
-                  </span>
-                </span>
-                <span className={styles.scaleRow}>
-                  <span className={styles.scaleKey}>Out</span>
-                  <span className={styles.scaleTrack}>
-                    <span
-                      className={styles.scaleFill}
-                      data-tone="out"
-                      style={{ width: `${(spend / scale) * 100}%` }}
-                    />
-                  </span>
-                </span>
-              </div>
-            ) : null}
-            <div className={styles.pair}>
-              {revenue ? <Figure kpi={revenue} size="lead" ask={ask} /> : null}
-              {costs ? <Figure kpi={costs} size="lead" ask={ask} /> : null}
-              {others.slice(0, 6 - (kpis.length - others.length)).map((k) => (
-                <Figure key={k.key} kpi={k} size="lead" ask={ask} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.cash}>
-        <p className={styles.kicker}>Cash position</p>
-        {cash ? <Figure kpi={cash} size="hero" ask={ask} /> : null}
-        <div className={styles.cashRows}>
-          {collected ? (
-            <Figure kpi={collected} size="row" ask={ask}>
-              {collected.ratio ? <Meter share={plot(collected.ratio)} tone="ink" /> : null}
-            </Figure>
-          ) : null}
-          {owed ? (
-            <Figure kpi={owed} size="row" ask={ask}>
-              {receivables && outstanding > 0 ? (
-                <Meter share={(plot(receivables.overdue) / outstanding) * 100} tone="negative" />
-              ) : null}
-            </Figure>
-          ) : null}
-        </div>
-      </div>
+    <section className={styles.figures} aria-label="Key figures">
+      {ordered.map((kpi) =>
+        kpi.key === "cash_on_hand" ? (
+          <CashCard key={kpi.key} kpi={kpi} ask={ask} />
+        ) : (
+          <Metric key={kpi.key} kpi={kpi} ask={ask} />
+        ),
+      )}
     </section>
   );
 }

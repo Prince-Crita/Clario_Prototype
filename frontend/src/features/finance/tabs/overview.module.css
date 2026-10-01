@@ -1,0 +1,184 @@
+/*
+ * The Overview's page composition (plan §27.12): one vertical story on the sunken canvas —
+ * header, the six key figures in a row, Business performance, Decision support, Scenarios.
+ * The page sits on the sunken canvas (see AppShell's `[data-canvas]` rule) so its white cards
+ * separate; every other page keeps the white page background.
+ */
+.canvas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- header
+ * The greeting and its description on the left, the period and Sync level with the description
+ * on the right, then one hairline strip of context: whose books, which system, how fresh, which
+ * year, and the connection.
+ */
+.header {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.headTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-4) var(--space-6);
+}
+
+.headText {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.greeting {
+  color: var(--ink);
+  font-size: clamp(1.75rem, 1.15rem + 1.9vw, 2.5rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+}
+
+.greeting span {
+  color: var(--ink-3);
+}
+
+.lede {
+  max-width: 88ch;
+  color: var(--ink-2);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+}
+
+/* The context line (organisation, system, sync, financial year, connection) comes from the
+   Command Centre, so the Overview shows exactly what the other pages show; only its placement
+   is this page's own. */
+.meta {
+  min-width: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.meta > p {
+  margin: 0;
+}
+
+/* The connection link closes the strip on the right, without a separator before it. */
+.meta > p > :last-child {
+  margin-left: auto;
+}
+
+.meta > p > :last-child::before {
+  display: none;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The reference's controls are capsules: the period pill already is one, Sync joins it. */
+.controls button {
+  height: 38px;
+  border-radius: 999px;
+}
+
+.controls > div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ---------------------------------------------------------------- the bands below */
+.band {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.bandHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+}
+
+.bandTitle {
+  color: var(--ink);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-display);
+}
+
+.bandSub {
+  max-width: 68ch;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.early {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--warning-bg);
+  color: var(--warning);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+/* Tablet: the controls move under the description, still on one line. */
+@media (max-width: 899.98px) {
+  .canvas {
+    gap: var(--space-5);
+  }
+
+  .headTop {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* Phone: controls span the width; the context strip puts the organisation on its own line and
+   lets the rest wrap without stray separators. */
+@media (max-width: 719.98px) {
+  .header {
+    gap: var(--space-3);
+  }
+
+  .lede {
+    font-size: var(--text-md);
+  }
+
+  .controls {
+    width: 100%;
+  }
+
+  .controls > div {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  .meta > p {
+    gap: 4px var(--space-4);
+  }
+
+  .meta > p > :first-child {
+    flex-basis: 100%;
+  }
+
+  .meta > p > * + *::before {
+    display: none;
+  }
+
+  .bandTitle {
+    font-size: var(--text-xl);
+  }
+}

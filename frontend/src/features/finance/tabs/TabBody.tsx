@@ -22,6 +22,11 @@ export interface TabProps {
   askCard?: ReactNode;
   /** The Finance Assistant conversation (the Clario AI page); absent without the permission. */
   chat?: ReactNode;
+  /** Organisation, system, sync, financial year and the connection link — for a page that lays
+   * out its own header (the Overview). */
+  context?: ReactNode;
+  /** The period picker and Sync, for a page that lays out its own header. */
+  controls?: ReactNode;
 }
 
 export function TabBody<T>({

@@ -156,7 +156,12 @@ class SyncRunner:
             )
             session.add(run)
             await session.commit()
-        self._start(run.id, scope)
+        if self.settings.sync_inline:
+            # Serverless: a function may be frozen once its response is sent, so the import must
+            # finish inside the request. `execute` never raises; the run records any failure.
+            await self.execute(run.id, scope)
+        else:
+            self._start(run.id, scope)
         return TriggerOutcome(run=run, started=True)
 
     async def _refusal(

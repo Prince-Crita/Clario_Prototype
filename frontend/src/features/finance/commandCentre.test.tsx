@@ -72,7 +72,12 @@ describe("Finance Command Centre", () => {
     api();
     const { router } = renderApp("/w/alpha-traders/zoho-books");
     expect(
-      await screen.findByRole("heading", { level: 1, name: "Overview" }, { timeout: 5000 }),
+      // The Command Centre is a lazy chunk; the first render in a run can take a moment.
+      await screen.findByRole(
+        "heading",
+        { level: 1, name: "Welcome back, Prince" },
+        { timeout: 15000 },
+      ),
     ).toBeVisible();
     expect(router.state.location.pathname).toBe(`${PAGE}/overview`);
     expect(screen.getByText("Crita Creative LLP")).toBeInTheDocument();
@@ -112,28 +117,36 @@ describe("Finance Command Centre", () => {
     await expectNoA11yViolations(container);
   });
 
-  it("keeps the Overview on performance, and points to Clario AI for what needs attention", async () => {
+  it("reads key figures, business performance, decision support, then scenarios", async () => {
     api();
-    const { user, router } = renderApp(`${PAGE}/overview?period=fy`);
+    renderApp(`${PAGE}/overview?period=fy`);
     const performance = await screen.findByRole("region", { name: "Business performance" });
     expect(performance).toHaveTextContent("−89%net margin");
     expect(performance).toHaveTextContent(
       "Net loss of ₹6,48,028 on revenue of ₹7,28,540, FY 2026-27 to date.",
     );
     expect(performance).toHaveTextContent("94%of billed collected");
+    // The metric and its one-line basis carry the point; the extra interpretation line is gone.
+    expect(performance).not.toHaveTextContent("so the business is spending more than it earns");
+    expect(within(performance).getAllByRole("button", { name: /^Ask Clario:/ })).toHaveLength(
+      within(performance).getAllByRole("listitem").length,
+    );
 
-    const pnl = screen.getByRole("region", { name: "Profit and loss" });
-    expect(pnl).toHaveTextContent("Gross profit54% margin₹3,92,462");
-    expect(pnl).toHaveTextContent("Net loss−89% margin−₹6,48,028");
-    expect(pnl).toHaveTextContent("Largest cost: Salaries and Employee Wages, ₹7,58,800");
-    expect(screen.getByRole("region", { name: "Where the business stands" })).toBeInTheDocument();
-    for (const moved of ["Signals", "Decision support", "Scenarios"]) {
-      expect(screen.queryByRole("region", { name: moved })).toBeNull();
+    // These stay on their own pages; the Overview no longer repeats them.
+    for (const gone of ["Profit and loss", "Where the costs go", "Where the business stands"]) {
+      expect(screen.queryByRole("region", { name: gone })).toBeNull();
     }
-    expect(screen.getByRole("heading", { name: /signals need attention, 2 high/ })).toBeVisible();
-    await user.click(screen.getByRole("link", { name: "Open Clario AI" }));
-    expect(router.state.location.pathname).toBe(`${PAGE}/clario`);
-    expect(router.state.location.search).toBe("?period=fy");
+    expect(screen.queryByRole("link", { name: "Open Clario AI" })).toBeNull();
+
+    // Decision support and Scenarios read here too, from the same rules as Clario AI.
+    const decisions = screen.getByRole("region", { name: "Decision support" });
+    const steps = within(decisions).getAllByRole("listitem");
+    expect(steps[0]).toHaveTextContent(/This week.*₹58,094 overdue across 9 invoices\./);
+    expect(steps[0]).toHaveTextContent("Start with INV-000002, the longest overdue");
+    expect(decisions).toHaveTextContent("₹30,000 of it is more than 90 days late");
+    const scenarios = screen.getByRole("region", { name: "Scenarios" });
+    expect(scenarios).toHaveTextContent("up to ₹58,094");
+    expect(scenarios).toHaveTextContent("₹72,739");
   });
 
   it("turns the figures into signals, next steps and scenarios on Clario AI", async () => {
@@ -180,7 +193,7 @@ describe("Finance Command Centre", () => {
 
   it("offers every chart as a table", async () => {
     api();
-    const { user } = renderApp(`${PAGE}/overview`);
+    const { user } = renderApp(`${PAGE}/trends`);
     const chart = await screen.findByRole("region", {
       name: "Billed, collected and spent by month",
     });

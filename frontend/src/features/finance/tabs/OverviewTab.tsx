@@ -1,111 +1,117 @@
 /**
- * Overview — how the business is performing right now (plan §22.2, §27.10, §27.11):
- *   Key figures: Financial health (briefing, Net P&L, revenue vs costs) beside the Crita-green
- *   Cash position (cash on hand, collected, receivables) →
- *   a line to Clario AI (how many signals it sees; the signals themselves live there) →
- *   Cash & profitability (highlighted chart + P&L statement) →
- *   Business performance (ruled columns) beside Ask Clario and where the business stands.
- * Signals, Decision support and Scenarios — what the figures mean and what could be done — are
- * on Clario AI. Revenue by client and where the money goes live in Trends & Analysis; the invoice
- * register in Receivables.
+ * Overview — how the business is performing right now (plan §22.2, §27.12).
+ *
+ * One story, top to bottom:
+ *   How is the business doing?           the six key figures, cash on hand first, in one row
+ *   Where is it doing well or poorly?    Business performance
+ *   What should the owner consider?      Decision support
+ *   What could happen?                   Scenarios
+ *
+ * Every figure, sentence and recommendation comes from the same server data and the same
+ * `intelligence.ts` rules as before; only the presentation is this page's own.
  */
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router";
-
 import type { FinanceOverview, FinanceReceivables } from "../../../lib/api/types";
-import { MonthlyChart } from "../components/charts";
-import { BusinessPerformance, Position } from "../components/Intelligence";
+import { useSession } from "../../auth/hooks";
 import { KeyFigures } from "../components/KeyFigures";
-import { PnlStatement } from "../components/PnlStatement";
-import { Section } from "../components/Section";
-import { stampLabel } from "../format";
+import { DecisionRows, PerformanceInsights, ScenarioCards } from "../components/OverviewPanels";
 import { useFinanceTab } from "../hooks";
-import { briefing, insights, signals } from "../intelligence";
-import { inPeriod } from "../period";
+import { decisions, insights, signals } from "../intelligence";
+import { OVERVIEW } from "../pages";
 import { both } from "../query";
+import styles from "./overview.module.css";
 import { TabBody, type TabProps } from "./TabBody";
-import styles from "./tabs.module.css";
+
+/**
+ * "Asha Rao", "asha.rao" → "Asha"; an email falls back to the part before the @. Returns null
+ * when there is no name to use, so the greeting simply drops it rather than inventing one.
+ */
+function firstName(user: { full_name?: string; email?: string } | undefined): string | null {
+  const source = user?.full_name?.trim() || user?.email?.split("@")[0] || "";
+  const first = source.split(/[\s._-]+/).filter(Boolean)[0] ?? "";
+  return first ? first.charAt(0).toUpperCase() + first.slice(1) : null;
+}
 
 export function OverviewTab({
   workspaceId,
   connectionId,
-  period,
   pageHref,
   ask,
-  askCard,
+  context,
+  controls,
 }: TabProps) {
+  // The session is read, never required: a page must not throw if it has lapsed mid-view.
+  const name = firstName(useSession().data?.user);
   const overview = useFinanceTab<FinanceOverview>(workspaceId, connectionId, "overview");
   const receivables = useFinanceTab<FinanceReceivables>(workspaceId, connectionId, "receivables");
-  return (
-    <TabBody query={both(overview, receivables)}>
-      {([o, r]) => {
-        const found = signals(o, r);
-        const high = found.filter((s) => s.severity === "high").length;
-        const months = o.months.filter((m) => inPeriod(m.month, period));
-        const asOf = o.meta.freshness.as_of ? stampLabel(o.meta.freshness.as_of) : o.meta.today;
-        return (
-          <div className={styles.stack}>
-            <KeyFigures
-              kpis={o.kpis}
-              pnl={o.pnl}
-              receivables={r}
-              briefing={briefing(o.meta.organisation, o, r, found)}
-              asOf={asOf}
-              ask={ask}
-            />
 
-            <div className={styles.insightRow}>
-              <div>
-                <h2 className={styles.rowTitle}>
-                  {found.length
-                    ? `${found.length} ${found.length === 1 ? "signal needs" : "signals need"} attention${high ? `, ${high} high` : ""}`
-                    : "Nothing needs attention right now"}
+  return (
+    <div className={styles.canvas} data-canvas="sunken">
+      <header className={styles.header}>
+        <div className={styles.headTop}>
+          <div className={styles.headText}>
+            <h1 className={styles.greeting}>
+              {name ? (
+                <>
+                  Welcome back, <span>{name}</span>
+                </>
+              ) : (
+                "Overview"
+              )}
+            </h1>
+            <p className={styles.lede}>{OVERVIEW.lede}</p>
+          </div>
+          <div className={styles.controls}>{controls}</div>
+        </div>
+        {/* Whose books, from which system, how fresh, which year: one quiet strip. */}
+        <div className={styles.meta}>{context}</div>
+      </header>
+
+      <TabBody query={both(overview, receivables)}>
+        {([o, r]) => (
+          <>
+            <KeyFigures kpis={o.kpis} ask={ask} />
+
+            <section className={styles.band} aria-labelledby="performance-title">
+              <div className={styles.bandHead}>
+                <h2 id="performance-title" className={styles.bandTitle}>
+                  Business performance
                 </h2>
-                <p>
-                  Clario AI explains what these figures mean, what to consider next and what could
-                  happen.
+                <p className={styles.bandSub}>
+                  Profitability, collections and costs, read from your figures.
                 </p>
               </div>
-              <Link to={pageHref("clario")} className={styles.rowLink}>
-                Open Clario AI
-                <ArrowRight size={14} aria-hidden="true" />
-              </Link>
-            </div>
+              <PerformanceInsights items={insights(o)} ask={ask} />
+            </section>
 
-            <Section
-              eyebrow="The year so far"
-              title="Cash & profitability"
-              description="The cash that moved each month, beside the year's profit and loss."
-            >
-              <div className={`${styles.split} ${styles.wideLeft}`}>
-                <MonthlyChart
-                  months={months}
-                  window={
-                    period.from
-                      ? period.range
-                      : o.kpis.find((k) => k.key === "cash_collected")?.window.label
-                  }
-                />
-                <PnlStatement pnl={o.pnl} />
+            <section className={styles.band} aria-labelledby="decisions-title">
+              <div className={styles.bandHead}>
+                <h2 id="decisions-title" className={styles.bandTitle}>
+                  Decision support
+                </h2>
+                <p className={styles.bandSub}>
+                  In order. Each step follows from the figures above; none of it is financial
+                  advice.
+                </p>
               </div>
-            </Section>
+              <DecisionRows items={decisions(o, r, signals(o, r))} pageHref={pageHref} ask={ask} />
+            </section>
 
-            <div className={styles.lead}>
-              <Section
-                eyebrow="What the figures say"
-                title="Business performance"
-                description="Profitability, collections and costs, read from your figures."
-              >
-                <BusinessPerformance items={insights(o)} ask={ask} />
-              </Section>
-              <div className={styles.side}>
-                {askCard}
-                <Position overview={o} receivables={r} />
+            <section className={styles.band} aria-labelledby="scenarios-title">
+              <div className={styles.bandHead}>
+                <h2 id="scenarios-title" className={styles.bandTitle}>
+                  Scenarios
+                </h2>
+                <p className={styles.bandSub}>
+                  Where things stand, and the levers that would move them — today's figures, not
+                  forecasts.
+                </p>
+                <span className={styles.early}>Early view</span>
               </div>
-            </div>
-          </div>
-        );
-      }}
-    </TabBody>
+              <ScenarioCards overview={o} receivables={r} />
+            </section>
+          </>
+        )}
+      </TabBody>
+    </div>
   );
 }

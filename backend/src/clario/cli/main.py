@@ -32,7 +32,9 @@ OPENAPI_PATH = REPO_ROOT / "contracts" / "openapi.json"
 def alembic_config(database_url: str | None = None) -> Config:
     config = Config(str(BACKEND_ROOT / "alembic.ini"))
     config.set_main_option("script_location", str(BACKEND_ROOT / "migrations"))
-    config.set_main_option("sqlalchemy.url", database_url or get_settings().database_url)
+    # Migrations use the direct endpoint (never the PgBouncer pool). `%` is configparser syntax.
+    url = database_url or get_settings().migration_database_url
+    config.set_main_option("sqlalchemy.url", url.replace("%", "%%"))
     return config
 
 

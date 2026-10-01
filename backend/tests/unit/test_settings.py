@@ -25,9 +25,24 @@ def test_rejects_invalid_encryption_keys(keys: str) -> None:
         make_settings(encryption_keys=keys)
 
 
-def test_rejects_non_asyncpg_database_url() -> None:
-    with pytest.raises(ValidationError, match="asyncpg"):
-        make_settings(database_url="postgresql://u:p@localhost/db")
+def test_accepts_a_providers_postgres_url_and_normalises_it_for_asyncpg() -> None:
+    # The URL as Neon issues it: libpq's scheme, sslmode and channel_binding.
+    settings = make_settings(
+        database_url="postgresql://u:p@ep-x-pooler.c-4.aws.neon.tech/db?sslmode=require&channel_binding=require",
+        database_url_unpooled="",  # empty means "not set"
+    )
+    assert settings.database_url.startswith("postgresql+asyncpg://u:p@ep-x-pooler.")
+    assert "ssl=require" in settings.database_url
+    assert "channel_binding" not in settings.database_url
+    assert settings.database_url_unpooled is None
+    # Migrations go to the direct endpoint, derived from the pooled one.
+    assert "@ep-x.c-4.aws.neon.tech/" in settings.migration_database_url
+
+
+def test_rejects_a_non_postgres_database_url_without_echoing_it() -> None:
+    with pytest.raises(ValidationError, match="PostgreSQL URL") as exc:
+        make_settings(database_url="mysql://user:hunter2@localhost/db")
+    assert "hunter2" not in str(exc.value)  # secrets never appear in a validation error
 
 
 def test_production_requires_safe_configuration() -> None:

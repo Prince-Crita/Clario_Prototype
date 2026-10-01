@@ -172,6 +172,8 @@ function Centre(props: CentreProps) {
   const running = sync.data?.state === "running";
   const asOf = sync.data?.as_of;
   const refreshError = refresh.error instanceof ApiError ? refresh.error.detail : null;
+  // The Overview lays out its own header (plan §27.12); every other page uses the one below.
+  const onOverview = tab === "overview";
   const tabProps: TabProps = {
     workspaceId,
     connectionId,
@@ -230,6 +232,38 @@ function Centre(props: CentreProps) {
           ? state("positive", `Synced ${stampLabel(asOf)}`)
           : state("neutral", "Not fully imported yet");
 
+  const context = (
+    <p className={styles.context} aria-live="polite">
+      <span className={styles.org}>{organisation}</span>
+      <span>{system}</span>
+      {status}
+      {props.fiscalStart ? <span>Financial year {fiscalYearLabel(props.fiscalStart)}</span> : null}
+      <Link to={`${base}/connection`} className={styles.link}>
+        Connection
+      </Link>
+    </p>
+  );
+  const controls = (
+    <div className={styles.controls}>
+      {onClario ? null : <PeriodPicker period={period} today={today} onChange={setPeriod} />}
+      <Button
+        size="sm"
+        variant={onOverview ? "primary" : "secondary"}
+        className={styles.sync}
+        icon={<RefreshCw size={15} aria-hidden="true" />}
+        pending={refresh.isPending || running}
+        pendingLabel={running ? "Updating…" : "Starting…"}
+        disabled={needsReauth}
+        onClick={() => refresh.mutate()}
+        title={`Refresh from ${system}`}
+      >
+        Sync
+      </Button>
+    </div>
+  );
+  tabProps.context = context;
+  tabProps.controls = controls;
+
   return (
     <div className={styles.page}>
       {needsReauth ? (
@@ -249,44 +283,19 @@ function Centre(props: CentreProps) {
         </Alert>
       ) : null}
       <div className={styles.dashboard}>
-        <header className={styles.header}>
-          <div className={styles.headText}>
-            <p className={styles.context} aria-live="polite">
-              <span className={styles.org}>{organisation}</span>
-              <span>{system}</span>
-              {status}
-              {props.fiscalStart ? (
-                <span>Financial year {fiscalYearLabel(props.fiscalStart)}</span>
-              ) : null}
-              <Link to={`${base}/connection`} className={styles.link}>
-                Connection
-              </Link>
-            </p>
-            <h1 className={styles.title}>{page.label}</h1>
-            <p className={styles.lede}>{page.lede}</p>
-          </div>
-          <div className={styles.tools}>
-            <span className={styles.today}>{DATELINE.format(today)}</span>
-            <div className={styles.controls}>
-              {onClario ? null : (
-                <PeriodPicker period={period} today={today} onChange={setPeriod} />
-              )}
-              <Button
-                size="sm"
-                variant="secondary"
-                className={styles.sync}
-                icon={<RefreshCw size={15} aria-hidden="true" />}
-                pending={refresh.isPending || running}
-                pendingLabel={running ? "Updating…" : "Starting…"}
-                disabled={needsReauth}
-                onClick={() => refresh.mutate()}
-                title={`Refresh from ${system}`}
-              >
-                Sync
-              </Button>
+        {onOverview ? null : (
+          <header className={styles.header}>
+            <div className={styles.headText}>
+              {context}
+              <h1 className={styles.title}>{page.label}</h1>
+              <p className={styles.lede}>{page.lede}</p>
             </div>
-          </div>
-        </header>
+            <div className={styles.tools}>
+              <span className={styles.today}>{DATELINE.format(today)}</span>
+              {controls}
+            </div>
+          </header>
+        )}
         {ask && tab !== "overview" && !onClario ? (
           <AskBar organisation={organisation} prompts={page.prompts} onAsk={ask} />
         ) : null}

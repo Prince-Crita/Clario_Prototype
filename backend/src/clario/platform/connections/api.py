@@ -103,7 +103,11 @@ async def select_account(
     # not guarantee the request's unit of work commits before background tasks run.
     await session.commit()
     runner: SyncRunner = request.app.state.sync
-    background.add_task(runner.start_quietly, scope, SyncTrigger.INITIAL, scope.user_id)
+    if settings.sync_inline:
+        # Serverless: finish the first import before responding (see Settings.sync_inline).
+        await runner.start_quietly(scope, SyncTrigger.INITIAL, scope.user_id)
+    else:
+        background.add_task(runner.start_quietly, scope, SyncTrigger.INITIAL, scope.user_id)
     return await _out(session, scope)
 
 

@@ -49,7 +49,11 @@ async def finance_context(
     scope: FinanceScope, session: SessionDep, request: Request, background: BackgroundTasks
 ) -> FinanceContext:
     runner: SyncRunner = request.app.state.sync
-    background.add_task(runner.start_quietly, scope, SyncTrigger.STALE, None)
+    # Opening a page refreshes stale data in the background. Not when serverless (`sync_inline`):
+    # work after the response is not guaranteed to run there, and running it inside the request
+    # would slow every dashboard load. Refresh there is the Sync button (or `clario sync`).
+    if not runner.settings.sync_inline:
+        background.add_task(runner.start_quietly, scope, SyncTrigger.STALE, None)
     return await load_context(session, scope, runner.clock)
 
 

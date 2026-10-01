@@ -1,0 +1,465 @@
+/*
+ * The Overview's panels (plan §27.12): white cards on the page's sunken canvas, hairline borders,
+ * 20-px corners, generous padding — the reference's card system, in Clario's palette.
+ */
+.panel {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.panelTitle {
+  color: var(--ink);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.panelSub {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+/* ---------------------------------------------------------------- what the figures say
+ * One white card of tiles, read left to right: the area, the metric large, its label, the one-line
+ * basis in lighter text, then "Ask why". Hairlines come from 1-px gaps, so any wrap keeps its rules.
+ */
+.insights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--line);
+  box-shadow: var(--shadow-card);
+  list-style: none;
+  overflow: hidden;
+}
+
+.insight {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--surface);
+}
+
+.insightArea {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.insightArea::before {
+  content: "";
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+.insight[data-tone="positive"] .insightArea::before {
+  background: var(--brand);
+}
+
+.insight[data-tone="negative"] .insightArea::before {
+  background: var(--negative);
+}
+
+.insight[data-tone="warning"] .insightArea::before {
+  background: var(--warning);
+}
+
+/* Primary: the metric, large; its label beside it. */
+.insightMetric {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--space-2);
+  margin-top: var(--space-1);
+}
+
+/* Every primary value reads in the one Clario green, so the row's hierarchy is consistent; the
+   tone still shows in the dot beside the area label. */
+.insightValue {
+  color: var(--positive);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+.insightLabel {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+/* Secondary: the one-line basis, lighter. */
+.insightText {
+  min-width: 0;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.insightAsk {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease);
+}
+
+.insightAsk:hover {
+  background: var(--brand-tint);
+  color: var(--ink);
+}
+
+.insightAsk:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.insight > .insightAsk {
+  justify-self: start;
+  margin-top: var(--space-1);
+}
+
+/* ---------------------------------------------------------------- decision support */
+.clear {
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink-2);
+}
+
+.decisions {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  list-style: none;
+  overflow: hidden;
+}
+
+.decision {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--space-5);
+  padding: var(--space-5);
+  box-shadow: inset 3px 0 0 var(--line-strong);
+}
+
+.decision + .decision {
+  border-top: 1px solid var(--line);
+}
+
+.decision[data-severity="high"] {
+  box-shadow: inset 3px 0 0 var(--negative);
+}
+
+.decision[data-severity="medium"] {
+  box-shadow: inset 3px 0 0 var(--warning);
+}
+
+.decisionWhen {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: var(--space-2);
+}
+
+.decisionNo {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.decisionChip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.decision[data-severity="high"] .decisionChip {
+  background: var(--negative-bg);
+  color: var(--negative);
+}
+
+.decisionCell {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+.decisionCell[data-action] {
+  padding: var(--space-3) var(--space-4);
+  margin: calc(-1 * var(--space-3)) 0;
+  border-radius: var(--radius-md);
+  background: var(--brand-tint);
+  color: var(--ink);
+}
+
+.cellLabel {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.decisionCell[data-action] .cellLabel {
+  color: var(--olive);
+}
+
+.cellLead {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.decisionLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.decisionOpen {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 26px;
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-decoration-color: var(--brand);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.decisionOpen:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- scenarios */
+.scenarios {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.scenario {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.scenario[data-kind="baseline"] {
+  border-color: var(--line-strong);
+  background: var(--surface-sunken);
+}
+
+.scenario[data-kind="upside"] {
+  border-color: var(--accent-soft);
+  background: var(--brand-tint);
+}
+
+.scenario h3 {
+  color: var(--ink);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+
+.scenarioKind {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.scenarioKind::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+.scenario[data-kind="risk"] .scenarioKind::before {
+  background: var(--negative);
+}
+
+.scenario[data-kind="upside"] .scenarioKind::before {
+  background: var(--brand);
+}
+
+.scenarioFigure {
+  margin-top: var(--space-2);
+  color: var(--ink);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+}
+
+.scenario[data-kind="risk"] .scenarioFigure {
+  color: var(--negative);
+}
+
+.scenarioNote {
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+.scenarioFacts {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+}
+
+.scenarioFacts dt {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+}
+
+.scenarioFacts dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.scenarioFacts dd[data-negative] {
+  color: var(--negative);
+}
+
+.scenarioMeta {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  letter-spacing: 0;
+}
+
+/* ---------------------------------------------------------------- responsive */
+@media (max-width: 1099.98px) {
+  .decision {
+    grid-template-columns: 8rem minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .decisionCell[data-action] {
+    grid-column: 2 / -1;
+    margin: 0;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .insights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 899.98px) {
+  .scenarios {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 719.98px) {
+  .insights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .insight {
+    padding: var(--space-4);
+  }
+
+  .decision {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .decisionWhen {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .decisionCell[data-action] {
+    grid-column: 1;
+  }
+
+  .panel {
+    padding: var(--space-4);
+  }
+}

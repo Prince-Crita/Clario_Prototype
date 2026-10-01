@@ -62,12 +62,15 @@
   min-width: 0;
 }
 
+/* A capsule track holds the pages; the current one is a raised white pill inside it. */
 .pages ul {
   display: flex;
   align-items: center;
   gap: 2px;
   margin: 0;
-  padding: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
   list-style: none;
 }
 
@@ -75,14 +78,17 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: var(--header-height);
+  height: 34px;
   padding: 0 var(--space-3);
+  border-radius: 999px;
   color: var(--ink-3);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   white-space: nowrap;
   text-decoration: none;
-  transition: color var(--duration) var(--ease);
+  transition:
+    background-color var(--duration) var(--ease),
+    color var(--duration) var(--ease);
 }
 
 .pageLink:hover {
@@ -91,37 +97,32 @@
 
 .pageLink:global(.active),
 .pageLink[aria-current="page"] {
+  background: var(--surface);
   color: var(--ink);
   font-weight: var(--weight-semibold);
-}
-
-/* The current page: Crita's green on the bar's bottom edge */
-.pageLink:global(.active)::after,
-.pageLink[aria-current="page"]::after {
-  content: "";
-  position: absolute;
-  left: var(--space-3);
-  right: var(--space-3);
-  bottom: -1px;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: var(--brand);
+  box-shadow:
+    0 1px 2px rgb(15 21 31 / 0.08),
+    0 0 0 1px rgb(15 21 31 / 0.04);
 }
 
 .pageLink:focus-visible {
   outline: none;
-  box-shadow: inset var(--focus-ring);
-  border-radius: var(--radius-sm);
+  box-shadow: var(--focus-ring);
 }
 
 .pageMenu {
   display: none;
+  min-width: 0;
+  max-width: 100%;
 }
 
+/* May shrink to its column (the label truncates) rather than spill over its neighbours. */
 .pageMenuTrigger {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
   height: 36px;
   padding: 0 var(--space-3) 0 var(--space-4);
   border: 1px solid var(--line-strong);
@@ -132,6 +133,17 @@
   font-size: var(--text-md);
   font-weight: var(--weight-semibold);
   cursor: pointer;
+}
+
+.pageMenuTrigger > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pageMenuTrigger > svg {
+  flex-shrink: 0;
 }
 
 .pageMenuTrigger:hover {
@@ -182,17 +194,20 @@
   list-style: none;
 }
 
+/* The reference's outlined circular controls, beside the account. */
 .iconLink {
   position: relative;
   display: inline-grid;
   place-items: center;
   width: 38px;
   height: 38px;
+  border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--ink-2);
   text-decoration: none;
   transition:
     background-color var(--duration) var(--ease),
+    border-color var(--duration) var(--ease),
     color var(--duration) var(--ease);
 }
 
@@ -203,6 +218,7 @@
 
 .iconLink:global(.active),
 .iconLink[aria-current="page"] {
+  border-color: var(--accent-soft);
   background: var(--brand-soft);
   color: var(--ink);
 }
@@ -273,6 +289,12 @@
   min-width: 0;
 }
 
+/* A page may ask for the sunken canvas so its white cards separate (the Overview, plan §27.12);
+   every other page keeps the white page background. */
+.main:has([data-canvas="sunken"]) {
+  background: var(--surface-sunken);
+}
+
 .content {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -295,6 +317,32 @@
 
   .pageMenu {
     display: block;
+  }
+}
+
+/* Tablet portrait: Ask Clario keeps its mark and name for screen readers, as on phones, so the
+   bar has room for the logo, the workspace and the page menu side by side. */
+@media (min-width: 720px) and (max-width: 899.98px) {
+  .askButton {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .askButton .askText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .askMark {
+    background: none;
+  }
+
+  .workspace {
+    max-width: 180px;
   }
 }
 
@@ -330,7 +378,8 @@
     padding: 0;
   }
 
-  .brand img {
+  /* [data-size] so this outranks the logo's own size rule (brand/Wordmark.module.css). */
+  .brand img[data-size] {
     height: 50px;
   }
 
@@ -438,6 +487,7 @@
     width: 100%;
     height: 44px;
     padding: 0 var(--space-3);
+    border: 0;
     border-radius: var(--radius-sm);
   }
 
@@ -523,5 +573,13 @@
 
   .barAsk[aria-current="page"] .barAskMark {
     box-shadow: 0 0 0 2px var(--brand);
+  }
+}
+
+/* Small phones (after the phone block, which sets the logo's size): a slightly smaller logo, so
+   the page menu keeps its full label. */
+@media (max-width: 419.98px) {
+  .brand img[data-size] {
+    height: 40px;
   }
 }

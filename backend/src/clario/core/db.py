@@ -21,6 +21,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+from clario.core.dburl import engine_options, normalize_database_url
 from clario.core.ids import uuid7
 
 NAMING_CONVENTION = {
@@ -62,12 +63,14 @@ class Database:
     def __init__(
         self, url: str, *, pool_size: int = 5, max_overflow: int = 10, echo: bool = False
     ) -> None:
+        url = normalize_database_url(url)  # idempotent: settings already normalised it
         self.engine: AsyncEngine = create_async_engine(
             url,
             pool_size=pool_size,
             max_overflow=max_overflow,
             pool_pre_ping=True,
             echo=echo,
+            **engine_options(url),  # a pooled (PgBouncer) endpoint needs prepared statements off
         )
         self.sessions: async_sessionmaker[AsyncSession] = async_sessionmaker(
             self.engine, expire_on_commit=False, autoflush=False

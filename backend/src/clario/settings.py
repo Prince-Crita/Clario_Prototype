@@ -17,6 +17,8 @@ from typing import Literal, Self
 from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from clario.core.dburl import direct_database_url, normalize_database_url
+
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -35,6 +37,8 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
+        # A validation error must never print the offending value: it may be a password or key.
+        hide_input_in_errors=True,
     )
 
     # --- App
@@ -43,11 +47,18 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_format: Literal["auto", "json", "console"] = "auto"
 
-    # --- Database
+    # --- Database. Any PostgreSQL URL is accepted (postgresql://… as a provider issues it) and is
+    # normalised for asyncpg. On Neon use the pooled URL here; migrations use the direct one.
     database_url: str
+    # Direct (unpooled) endpoint, for migrations. Optional: derived from a Neon pooled URL.
+    database_url_unpooled: str | None = None
     test_database_url: str | None = None
     db_pool_size: int = Field(default=5, ge=1)
     db_max_overflow: int = Field(default=10, ge=0)
+
+    # --- Serverless (Vercel): a function may be frozen once its response is sent, so work that
+    # normally continues after the response (the Zoho import) must finish inside the request.
+    sync_inline: bool = False
 
     # --- Sessions & encryption
     session_secret: SecretStr
@@ -84,14 +95,16 @@ class Settings(BaseSettings):
     # figures, the only fixture safe to send to the AI provider before its data terms are agreed.
     finance_fixture_dataset: Literal["golden", "evaluation"] = "golden"
 
-    @field_validator("database_url", "test_database_url")
+    @field_validator("database_url")
     @classmethod
-    def _asyncpg_url(cls, value: str | None) -> str | None:
-        if value is not None and not value.startswith("postgresql+asyncpg://"):
-            raise ValueError(
-                "must be a PostgreSQL URL using the asyncpg driver (postgresql+asyncpg://…)"
-            )
-        return value
+    def _database_url(cls, value: str) -> str:
+        return normalize_database_url(value)  # empty or malformed: a ValueError, never echoed
+
+    @field_validator("database_url_unpooled", "test_database_url")
+    @classmethod
+    def _optional_database_url(cls, value: str | None) -> str | None:
+        # An empty value (e.g. `DATABASE_URL_UNPOOLED=` in .env) means "not set".
+        return normalize_database_url(value) if value and value.strip() else None
 
     @field_validator("session_secret")
     @classmethod
@@ -129,6 +142,11 @@ class Settings(BaseSettings):
         return self
 
     # --- Derived values
+    @property
+    def migration_database_url(self) -> str:
+        """Where migrations run: the direct endpoint (DDL needs a real session)."""
+        return self.database_url_unpooled or direct_database_url(self.database_url)
+
     @property
     def fernet_keys(self) -> list[str]:
         return [k.strip() for k in self.encryption_keys.get_secret_value().split(",") if k.strip()]
