@@ -1,26 +1,34 @@
 # Deploying Clario: Neon (database) + Vercel (hosting)
 
-Status: the database is migrated to Neon and the app runs against it locally. The Vercel
-configuration is in the repository but **has not been deployed or exercised on Vercel yet**; treat
-the first deploy as the real test.
+Status: one Vercel project serves the frontend and the API from the repository root; the data is
+in Neon. The first Vercel build failed because Vercel auto-detected the whole monorepo as a Python
+app; the configuration below replaces that.
 
 ## 1. Shape of the deployment
 
 ```
-Browser ── https://<your-domain> ──▶ Vercel project "clario-web"  (frontend/, Vite static)
-                                          │  /api/*  is rewritten (proxied) to…
-                                          ▼
-                                     Vercel project "clario-api" (backend/, FastAPI function)
-                                          │
-                                          ▼
-                                     Neon PostgreSQL (pooled endpoint)
+Browser ── https://<your-domain> ──▶ ONE Vercel project, Root Directory "."
+                                      ├─ static site  frontend/dist   (npm run build --prefix frontend)
+                                      └─ /api/*  ──▶  api/index.py (FastAPI, Python 3.12, region sin1)
+                                                          │
+                                                          ▼
+                                                  Neon PostgreSQL (pooled endpoint)
 ```
 
-* **Two Vercel projects from this one repository**, using only generally available features
-  (Vercel's single-project "Services" mode is Beta and permission-gated, so it is not used).
-* The browser only ever talks to the frontend's domain, so session cookies and the CSRF origin
-  check stay same-origin, exactly as in development (where Vite proxies `/api`).
-* No CORS configuration is needed or present.
+* [vercel.json](../vercel.json) sets `"framework": null`. This is the important line: without it
+  Vercel's Python preset wins and treats the repository as a single Python app (error "No python
+  entrypoint found…"). With it, `api/index.py` is the only function and the frontend is static.
+* [api/index.py](../api/index.py) is the single entrypoint. It puts `backend/src` on the path,
+  defaults `SYNC_INLINE=true`, and exposes `app`. `reference/demo/` and tests are excluded from the
+  function bundle (`excludeFiles`) and never deployed.
+* [requirements.txt](../requirements.txt) (runtime only) is **generated** from `backend/uv.lock`:
+  `cd backend && uv export --frozen --no-dev --no-hashes --no-emit-project --no-annotate --no-header`.
+  Regenerate it whenever the backend's dependencies change. [.python-version](../.python-version) pins 3.12.
+* The function runs in `sin1` (Singapore), next to the Neon database (ap-southeast-1). Each dashboard
+  request makes several sequential queries, so distance to the database dominates latency. Change
+  `regions` if the Neon project moves.
+* Same-origin: the browser only talks to one domain, so cookies and the CSRF origin check behave as in
+  development. No CORS configuration.
 
 ## 2. Database (Neon)
 
@@ -46,23 +54,12 @@ Browser ── https://<your-domain> ──▶ Vercel project "clario-web"  (fro
 
 ## 3. Vercel setup
 
-### Backend project (`clario-api`)
-
-1. New Project → import this repository → **Root Directory: `backend`**. Framework preset: FastAPI
-   (detected from `index.py`, which exposes `app`). Python 3.12 (from `requires-python`).
-2. Add the environment variables in §4 (Production, and Preview if you use it).
-3. Deploy. Note the project's URL (e.g. `https://clario-api-xxxx.vercel.app`).
-4. `backend/vercel.json` sets `maxDuration` to 300 s (a Zoho import and AI turns run inside a
-   request). Your plan must allow it (Hobby and Pro both allow 300 s with Fluid compute).
-
-### Frontend project (`clario-web`)
-
-1. **Before deploying**, edit `frontend/vercel.json`: replace
-   `REPLACE-WITH-YOUR-BACKEND-PROJECT.vercel.app` with the backend project's host from above, and
-   commit that change.
-2. New Project → same repository → **Root Directory: `frontend`**. Framework preset: Vite
-   (build `npm run build`, output `dist`). It needs **no environment variables**.
-3. Set the production domain; it must equal `APP_BASE_URL` below.
+1. Project settings → Root Directory `.`; **Framework Preset: Other** (the `framework: null` in
+   vercel.json also forces this). Leave Build/Install/Output commands empty: vercel.json supplies them.
+2. Add the variables in §4 (Production, and Preview if used). Mark secrets Sensitive.
+3. Push to `main`; Vercel builds and deploys. `maxDuration` is 300 s (a Zoho import and AI turns run
+   inside a request).
+4. The production domain must equal `APP_BASE_URL`.
 
 ### Zoho API Console (manual)
 
@@ -71,8 +68,8 @@ and set the same value in `ZOHO_REDIRECT_URI`.
 
 ## 4. Environment variables
 
-All of these are **server-side secrets or settings on the backend project**. The frontend project
-has none, and nothing here is ever sent to the browser.
+All of these are **server-side** (function) variables. None has a `VITE_` prefix and nothing here is
+ever sent to the browser.
 
 | Variable | Required | Value / note |
 |---|---|---|
@@ -82,14 +79,13 @@ has none, and nothing here is ever sent to the browser.
 | `SESSION_COOKIE_SECURE` | yes | `true` |
 | `SESSION_SECRET` | yes | new random string, 32+ characters (do not reuse the development one) |
 | `ENCRYPTION_KEYS` | yes | must **include the key currently in `.env`**, or the copied Zoho credentials cannot be decrypted. To rotate: `<new key>,<old key>` (first encrypts, all decrypt) |
-| `SYNC_INLINE` | yes | `true` (see §5) |
+| `SYNC_INLINE` | no | defaults to `true` on Vercel via api/index.py (see §5) |
 | `ZOHO_CLIENT_ID`, `ZOHO_CLIENT_SECRET` | yes | as in `.env` |
 | `ZOHO_REDIRECT_URI` | yes | see Zoho API Console above |
 | `ZOHO_SCOPES`, `ZOHO_DEFAULT_REGION` | yes | as in `.env` |
 | `LLM_PROVIDER` + `GROQ_API_KEY`, `GROQ_MODEL` **or** `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` | for Clario AI | as in `.env` |
 | `DATABASE_URL_UNPOOLED` | no | direct endpoint; only if auto-derivation is wrong |
 | `DB_POOL_SIZE`, `DB_MAX_OVERFLOW`, `LOG_LEVEL`, `LLM_TIMEOUT_SECONDS`, `LLM_MAX_TOOL_ROUNDS`, `ZOHO_REQUESTS_PER_MINUTE`, `ZOHO_MAX_PAGES`, `FINANCE_STALE_AFTER_MINUTES`, `FINANCE_REFRESH_COOLDOWN_SECONDS` | no | defaults are fine |
-| `UV_NO_DEV` | no | `1` keeps test/lint tools out of the function bundle |
 
 Never set `FINANCE_FIXTURE_SOURCE=true` (production refuses to start with it) or
 `TEST_DATABASE_URL`. The app also refuses to start in production without `SESSION_COOKIE_SECURE`
@@ -110,16 +106,14 @@ Local development and any always-on server keep `SYNC_INLINE=false` and the orig
 
 ## 6. Known risks and open items
 
-* **Not yet deployed.** Configuration is derived from Vercel's documentation and a local simulation
-  of the entrypoint under production settings; the first real deploy may need small adjustments.
+* **Cold starts.** The first request after idle takes several seconds (Python import + database
+  connection); later ones are warm.
 * **Long imports.** A first-time import of a large Zoho organisation must finish within
   `maxDuration` (300 s); otherwise the request times out, the run is later marked abandoned, and
   Sync can be pressed again.
 * **Client IP.** The sign-in rate limiter and audit log use `request.client.host`, which relies on
   proxy headers; whether Vercel populates it correctly is unverified. The limiter is in-memory per
   instance (weaker on serverless); the per-account lockout is the main control.
-* **Public backend URL.** The backend project is also reachable at its own `*.vercel.app` URL;
-  writes are still protected by the origin and CSRF checks. Consider Deployment Protection.
 * **AI data terms.** In production the assistant sends real Zoho figures to the chosen AI provider.
   Do not enable `LLM_PROVIDER` for real client data until the provider's data terms are confirmed
   (risk R6). The connection copied from development is the Zoho **trial** organisation.

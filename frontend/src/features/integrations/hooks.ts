@@ -18,12 +18,21 @@ export function useIntegrations(workspaceId: string) {
 }
 
 export function useIntegration(workspaceId: string, key: string) {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: [...catalogKey(workspaceId), key],
     queryFn: () =>
       apiFetch<IntegrationTile>(
         `/workspaces/${workspaceId}/integrations/${encodeURIComponent(key)}`,
       ),
+    // The shell already loads the whole catalogue, and the server builds a catalogue entry and a
+    // single tile identically. Reuse the entry when it is there instead of making the dashboard
+    // wait for a second round trip (it is refetched as usual once it goes stale).
+    initialData: () =>
+      queryClient
+        .getQueryData<IntegrationTile[]>(catalogKey(workspaceId))
+        ?.find((t) => t.key === key),
+    initialDataUpdatedAt: () => queryClient.getQueryState(catalogKey(workspaceId))?.dataUpdatedAt,
   });
 }
 

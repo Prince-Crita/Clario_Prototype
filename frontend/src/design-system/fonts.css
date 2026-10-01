@@ -1,0 +1,33 @@
+/*
+ * Inter, trimmed to what Clario uses. fontsource's stock stylesheet declares every script, and the
+ * browser downloads the "latin-ext" file (133 KB) on any page that shows a rupee amount, because
+ * U+20B9 (₹) lives there. The app is English with rupee amounts, so two faces are enough:
+ *
+ *   latin   Inter's own latin file, with fontsource's descriptors unchanged.
+ *   rupee   only the ₹ glyph, cut from Inter's own latin-ext file (1.4 KB) with
+ *           `pyftsubset … --unicodes=U+20B9`: same outlines, same opsz and wght axes.
+ *
+ * Characters from other scripts fall back to the system font. Regenerate the rupee file only if
+ * the Inter package is upgraded; the source is
+ * node_modules/@fontsource-variable/inter/files/inter-latin-ext-opsz-normal.woff2.
+ */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../node_modules/@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/inter-rupee-opsz-normal.woff2") format("woff2-variations");
+  unicode-range: U+20B9;
+}

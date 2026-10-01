@@ -12,32 +12,64 @@
  * `useSyncWatcher` notices the run and reloads the pages when it finishes. Loaded lazily.
  */
 import { RefreshCw } from "lucide-react";
-import { lazy, Suspense } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 
 import { Alert, Button, Skeleton } from "../../design-system";
 import { ApiError } from "../../lib/api/client";
+import { lazyComponent } from "../../lib/lazyComponent";
 import { fiscalYearLabel } from "../../lib/labels";
 import { useIntegration } from "../integrations/hooks";
 import { useRefresh } from "../integrations/sync";
 import { useCurrentWorkspace, useWorkspaceDetail } from "../workspace/hooks";
 import { AskBar } from "./AskBar";
 import styles from "./CommandCentre.module.css";
+import { readConnectionHint, rememberConnection } from "./connectionHint";
 import { stampLabel } from "./format";
-import { useSyncWatcher, type FinanceTab } from "./hooks";
+import { financeQuery, useSyncWatcher, type FinanceTab } from "./hooks";
 import { CLARIO, OVERVIEW, PAGES } from "./pages";
 import { isMonthKey, isPeriodKey, resolvePeriod, type PeriodKey } from "./period";
 import { PeriodPicker } from "./PeriodPicker";
 import { ClarioTab } from "./tabs/ClarioTab";
 import { BalanceSheetTab, GstTab } from "./tabs/LedgerTabs";
 import { OverviewTab } from "./tabs/OverviewTab";
-import { PayablesTab } from "./tabs/PayablesTab";
 import { ReceivablesTab } from "./tabs/ReceivablesTab";
 import type { TabProps } from "./tabs/TabBody";
-import { TrendsTab } from "./tabs/TrendsTab";
 
-// The conversation is its own chunk, fetched the first time someone opens Clario AI.
-const AssistantPanel = lazy(() => import("../assistant/AssistantPanel"));
+function TabSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading" style={{ display: "grid", gap: "var(--space-4)" }}>
+      <Skeleton height={320} radius="md" />
+      <Skeleton height={320} radius="md" />
+    </div>
+  );
+}
+
+// Code-split with `lazyComponent` (no Suspense, so no 300 ms fallback hold):
+//  * the conversation is its own chunk, fetched the first time someone opens Clario AI;
+//  * Trends and Payable are the only pages that draw charts, and the charting library is most of
+//    this page's code, so they load on first visit instead of with the Overview.
+const AssistantPanel = lazyComponent(
+  () => import("../assistant/AssistantPanel"),
+  <div className={styles.panelLoading} aria-busy="true" />,
+);
+const TrendsTab = lazyComponent<TabProps>(
+  () => import("./tabs/TrendsTab").then((m) => ({ default: m.TrendsTab })),
+  <TabSkeleton />,
+);
+const PayablesTab = lazyComponent<TabProps>(
+  () => import("./tabs/PayablesTab").then((m) => ({ default: m.PayablesTab })),
+  <TabSkeleton />,
+);
+
+/** Quiet downloads must never compete with someone who asked for less data. */
+function saveData(): boolean {
+  const c = (
+    navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }
+  ).connection;
+  return Boolean(c?.saveData) || /(^|-)2g$/.test(c?.effectiveType ?? "");
+}
 
 const DATELINE = new Intl.DateTimeFormat("en-IN", {
   weekday: "long",
@@ -52,6 +84,23 @@ export default function CommandCentre() {
   const integration = useIntegration(workspace.id, key);
   const detail = useWorkspaceDetail(workspace.id);
   const overview = `/w/${workspace.slug}/${key}`;
+  const queryClient = useQueryClient();
+  const knownConnection = integration.data?.connection?.id;
+
+  // The landing pages read the same two endpoints. People nearly always open the connection they
+  // opened last time, so ask for them now, alongside the integration lookup, instead of after it.
+  // A wrong hint costs one request that fails quietly; the normal path is unchanged.
+  useEffect(() => {
+    if (tab !== "overview" && tab !== CLARIO.value) return;
+    const hint = readConnectionHint(workspace.id, key);
+    if (!hint) return;
+    for (const endpoint of ["overview", "receivables"] as const) {
+      void queryClient.prefetchQuery(financeQuery(workspace.id, hint, endpoint));
+    }
+  }, [queryClient, workspace.id, key, tab]);
+  useEffect(() => {
+    if (knownConnection) rememberConnection(workspace.id, key, knownConnection);
+  }, [workspace.id, key, knownConnection]);
 
   if (integration.isPending) {
     return (
@@ -167,6 +216,22 @@ function Centre(props: CentreProps) {
     search: clarioSearch(value === CLARIO.value ? conversationId : null).toString(),
   });
 
+  // Once this page has had its turn, fetch the other pages' code so opening them is instant.
+  useEffect(() => {
+    if (saveData()) return;
+    const warm = () => {
+      for (const tab of [TrendsTab, PayablesTab, ...(props.canAsk ? [AssistantPanel] : [])]) {
+        tab.preload().catch(() => undefined);
+      }
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(warm, { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(warm, 1500);
+    return () => window.clearTimeout(id);
+  }, [props.canAsk]);
+
   const sync = useSyncWatcher(workspaceId, connectionId);
   const refresh = useRefresh(workspaceId, connectionId);
   const running = sync.data?.state === "running";
@@ -184,23 +249,21 @@ function Centre(props: CentreProps) {
       <AskBar organisation={organisation} prompts={page.prompts} onAsk={ask} variant="card" />
     ) : null,
     chat: props.canAsk ? (
-      <Suspense fallback={<div className={styles.panelLoading} aria-busy="true" />}>
-        <AssistantPanel
-          workspaceId={workspaceId}
-          connectionId={connectionId}
-          system={system}
-          organisation={organisation}
-          domainName={props.domainName}
-          conversationId={conversationId}
-          suggestions={CLARIO.prompts}
-          prefill={search.get("q")}
-          autoSend={search.get("send") === "1"}
-          onConversationChange={setConversation}
-          needsReauth={needsReauth}
-          canManage={canManage}
-          connectionHref={`${base}/connection`}
-        />
-      </Suspense>
+      <AssistantPanel
+        workspaceId={workspaceId}
+        connectionId={connectionId}
+        system={system}
+        organisation={organisation}
+        domainName={props.domainName}
+        conversationId={conversationId}
+        suggestions={CLARIO.prompts}
+        prefill={search.get("q")}
+        autoSend={search.get("send") === "1"}
+        onConversationChange={setConversation}
+        needsReauth={needsReauth}
+        canManage={canManage}
+        connectionHref={`${base}/connection`}
+      />
     ) : null,
   };
 

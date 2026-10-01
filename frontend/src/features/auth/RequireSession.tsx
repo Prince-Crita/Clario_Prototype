@@ -12,11 +12,22 @@ export function RequireSession() {
   if (isPending) {
     return (
       <div className={styles.loading} aria-busy="true" aria-label="Loading Clario">
-        <Skeleton width={232} height="100vh" radius="sm" />
-        <div className={styles.loadingMain}>
-          <Skeleton width="40%" height={28} />
-          <Skeleton width="25%" height={16} />
-          <Skeleton height={160} radius="md" />
+        <div className={styles.bar}>
+          <Skeleton width={120} height={30} radius="sm" />
+          <span className={styles.barPages}>
+            <Skeleton width={420} height={38} radius="md" />
+          </span>
+        </div>
+        <div className={styles.page}>
+          <div className={styles.title}>
+            <Skeleton width="34%" height={38} />
+            <Skeleton width="52%" height={16} />
+          </div>
+          <div className={styles.cards}>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Skeleton key={i} height={150} radius="md" />
+            ))}
+          </div>
         </div>
       </div>
     );

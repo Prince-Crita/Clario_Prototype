@@ -19,7 +19,27 @@ import { decisions, insights, signals } from "../intelligence";
 import { OVERVIEW } from "../pages";
 import { both } from "../query";
 import styles from "./overview.module.css";
+import { Skeleton } from "../../../design-system";
 import { TabBody, type TabProps } from "./TabBody";
+
+/** The Overview's shape while its figures load: the row of six cards, then the tiles below. */
+function OverviewSkeleton() {
+  return (
+    <div className={styles.skeleton}>
+      <div className={styles.skeletonCards}>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <Skeleton key={i} height={150} radius="md" />
+        ))}
+      </div>
+      <Skeleton width={260} height={30} />
+      <div className={styles.skeletonTiles}>
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} height={170} radius="md" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /**
  * "Asha Rao", "asha.rao" → "Asha"; an email falls back to the part before the @. Returns null
@@ -66,7 +86,7 @@ export function OverviewTab({
         <div className={styles.meta}>{context}</div>
       </header>
 
-      <TabBody query={both(overview, receivables)}>
+      <TabBody query={both(overview, receivables)} skeleton={<OverviewSkeleton />}>
         {([o, r]) => (
           <>
             <KeyFigures kpis={o.kpis} ask={ask} />

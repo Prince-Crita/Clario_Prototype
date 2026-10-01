@@ -34,7 +34,8 @@ export function Wordmark({ size = "md", tone = "default" }: WordmarkProps) {
 
 /**
  * The app logo. Reads its image from `logo.png` in this folder — replace that file (same name)
- * to change the logo everywhere it appears; no code change needed.
+ * to change the logo everywhere it appears; no code change needed. It is shown at most 84 px
+ * tall and loads on every page, so keep it around 1000 px wide (a 3751 px original was 83 KB).
  */
 export function Lockup({ size = "md" }: WordmarkProps) {
   return <img className={styles.logo} data-size={size} src={logo} alt="Clario" />;

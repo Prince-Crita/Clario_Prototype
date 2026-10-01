@@ -32,11 +32,21 @@ export interface TabProps {
 export function TabBody<T>({
   query,
   children,
+  skeleton,
 }: {
   query: QueryLike<T>;
   children: (data: T) => ReactNode;
+  /** What to show while loading, in the shape of the page (default: two blocks). */
+  skeleton?: ReactNode;
 }) {
   if (query.isPending) {
+    if (skeleton) {
+      return (
+        <div aria-busy="true" aria-label="Loading">
+          {skeleton}
+        </div>
+      );
+    }
     return (
       <div className={styles.stack} aria-busy="true" aria-label="Loading">
         <div className={styles.kpiSkeleton}>

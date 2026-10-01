@@ -18,12 +18,17 @@ const base = (workspaceId: string, connectionId: string) =>
 export const financeKey = (workspaceId: string, connectionId: string) =>
   ["workspace", workspaceId, "connections", connectionId, "finance"] as const;
 
-/** One finance endpoint. The server computes every figure; this only fetches it. */
-export function useFinanceTab<T>(workspaceId: string, connectionId: string, tab: FinanceEndpoint) {
-  return useQuery({
+/** One finance endpoint's query. Shared by the hook and by prefetching, so they cannot drift. */
+export function financeQuery<T>(workspaceId: string, connectionId: string, tab: FinanceEndpoint) {
+  return {
     queryKey: [...financeKey(workspaceId, connectionId), tab],
     queryFn: () => apiFetch<T>(`${base(workspaceId, connectionId)}/${tab}`),
-  });
+  };
+}
+
+/** One finance endpoint. The server computes every figure; this only fetches it. */
+export function useFinanceTab<T>(workspaceId: string, connectionId: string, tab: FinanceEndpoint) {
+  return useQuery(financeQuery<T>(workspaceId, connectionId, tab));
 }
 
 export function useInvoiceRegister(

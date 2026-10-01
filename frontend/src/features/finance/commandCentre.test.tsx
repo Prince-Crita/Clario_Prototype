@@ -40,11 +40,18 @@ function syncStatus(state: "idle" | "running" = "idle") {
   };
 }
 
-function api(options: { tile?: ReturnType<typeof zohoTile>; sync?: "idle" | "running" } = {}) {
+function api(
+  options: { tile?: ReturnType<typeof zohoTile>; sync?: "idle" | "running"; asker?: boolean } = {},
+) {
   const tile = options.tile ?? connected();
   return mockApi({
     "GET /auth/session": { status: 200, body: session() },
-    [`GET /workspaces/${ALPHA.id}`]: { status: 200, body: ALPHA_DETAIL },
+    [`GET /workspaces/${ALPHA.id}`]: {
+      status: 200,
+      body: options.asker
+        ? { ...ALPHA_DETAIL, permissions: [...ALPHA_DETAIL.permissions, "assistant.use"] }
+        : ALPHA_DETAIL,
+    },
     [`GET ${base}`]: { status: 200, body: { integrations: [tile] } },
     [`GET ${base}/zoho-books`]: { status: 200, body: tile },
     [`GET ${connection}/sync`]: { status: 200, body: syncStatus(options.sync) },
@@ -118,7 +125,7 @@ describe("Finance Command Centre", () => {
   });
 
   it("reads key figures, business performance, decision support, then scenarios", async () => {
-    api();
+    api({ asker: true });
     renderApp(`${PAGE}/overview?period=fy`);
     const performance = await screen.findByRole("region", { name: "Business performance" });
     expect(performance).toHaveTextContent("−89%net margin");
@@ -128,6 +135,8 @@ describe("Finance Command Centre", () => {
     expect(performance).toHaveTextContent("94%of billed collected");
     // The metric and its one-line basis carry the point; the extra interpretation line is gone.
     expect(performance).not.toHaveTextContent("so the business is spending more than it earns");
+    // The buttons appear once the workspace's permissions arrive, which can follow the figures.
+    await within(performance).findAllByRole("button", { name: /^Ask Clario:/ });
     expect(within(performance).getAllByRole("button", { name: /^Ask Clario:/ })).toHaveLength(
       within(performance).getAllByRole("listitem").length,
     );
