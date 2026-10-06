@@ -1,0 +1,128 @@
+/*
+ * Clario design tokens — "Crita Intelligence" (FINAL_ARCHITECTURE_PLAN.md §27.10).
+ * Brand language from crita.in: a white canvas, near-black ink (#0F151F) and one decisive green
+ * (#7DB52A). Type is Inter, Crita's own face. Red / amber / green appear only when they mean
+ * something. Every colour pairing used for text or UI is checked for WCAG 2.2 AA by tokens.test.ts.
+ */
+:root {
+  /* Canvas — white, with neutral surfaces and hairlines */
+  --paper: #ffffff;
+  --surface: #ffffff;
+  --surface-sunken: #f6f7f3;
+  --surface-hover: #f1f2ee;
+  --line: #eaebe6;
+  --line-strong: #d0d3c9;
+  --ink: #0f151f;
+  --ink-2: #454b55;
+  --ink-3: #5b616b;
+  --ink-inverse: #ffffff;
+
+  /* Brand — Crita's green. Fills and highlights; never small text on white. */
+  --brand: #7db52a;
+  --brand-strong: #6a9e1f; /* chart marks (≥ 3:1 on white) */
+  --brand-soft: #eaf5da;
+  --brand-tint: #f4faec;
+
+  /* Actions are ink, as on crita.in; green is for meaning and emphasis */
+  --forest: #0f151f;
+  --forest-hover: #262d39;
+  --forest-pressed: #000000;
+  --forest-tint: #f1f8e6; /* selected and active states */
+  --olive: #3e6b12; /* green text and links on white */
+  --accent: #3e6b12;
+  --accent-soft: #ddefc4;
+  --lime: #7db52a; /* the logo's disc */
+
+  /* The ink control family (the Ask Clario pill, the phone's centre button) */
+  --rail: #0f151f;
+  --rail-raised: #222a36;
+  --rail-line: #2e3644;
+  --rail-ink: #ffffff;
+  --rail-ink-2: #b8bdc6;
+  --rail-attention: #f0b252;
+
+  /* Semantic (only when they mean something) */
+  --negative: #c23a2b;
+  --negative-bg: #fdf0ee;
+  --positive: #2f7d32;
+  --positive-bg: #edf6ee;
+  --warning: #9a5b00;
+  --warning-bg: #fff4e0;
+  --info: #2f5f8f;
+  --info-bg: #edf3f9;
+
+  /* Chart series — ink and Crita green lead; a warm grey for money out. Each ≥ 3:1 on white. */
+  --series-1: #0f151f; /* billed / primary */
+  --series-2: #6a9e1f; /* collected / the brand */
+  --series-3: #8c9088; /* expenses */
+  --series-4: #3e6b12;
+  --series-5: #5f6b55;
+  --series-6: #2e3440;
+  --series-muted: #e4e6df; /* the rest, when one mark is highlighted */
+
+  /* Debt age, lightest to strongest (decorative bars; the legend carries the text) */
+  --age-1: #f2c7c0;
+  --age-2: #e39486;
+  --age-3: #d0614f;
+
+  /* Type — Inter, with display settings for figures and headlines */
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-sans);
+  --font-serif: var(--font-sans);
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.8125rem; /* 13 */
+  --text-md: 0.875rem; /* 14 — body */
+  --text-lg: 1rem; /* 16 */
+  --text-xl: 1.25rem; /* 20 */
+  --text-2xl: 1.5rem; /* 24 */
+  --text-3xl: 2.25rem; /* 36 */
+  --text-hero: 3.5rem; /* 56 — the one number a page is about */
+  --text-page: 1.75rem; /* 28 */
+  --weight-regular: 420;
+  --weight-medium: 520;
+  --weight-semibold: 600;
+  --weight-bold: 680;
+  --tracking-tight: -0.02em;
+  --tracking-display: -0.035em;
+  --tracking-label: 0.02em;
+
+  /* Space (4-px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Shape & depth — soft, large panels; hairlines; almost no shadow */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --shadow-card: 0 1px 2px rgb(15 21 31 / 0.04);
+  --shadow-pop: 0 16px 40px rgb(15 21 31 / 0.12), 0 0 0 1px rgb(15 21 31 / 0.05);
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--brand-strong);
+  --focus-halo: 0 0 0 4px rgb(125 181 42 / 0.22);
+
+  /* Layout */
+  --rail-width: 280px; /* the phone drawer */
+  --rail-compact: 0px;
+  --content-max: 1360px;
+  --header-height: 64px;
+  --bar-height: 0px;
+  --mobile-bar: 68px;
+  --control-height: 38px;
+  --control-height-sm: 32px;
+
+  /* Motion */
+  --duration: 160ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
+  }
+}

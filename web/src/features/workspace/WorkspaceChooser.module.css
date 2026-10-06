@@ -1,0 +1,72 @@
+.page {
+  min-height: 100vh;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.body {
+  width: min(100% - 2 * var(--space-4), 640px);
+  margin: var(--space-7) auto;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  font-size: var(--text-2xl);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.list > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.row:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.name {
+  font-weight: var(--weight-semibold);
+}
+
+.role {
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+.chevron {
+  color: var(--ink-3);
+}

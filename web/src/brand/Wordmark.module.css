@@ -1,0 +1,53 @@
+.wordmark {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--forest);
+  font-size: 1.375rem;
+}
+
+.wordmark[data-size="sm"] {
+  font-size: 1.125rem;
+}
+
+.wordmark[data-size="lg"] {
+  font-size: 2rem;
+}
+
+.wordmark[data-tone="inverse"] {
+  color: var(--ink-inverse);
+}
+
+/* The "i": dotless ı with the lime disc as its tittle. */
+.i {
+  position: relative;
+  display: inline-block;
+}
+
+.tittle {
+  position: absolute;
+  left: 50%;
+  top: -0.02em;
+  width: 0.2em;
+  height: 0.2em;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+/* The logo image (brand/logo.png). Height scales with `size`; width follows the file's own ratio. */
+.logo {
+  display: block;
+  height: 60px;
+  width: auto;
+}
+
+.logo[data-size="sm"] {
+  height: 60px;
+}
+
+.logo[data-size="lg"] {
+  height: 90px;
+}

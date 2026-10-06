@@ -1,0 +1,50 @@
+/* The account: an initials disc at the right end of the top bar. */
+.trigger {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--ink);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.02em;
+  transition: box-shadow var(--duration) var(--ease);
+}
+
+.trigger:hover .avatar,
+.trigger[data-state="open"] .avatar {
+  box-shadow: 0 0 0 3px var(--line);
+}
+
+.text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.name,
+.email {
+  display: block;
+}

@@ -1,0 +1,32 @@
+.section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sectionHeader {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.sectionTitle {
+  font-size: var(--text-lg);
+}
+
+.sectionLead {
+  max-width: 70ch;
+  color: var(--ink-2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each tile fills its grid cell so footers line up across a row. */
+.grid > li {
+  display: grid;
+}

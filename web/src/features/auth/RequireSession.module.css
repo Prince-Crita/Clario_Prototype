@@ -1,0 +1,54 @@
+/* The wait for the session: the shape of the real app (a top bar, then a page), so what appears
+   next replaces it in place instead of jumping from a layout that no longer exists. The page tone
+   is the Overview's, which is where people land. */
+.loading {
+  min-height: 100vh;
+  background: var(--surface-sunken);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  height: var(--header-height);
+  padding: 0 clamp(var(--space-4), 2.4vw, var(--space-6));
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.barPages {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-6) clamp(var(--space-4), 3vw, var(--space-7));
+}
+
+.title {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-3);
+}
+
+.error {
+  max-width: 640px;
+  margin: 15vh auto 0;
+  padding: 0 var(--space-4);
+}
+
+@media (max-width: 899.98px) {
+  .barPages {
+    display: none;
+  }
+}
