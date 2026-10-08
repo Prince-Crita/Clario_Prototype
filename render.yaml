@@ -12,7 +12,11 @@ services:
       - key: SESSION_COOKIE_SECURE
         value: "true"
       - key: APP_BASE_URL
-        sync: false
+        value: https://clario-crita.onrender.com
+      - key: ZOHO_REDIRECT_URI
+        value: https://clario-crita.onrender.com/api/v1/oauth/zoho-books/callback
+      - key: LLM_PROVIDER
+        value: groq
       - key: DATABASE_URL
         sync: false
       - key: SESSION_SECRET
@@ -23,5 +27,28 @@ services:
         sync: false
       - key: GROQ_MODEL
         sync: false
-      - key: LLM_PROVIDER
-        value: groq
+      - key: ZOHO_CLIENT_ID
+        sync: false
+      - key: ZOHO_CLIENT_SECRET
+        sync: false
+      - key: ZOHO_SCOPES
+        sync: false
+      - key: ZOHO_DEFAULT_REGION
+        sync: false
+
+  - type: web
+    name: clario-crita
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://clario-crita-api.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
